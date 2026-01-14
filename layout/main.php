@@ -7,7 +7,8 @@
   <title><?= $PAGE_TITLE ?? 'HRIS' ?></title>
   <link rel="shortcut icon" type="image/png" href="<?= $BASE_URL ?>assets/images/logos/favicon_attendfy.png" />
   <link rel="stylesheet" href="<?= $BASE_URL ?>assets/css/styles.min.css" />
-  <link href="<?= $BASE_URL ?>assets/libs/datatables/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="<?= $BASE_URL ?>assets/css/main.css" />
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 </head>
 
 <body>

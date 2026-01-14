@@ -1,4 +1,4 @@
-$(function () {
+$(document).ready(function () {
 
     loadUsers();
     loadEmployees();
@@ -104,3 +104,5 @@ $(function () {
     });
 
 });
+
+

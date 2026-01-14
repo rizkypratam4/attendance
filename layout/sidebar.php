@@ -4,6 +4,7 @@
     <div class="brand-logo position-relative d-flex align-items-center justify-content-center">
       <a href="/hris/dashboard/" class="text-nowrap logo-img">
         <img src="<?= $BASE_URL ?>assets/images/logos/logo.png" width="140" />
+        
       </a>
 
       <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer position-absolute end-0 me-3"
