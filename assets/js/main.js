@@ -2,9 +2,6 @@ $(document).ready(function () {
     if (typeof loadUsers === 'function') loadUsers();
     if (typeof loadEmployees === 'function') loadEmployees();
 
-    // =====================
-    // USERS
-    // =====================
     function loadUsers() { $("#userTableBody").load("/hris/users/list.php"); }
     function loadEmployees() { $("#employeeTableBody").load("/hris/employees/list.php"); }
 
@@ -66,12 +63,10 @@ $(document).ready(function () {
         });
     });
 
-    // =====================
-    // EMPLOYEES
-    // =====================
     $(document).on('click', '.btn-edit-employee', function () {
         $('#edit_id').val($(this).data('id'));
         $('#edit_name').val($(this).data('name'));
+        $('#edit_nik').val($(this).data('nik'));
         $('#editEmployeeModal').modal('show');
     });
 

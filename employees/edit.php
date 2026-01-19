@@ -1,5 +1,5 @@
 <div class="modal fade" id="editEmployeeModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
         <form id="editEmployeeForm" class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -14,6 +14,10 @@
                 <div class="mb-3">
                     <label class="form-label">Nama</label>
                     <input type="text" name="name" id="edit_name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">NIK</label>
+                    <input type="text" name="nik" id="edit_nik" class="form-control" required>
                 </div>
             </div>
 

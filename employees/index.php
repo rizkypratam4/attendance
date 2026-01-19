@@ -6,7 +6,6 @@ ob_start();
 
 ?>
 <div class="col-lg-12">
-
     <?php if (isset($_SESSION['alert'])): ?>
         <div class="alert alert-<?= $_SESSION['alert']['type'] ?> alert-dismissible fade show" role="alert">
             <?= $_SESSION['alert']['msg'] ?>
@@ -58,9 +57,9 @@ ob_start();
                             <td class="col-md-2 text-center">
                                 <button
                                     class="btn btn-sm btn-info btn-edit-employee"
-                                    
-                                    data-id="<?= $employee['account_number']; ?>"
+                                    data-id="<?= $employee['barcode']; ?>"
                                     data-name="<?= htmlspecialchars($employee['employee_name']); ?>"
+                                    data-nik="<?= htmlspecialchars($employee['nik']); ?>"
                                     title="Edit Employee"
                                     >
                                         <i class="ti ti-pencil"></i>
@@ -69,7 +68,7 @@ ob_start();
 
                                 <button
                                         class="btn btn-sm btn-danger btn-delete-employee ms-1"
-                                        data-id="<?= $employee['account_number']; ?>"    
+                                        data-id="<?= $employee['barcode']; ?>"    
                                         data-name="<?= $employee['employee_name']; ?>"    
                                         title="Hapus Employee"
                                     >
@@ -81,7 +80,6 @@ ob_start();
                     <?php endforeach; ?>
                 </tbody>
             </table>
-
         </div>
     </div>
 </div>

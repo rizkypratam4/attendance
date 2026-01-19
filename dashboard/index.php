@@ -21,7 +21,7 @@ ob_start();
         <div class="card shadow-sm h-100">
             <div class="card-body">
                 <h6 class="text-muted">Total Karyawan</h6>
-                <h3 class="fw-bold"><?= countEmployees($conn); ?></h3>
+                <h3 class="fw-bold"><?= countEmployees(); ?></h3>
             </div>
         </div>
     </div>

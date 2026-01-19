@@ -38,6 +38,7 @@
                 <thead>
                     <tr>
                         <th scope="col">No</th>
+                        <th scope="col">Barcode</th>
                         <th scope="col">Nama</th>
                         <th scope="col">Attendance Date</th>
                         <th scope="col">Attendance Time</th>
@@ -47,14 +48,15 @@
                 </thead>
                 <tbody>
                     <?php
-                    $attendances = getAttendances($conn);
+                    $attendances = getAttendances();
                     foreach ($attendances as $index => $attendance): ?>
                         <tr>
                             <td><?= $index + 1 ?></td>
-                            <td><?= htmlspecialchars($attendance['name']) ?></td>
-                            <td><?= htmlspecialchars($attendance['attendance_date']) ?></td>
-                            <td><?= htmlspecialchars($attendance['attendance_time']) ?></td>
-                            <td><?= htmlspecialchars($attendance['attendance_type']) ? 'OUT' : 'IN' ?></td>
+                            <td><?= htmlspecialchars($attendance['barcode']) ?></td>
+                            <td><?= htmlspecialchars($attendance['employee_name']) ?></td>
+                            <td><?= htmlspecialchars($attendance['AttendanceDate']->format('d-m-Y')) ?></td>
+                            <td><?= htmlspecialchars($attendance['AttendanceTime']->format('H:i:s')) ?></td>
+                            <td><?= htmlspecialchars($attendance['AttendanceType'])?></td>
                             <!-- <td>
                                 <a href="edit.php?id=<?= $attendance['id'] ?>" class="btn btn-sm btn-info">
                                     <i class="ti ti-pencil"></i>
