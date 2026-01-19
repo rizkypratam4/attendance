@@ -1,19 +1,18 @@
 <?php
 session_start();
-require __DIR__ . "/../config/database.php";
 require __DIR__ . "../../function.php";
+$conn = openConnectionMSSQL();
 
 if (isset($_POST['import'])) {
     try {
         importExcel(
-            $conn,
-            'employees',
+            'dbo.karyawan',
             [
-                'name' => 1,
+                'employee_name' => 1,
                 'nik' => 2,
                 'barcode' => 3,
                 'branch' => 4,
-                'departements' => 5,    
+                'departement' => 5,    
                 'position' => 6,
                 'title' => 7,
                 'employee_status' => 8,

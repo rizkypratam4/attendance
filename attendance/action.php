@@ -1,7 +1,7 @@
 <?php
 session_start();
-require __DIR__ . "/../config/database.php";
 require __DIR__ . "../../function.php";
+
 
 if (isset($_POST['import'])) {
     try {

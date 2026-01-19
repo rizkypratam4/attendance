@@ -51,7 +51,7 @@ ob_start();
                     foreach ($employees as $index => $employee): ?>
                         <tr>
                             <td class="text-center"><?= $index + 1 ?></td>
-                            <td><?= htmlspecialchars($employee['name']) ?></td>
+                            <td><?= htmlspecialchars($employee['employee_name']) ?></td>
                             <td><?= htmlspecialchars($employee['branch']) ?></td>
                             <td><?= htmlspecialchars($employee['position']) ?></td>
                             <td><?= htmlspecialchars($employee['employee_status']) ?></td>
@@ -59,8 +59,8 @@ ob_start();
                                 <button
                                     class="btn btn-sm btn-info btn-edit-employee"
                                     
-                                    data-id="<?= $employee['id']; ?>"
-                                    data-name="<?= htmlspecialchars($employee['name']); ?>"
+                                    data-id="<?= $employee['account_number']; ?>"
+                                    data-name="<?= htmlspecialchars($employee['employee_name']); ?>"
                                     title="Edit Employee"
                                     >
                                         <i class="ti ti-pencil"></i>
@@ -69,8 +69,8 @@ ob_start();
 
                                 <button
                                         class="btn btn-sm btn-danger btn-delete-employee ms-1"
-                                        data-id="<?= $employee['id']; ?>"    
-                                        data-name="<?= $employee['name']; ?>"    
+                                        data-id="<?= $employee['account_number']; ?>"    
+                                        data-name="<?= $employee['employee_name']; ?>"    
                                         title="Hapus Employee"
                                     >
                                         <i class="ti ti-trash"></i>

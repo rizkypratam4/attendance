@@ -1,7 +1,10 @@
 <?php
 include __DIR__ . "/../auth/auth.php";
 require_once __DIR__ . '/../layout/a_config.php';
+require __DIR__ . "/../config/database.php";
+require __DIR__ . "../../function.php";
 ob_start();
+
 ?>
 
 <div class="row">
@@ -18,7 +21,7 @@ ob_start();
         <div class="card shadow-sm h-100">
             <div class="card-body">
                 <h6 class="text-muted">Total Karyawan</h6>
-                <h3 class="fw-bold">125</h3>
+                <h3 class="fw-bold"><?= countEmployees($conn); ?></h3>
             </div>
         </div>
     </div>
@@ -94,7 +97,7 @@ ob_start();
 </div>
 
 <div class="row g-3">
-    <div class="col-lg-7">
+    <div class="col-lg-6">
         <div class="card shadow-sm h-100">
             <div class="card-body">
                 <h5 class="card-title">Departemen Paling Banyak Terlambat</h5>
@@ -105,7 +108,7 @@ ob_start();
         </div>
     </div>
 
-    <div class="col-lg-5">
+    <div class="col-lg-6">
         <div class="card shadow-sm h-100">
             <div class="card-body">
                 <h5 class="card-title">Karyawan Paling Banyak Terlambat</h5>
