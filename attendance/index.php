@@ -21,24 +21,22 @@
                     <h4 class="card-title"> 
                         Attendances
                     </h4>
-
                     <p class="card-subtitle">
                         Ringkasan data kehadiran karyawan
                     </p>
                 </div>
 
-                <button data-bs-toggle="modal"
+                <!-- <button data-bs-toggle="modal"
                     data-bs-target="#importAttendanceModal" class="btn btn-primary d-flex align-items-center gap-1">
                     <i class="ti ti-file-import fs-5"></i>
                     <span>Import</span>
-                </button>
+                </button> -->
             </div>
 
             <table id="attendanceTable" class="table table-bordered table-striped mt-4 py-3">
                 <thead>
                     <tr>
                         <th scope="col">No</th>
-                        <th scope="col">Barcode</th>
                         <th scope="col">Nama</th>
                         <th scope="col">Attendance Date</th>
                         <th scope="col">Attendance Time</th>
@@ -52,7 +50,6 @@
                     foreach ($attendances as $index => $attendance): ?>
                         <tr>
                             <td><?= $index + 1 ?></td>
-                            <td><?= htmlspecialchars($attendance['barcode']) ?></td>
                             <td><?= htmlspecialchars($attendance['employee_name']) ?></td>
                             <td><?= htmlspecialchars($attendance['AttendanceDate']->format('d-m-Y')) ?></td>
                             <td><?= htmlspecialchars($attendance['AttendanceTime']->format('H:i:s')) ?></td>

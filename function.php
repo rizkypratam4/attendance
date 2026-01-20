@@ -7,6 +7,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 # MSSQL Connection
+$conn = openConnectionMSSQL();
+
 function openConnectionMSSQL(): mixed
 {
     $serverName = "10.4.1.8, 1433";
@@ -32,7 +34,7 @@ function importExcel(
     string $fileInputName = 'file_excel',
     bool $skipHeader = true
 ) {
-    $conn = openConnectionMSSQL();
+    global $conn;
 
     if (!isset($_FILES[$fileInputName])) {
         throw new Exception("File tidak ditemukan");
@@ -124,11 +126,10 @@ function importExcel(
     }
 }
 
-
 # Employee Functions
 function getEmployees(): array
 {
-    $conn = openConnectionMSSQL();
+    global $conn;
     $tsql    = "SELECT * FROM dbo.karyawan ORDER BY employee_name ASC";
     $result = sqlsrv_query($conn, $tsql);
 
@@ -140,46 +141,49 @@ function getEmployees(): array
     return $employees;
 }
 
-
 # Attendance Functions
-function getAttendances($offset = 0, $limit = 5000)
+function getAttendances($offset = 0, $limit = 300): array
 {
-    $conn = openConnectionMSSQL();
-    $tsql = "WITH Dedup AS (
+    global $conn;
+    $tsql = "WITH Base AS (
+                SELECT DISTINCT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime
+                FROM dbo.AttendanceMachinePolling
+                WHERE AttendanceDate >= DATEADD(DAY, -7, CAST(GETDATE() AS DATE))
+            ),
+            CalculatedIO AS (
+                SELECT 
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
+                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
+                FROM Base
+            ),
+            IO AS (
+                SELECT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    CASE 
+                        WHEN AttendanceTime = MinTime THEN 'IN'
+                        WHEN AttendanceTime = MaxTime THEN 'OUT'
+                        ELSE NULL
+                    END AS AttendanceType
+                FROM CalculatedIO
+            )
             SELECT
-                a.barcode,
-                a.AttendanceDate,
-                a.AttendanceTime,
-                ROW_NUMBER() OVER (
-                    PARTITION BY a.barcode, a.AttendanceDate, a.AttendanceTime
-                    ORDER BY a.barcode
-                ) AS rn
-            FROM dbo.AttendanceMachinePolling a
-        )
-        SELECT
-            d.barcode,
-            ISNULL(e.employee_name, 'TIDAK TERDAFTAR') AS employee_name,
-            d.AttendanceDate,
-            d.AttendanceTime,
-            CASE
-                WHEN d.AttendanceTime = MIN(d.AttendanceTime)
-                     OVER (PARTITION BY d.barcode, d.AttendanceDate)
-                    THEN 'IN'
-                WHEN d.AttendanceTime = MAX(d.AttendanceTime)
-                     OVER (PARTITION BY d.barcode, d.AttendanceDate)
-                    THEN 'OUT'
-                ELSE NULL
-            END AS AttendanceType
-        FROM Dedup d
-        LEFT JOIN dbo.karyawan e
-            ON d.barcode = e.barcode
-        WHERE d.rn = 1
-        ORDER BY
-            d.AttendanceDate DESC,
-            d.AttendanceTime DESC,
-            e.employee_name DESC
-        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-    ";
+                io.barcode,
+                ISNULL(k.employee_name, 'TIDAK TERDAFTAR') AS employee_name,
+                io.AttendanceDate,
+                io.AttendanceTime,
+                io.AttendanceType
+            FROM IO io
+            LEFT JOIN dbo.karyawan k ON k.barcode = io.barcode
+            ORDER BY io.AttendanceDate DESC, io.AttendanceTime DESC
+            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
 
     $stmt = sqlsrv_query($conn, $tsql, [$offset, $limit]);
     if ($stmt === false) {
@@ -195,27 +199,90 @@ function getAttendances($offset = 0, $limit = 5000)
 }
 
 # Dashboard Functions
+function filterStatisticsByDateRange(
+    string $table,
+    string $dateColumn,
+    string $startDate,
+    string $endDate
+): array {
+    global $conn;
+
+    $hadirSql = "
+        SELECT COUNT(DISTINCT barcode) AS total
+        FROM {$table}
+        WHERE {$dateColumn} >= ?
+          AND {$dateColumn} < DATEADD(DAY, 1, ?)
+          AND AttendanceType = 'IN'
+    ";
+
+    $terlambatSql = "
+        SELECT COUNT(DISTINCT barcode) AS total
+        FROM {$table}
+        WHERE {$dateColumn} >= ?
+          AND {$dateColumn} < DATEADD(DAY, 1, ?)
+          AND AttendanceType = 'IN'
+          AND AttendanceTime > '07:30:00'
+    ";
+
+    $tidakHadirSql = "
+        SELECT COUNT(DISTINCT e.barcode) AS total
+        FROM dbo.karyawan e
+        LEFT JOIN {$table} t
+            ON e.barcode = t.barcode
+           AND t.{$dateColumn} >= ?
+           AND t.{$dateColumn} < DATEADD(DAY, 1, ?)
+           AND t.AttendanceType = 'IN'
+        WHERE t.barcode IS NULL
+          AND e.employee_status IN ('Permanent', 'Contract', 'Probationary')
+    ";
+
+    $params = [$startDate, $endDate];
+
+    return [
+        'hadir'        => fetchSingleValue($conn, $hadirSql, $params),
+        'terlambat'    => fetchSingleValue($conn, $terlambatSql, $params),
+        'tidak_hadir'  => fetchSingleValue($conn, $tidakHadirSql, $params),
+    ];
+}
+
+function fetchSingleValue($conn, string $sql, array $params): int
+{
+    $stmt = sqlsrv_query($conn, $sql, $params);
+
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    sqlsrv_free_stmt($stmt);
+
+    return (int)($row['total'] ?? 0);
+}
+
+
+
 function countEmployees(): int
 {
-    $conn = openConnectionMSSQL();
+    global $conn;
+
     $tsql   = "SELECT COUNT(*) AS total FROM dbo.karyawan";
     $result = sqlsrv_query($conn, $tsql);
     if ($result === false) {
         die(print_r(sqlsrv_errors(), true));
     }
     $data   = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
-    
+
     return (int)$data['total'];
 }
 
 function countPresentEmployeesToday(): int
 {
-    $conn = openConnectionMSSQL();
+    global $conn;
 
     $today = date('Y-m-d');
-    $tsql  = "SELECT COUNT(DISTINCT employee_id) AS total_present
-            FROM attendances
-            WHERE CAST(attendance_date AS DATE) = ?";
+    $tsql  = "SELECT COUNT(DISTINCT barcode) AS total_present
+            FROM dbo.AttendanceMachinePolling
+            WHERE CAST(AttendanceDate AS DATE) = ?";
 
     $params = [$today];
     $stmt   = sqlsrv_query($conn, $tsql, $params);
@@ -233,7 +300,7 @@ function countPresentEmployeesToday(): int
 
 function countPresentEmployeesThisWeek(): int
 {
-    $conn = openConnectionMSSQL();
+    global $conn;
 
     $startOfWeek = date('Y-m-d', strtotime('monday this week'));
     $endOfWeek   = date('Y-m-d', strtotime('sunday this week'));
@@ -258,7 +325,7 @@ function countPresentEmployeesThisWeek(): int
 
 function countPresentEmployeesThisMonth(): int
 {
-    $conn = openConnectionMSSQL();
+    global $conn;
 
     $startOfMonth = date('Y-m-01');
     $endOfMonth   = date('Y-m-t');

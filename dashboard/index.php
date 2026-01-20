@@ -8,69 +8,134 @@ ob_start();
 ?>
 
 <div class="row">
-    <div class="col-12">
-        <h2 class="fw-bold mb-1">Dashboard</h2>
-        <p class="text-muted mb-0">
-            Selamat datang, <?= $_SESSION['name']; ?>
-        </p>
+    <div class="col-12 d-flex justify-content-between align-items-end flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">Dashboard</h2>
+            <p class="text-muted mb-0">
+                Selamat datang, <?= $_SESSION['name']; ?>
+            </p>
+        </div>
+
+        <!-- Date Range -->
+        <form method="GET" class="d-flex align-items-end gap-2">
+            <div>
+                <label class="form-label mb-0">Dari</label>
+                <input
+                    type="date"
+                    name="start_date"
+                    class="form-control"
+                    value="<?= $_GET['start_date'] ?? date('Y-m-01') ?>">
+            </div>
+
+            <div>
+                <label class="form-label mb-0">Sampai</label>
+                <input
+                    type="date"
+                    name="end_date"
+                    class="form-control"
+                    value="<?= $_GET['end_date'] ?? date('Y-m-d') ?>">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Filter
+            </button>
+        </form>
     </div>
+
+
 </div>
 
 <div class="row g-3">
-    <div class="col-xl-4 col-md-6">
+    <!-- Total Karyawan -->
+    <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-muted">Total Karyawan</h6>
-                <h3 class="fw-bold"><?= countEmployees(); ?></h3>
+            <div class="card-body d-flex flex-column">
+                <h6 class="text-muted mb-2 d-flex align-items-center gap-2">
+                    <i class="ti ti-users fs-4"></i>
+                    Total Karyawan
+                </h6>
+
+                <div class="d-flex align-items-center justify-content-between mt-auto">
+                    <h3 class="fw-bold mb-0">
+                        <?= countEmployees(); ?>
+                    </h3>
+
+                    <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
+                        <i class="ti ti-arrow-right fs-7"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-4 col-md-6">
+    <!-- Hadir -->
+    <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-muted">Hadir Hari Ini</h6>
-                <h3 class="fw-bold text-primary">110</h3>
+            <div class="card-body d-flex flex-column">
+                <h6 class="text-muted mb-2 d-flex align-items-center gap-2">
+                    <i class="ti ti-circle-check fs-4 text-primary"></i>
+                    Hadir
+                </h6>
+
+                <div class="d-flex align-items-center justify-content-between mt-auto">
+                    <h3 class="fw-bold mb-0">
+                 
+                    </h3>
+
+                    <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
+                        <i class="ti ti-arrow-right fs-7"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-4 col-md-6">
+    <!-- Terlambat -->
+    <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-muted">Hadir Minggu Ini</h6>
-                <h3 class="fw-bold text-primary">110</h3>
+            <div class="card-body d-flex flex-column">
+                <h6 class="text-muted mb-2 d-flex align-items-center gap-2">
+                    <i class="ti ti-clock-hour-9 fs-4 text-warning"></i>
+                    Terlambat
+                </h6>
+
+               <div class="d-flex align-items-center justify-content-between mt-auto">
+                    <h3 class="fw-bold mb-0">
+                    
+                    </h3>
+
+                    <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
+                        <i class="ti ti-arrow-right fs-7"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-4 col-md-6">
+    <!-- Tidak Hadir -->
+    <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-muted">Hadir Bulan Ini</h6>
-                <h3 class="fw-bold text-primary">110</h3>
-            </div>
-        </div>
-    </div>
+            <div class="card-body d-flex flex-column">
+                <h6 class="text-muted mb-2 d-flex align-items-center gap-2">
+                    <i class="ti ti-user-off fs-4 text-danger"></i>
+                    Tidak Hadir
+                </h6>
 
-    <div class="col-xl-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-muted">Terlambat</h6>
-                <h3 class="fw-bold text-warning">8</h3>
-            </div>
-        </div>
-    </div>
+               <div class="d-flex align-items-center justify-content-between mt-auto">
+                    <h3 class="fw-bold mb-0">
+                    
+                    </h3>
 
-    <div class="col-xl-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h6 class="text-muted">Tidak Hadir</h6>
-                <h3 class="fw-bold text-danger">7</h3>
+                    <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
+                        <i class="ti ti-arrow-right fs-7"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
 <div class="row g-3">
     <div class="col-lg-6">
