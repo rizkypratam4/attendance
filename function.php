@@ -199,50 +199,232 @@ function getAttendances($offset = 0, $limit = 300): array
 }
 
 # Dashboard Functions
-function filterStatisticsByDateRange(
-    string $table,
-    string $dateColumn,
-    string $startDate,
-    string $endDate
-): array {
+function getTotalHadirHariIni(): int
+{
     global $conn;
+    $sql = "WITH Base AS (
+                SELECT DISTINCT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime
+                FROM dbo.AttendanceMachinePolling
+                WHERE AttendanceDate = CAST(GETDATE() AS DATE)
+            ),
+            CalculatedIO AS (
+                SELECT 
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
+                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
+                FROM Base
+            ),
+            IO AS (
+                SELECT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    CASE 
+                        WHEN AttendanceTime = MinTime THEN 'IN'
+                        WHEN AttendanceTime = MaxTime THEN 'OUT'
+                        ELSE NULL
+                    END AS AttendanceType
+                FROM CalculatedIO
+            )
+            SELECT COUNT(*) AS TotalMasuk
+            FROM IO
+            WHERE AttendanceType = 'IN'";
 
-    $hadirSql = "
-        SELECT COUNT(DISTINCT barcode) AS total
-        FROM {$table}
-        WHERE {$dateColumn} >= ?
-          AND {$dateColumn} < DATEADD(DAY, 1, ?)
-          AND AttendanceType = 'IN'
-    ";
+    $stmt = sqlsrv_query($conn, $sql);
 
-    $terlambatSql = "
-        SELECT COUNT(DISTINCT barcode) AS total
-        FROM {$table}
-        WHERE {$dateColumn} >= ?
-          AND {$dateColumn} < DATEADD(DAY, 1, ?)
-          AND AttendanceType = 'IN'
-          AND AttendanceTime > '07:30:00'
-    ";
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
 
-    $tidakHadirSql = "
-        SELECT COUNT(DISTINCT e.barcode) AS total
-        FROM dbo.karyawan e
-        LEFT JOIN {$table} t
-            ON e.barcode = t.barcode
-           AND t.{$dateColumn} >= ?
-           AND t.{$dateColumn} < DATEADD(DAY, 1, ?)
-           AND t.AttendanceType = 'IN'
-        WHERE t.barcode IS NULL
-          AND e.employee_status IN ('Permanent', 'Contract', 'Probationary')
-    ";
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    sqlsrv_free_stmt($stmt);
 
-    $params = [$startDate, $endDate];
+    return (int)($row['TotalMasuk'] ?? 0);
+}
 
-    return [
-        'hadir'        => fetchSingleValue($conn, $hadirSql, $params),
-        'terlambat'    => fetchSingleValue($conn, $terlambatSql, $params),
-        'tidak_hadir'  => fetchSingleValue($conn, $tidakHadirSql, $params),
-    ];
+
+function getTotalHadirByDateRange($startDate = null, $endDate = null): int
+{
+    global $conn;
+    
+    if (is_null($startDate) && is_null($endDate)) {
+        $dateCondition = "AttendanceDate = CAST(GETDATE() AS DATE)";
+        $params = [];
+    }
+
+    elseif (!is_null($startDate) && is_null($endDate)) {
+        $dateCondition = "AttendanceDate = ?";
+        $params = [$startDate];
+    }
+    
+    else {
+        $dateCondition = "AttendanceDate BETWEEN ? AND ?";
+        $params = [$startDate, $endDate];
+    }
+    
+    $sql = "WITH Base AS (
+                SELECT DISTINCT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime
+                FROM dbo.AttendanceMachinePolling
+                WHERE $dateCondition
+            ),
+            CalculatedIO AS (
+                SELECT 
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
+                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
+                FROM Base
+            ),
+            IO AS (
+                SELECT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    CASE 
+                        WHEN AttendanceTime = MinTime THEN 'IN'
+                        WHEN AttendanceTime = MaxTime THEN 'OUT'
+                        ELSE NULL
+                    END AS AttendanceType
+                FROM CalculatedIO
+            )
+            SELECT COUNT(*) AS TotalMasuk
+            FROM IO
+            WHERE AttendanceType = 'IN'";
+
+    $stmt = sqlsrv_query($conn, $sql, $params);
+
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    sqlsrv_free_stmt($stmt);
+
+    return (int)($row['TotalMasuk'] ?? 0);
+}
+
+function getTotalTerlambatHariIni(string $jamMasuk = '07:30:00'): int
+{
+    global $conn;
+    $sql = "WITH Base AS (
+                SELECT DISTINCT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime
+                FROM dbo.AttendanceMachinePolling
+                WHERE AttendanceDate = CAST(GETDATE() AS DATE)
+            ),
+            CalculatedIO AS (
+                SELECT 
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
+                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
+                FROM Base
+            ),
+            IO AS (
+                SELECT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    CASE 
+                        WHEN AttendanceTime = MinTime THEN 'IN'
+                        WHEN AttendanceTime = MaxTime THEN 'OUT'
+                        ELSE NULL
+                    END AS AttendanceType
+                FROM CalculatedIO
+            )
+            SELECT COUNT(*) AS TotalTerlambat
+            FROM IO
+            WHERE AttendanceType = 'IN'
+            AND CAST(AttendanceTime AS TIME) > ? ";
+
+    $stmt = sqlsrv_query($conn, $sql, [$jamMasuk]);
+
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    sqlsrv_free_stmt($stmt);
+
+    return (int)($row['TotalTerlambat'] ?? 0);
+}
+
+
+function getTotalTerlambatByDateRange($startDate = null, $endDate = null, string $jamMasuk = '07:30:00'): int
+{
+    global $conn;
+    
+    if (is_null($startDate) && is_null($endDate)) {
+        $dateCondition = "AttendanceDate = CAST(GETDATE() AS DATE)";
+        $params = [$jamMasuk];
+    } 
+
+    elseif (!is_null($startDate) && is_null($endDate)) {
+        $dateCondition = "AttendanceDate = ?";
+        $params = [$startDate, $jamMasuk];
+    }
+
+    else {
+        $dateCondition = "AttendanceDate BETWEEN ? AND ?";
+        $params = [$startDate, $endDate, $jamMasuk];
+    }
+    
+    $sql = "WITH Base AS (
+                SELECT DISTINCT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime
+                FROM dbo.AttendanceMachinePolling
+                WHERE $dateCondition
+            ),
+            CalculatedIO AS (
+                SELECT 
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
+                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
+                FROM Base
+            ),
+            IO AS (
+                SELECT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    CASE 
+                        WHEN AttendanceTime = MinTime THEN 'IN'
+                        WHEN AttendanceTime = MaxTime THEN 'OUT'
+                        ELSE NULL
+                    END AS AttendanceType
+                FROM CalculatedIO
+            )
+            SELECT COUNT(*) AS TotalTerlambat
+            FROM IO
+            WHERE AttendanceType = 'IN'
+            AND CAST(AttendanceTime AS TIME) > ?";
+
+    $stmt = sqlsrv_query($conn, $sql, $params);
+
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    sqlsrv_free_stmt($stmt);
+
+    return (int)($row['TotalTerlambat'] ?? 0);
 }
 
 function fetchSingleValue($conn, string $sql, array $params): int
@@ -259,13 +441,11 @@ function fetchSingleValue($conn, string $sql, array $params): int
     return (int)($row['total'] ?? 0);
 }
 
-
-
 function countEmployees(): int
 {
     global $conn;
 
-    $tsql   = "SELECT COUNT(*) AS total FROM dbo.karyawan";
+    $tsql   = "SELECT COUNT(*) AS total FROM dbo.karyawan where employee_status IN ('Permanent', 'Contract', 'Probationary')";
     $result = sqlsrv_query($conn, $tsql);
     if ($result === false) {
         die(print_r(sqlsrv_errors(), true));
@@ -278,7 +458,7 @@ function countEmployees(): int
 function countPresentEmployeesToday(): int
 {
     global $conn;
-
+    
     $today = date('Y-m-d');
     $tsql  = "SELECT COUNT(DISTINCT barcode) AS total_present
             FROM dbo.AttendanceMachinePolling

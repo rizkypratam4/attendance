@@ -3,6 +3,22 @@ include __DIR__ . "/../auth/auth.php";
 require_once __DIR__ . '/../layout/a_config.php';
 require __DIR__ . "/../config/database.php";
 require __DIR__ . "../../function.php";
+
+$startDate = $_GET['start_date'] ?? null;
+$endDate   = $_GET['end_date'] ?? null;
+
+$totalTerlambat = getTotalTerlambatHariIni();
+
+if ($startDate && $endDate) {
+    $totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate);
+}
+
+$totalHadir = getTotalHadirHariIni();
+
+if ($startDate && $endDate) {
+    $totalHadir = getTotalHadirByDateRange($startDate, $endDate);
+}
+
 ob_start();
 
 ?>
@@ -23,8 +39,7 @@ ob_start();
                 <input
                     type="date"
                     name="start_date"
-                    class="form-control"
-                    value="<?= $_GET['start_date'] ?? date('Y-m-01') ?>">
+                    class="form-control">
             </div>
 
             <div>
@@ -32,8 +47,7 @@ ob_start();
                 <input
                     type="date"
                     name="end_date"
-                    class="form-control"
-                    value="<?= $_GET['end_date'] ?? date('Y-m-d') ?>">
+                    class="form-control">
             </div>
 
             <button type="submit" class="btn btn-primary">
@@ -79,7 +93,7 @@ ob_start();
 
                 <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
-                 
+                        <?= $totalHadir; ?>
                     </h3>
 
                     <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
@@ -101,7 +115,7 @@ ob_start();
 
                <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
-                    
+                        <?= $totalTerlambat ?>
                     </h3>
 
                     <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">

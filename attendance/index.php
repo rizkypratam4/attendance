@@ -37,6 +37,7 @@
                 <thead>
                     <tr>
                         <th scope="col">No</th>
+                        <th>Barcode</th>
                         <th scope="col">Nama</th>
                         <th scope="col">Attendance Date</th>
                         <th scope="col">Attendance Time</th>
@@ -50,6 +51,7 @@
                     foreach ($attendances as $index => $attendance): ?>
                         <tr>
                             <td><?= $index + 1 ?></td>
+                            <td><?= htmlspecialchars($attendance['barcode']) ?></td>
                             <td><?= htmlspecialchars($attendance['employee_name']) ?></td>
                             <td><?= htmlspecialchars($attendance['AttendanceDate']->format('d-m-Y')) ?></td>
                             <td><?= htmlspecialchars($attendance['AttendanceTime']->format('H:i:s')) ?></td>
