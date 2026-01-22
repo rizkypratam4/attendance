@@ -142,7 +142,7 @@ function getEmployees(): array
 }
 
 # Attendance Functions
-function getAttendances($offset = 0, $limit = 300): array
+function getAttendances($offset = 0, $limit = 500): array
 {
     global $conn;
     $tsql = "WITH Base AS (
@@ -261,7 +261,7 @@ function getTotalHadirByDateRange($startDate = null, $endDate = null): int
         $dateCondition = "AttendanceDate = ?";
         $params = [$startDate];
     }
-    
+
     else {
         $dateCondition = "AttendanceDate BETWEEN ? AND ?";
         $params = [$startDate, $endDate];
@@ -347,7 +347,7 @@ function getTotalTerlambatHariIni(string $jamMasuk = '07:30:00'): int
             SELECT COUNT(*) AS TotalTerlambat
             FROM IO
             WHERE AttendanceType = 'IN'
-            AND CAST(AttendanceTime AS TIME) > ? ";
+            AND CAST(AttendanceTime AS TIME) > ?";  
 
     $stmt = sqlsrv_query($conn, $sql, [$jamMasuk]);
 
@@ -360,7 +360,6 @@ function getTotalTerlambatHariIni(string $jamMasuk = '07:30:00'): int
 
     return (int)($row['TotalTerlambat'] ?? 0);
 }
-
 
 function getTotalTerlambatByDateRange($startDate = null, $endDate = null, string $jamMasuk = '07:30:00'): int
 {
@@ -427,8 +426,49 @@ function getTotalTerlambatByDateRange($startDate = null, $endDate = null, string
     return (int)($row['TotalTerlambat'] ?? 0);
 }
 
-function fetchSingleValue($conn, string $sql, array $params): int
+function getTotalTidakHadirByDateRange($startDate = null, $endDate = null): int
 {
+    global $conn;
+    
+    if (is_null($startDate) && is_null($endDate)) {
+        $dateCondition = "amp2.AttendanceDate = CAST(GETDATE() AS DATE)";
+        $params = [];
+    } 
+
+    elseif (!is_null($startDate) && is_null($endDate)) {
+        $dateCondition = "amp2.AttendanceDate = ?";
+        $params = [$startDate];
+    }
+
+    else {
+        $dateCondition = "amp2.AttendanceDate = ?";
+        $params = [$startDate];
+    }
+    
+    $sql = "WITH SemuaKaryawan2026 AS (
+                SELECT DISTINCT k.barcode
+                FROM dbo.karyawan k
+                INNER JOIN dbo.AttendanceMachinePolling amp ON k.barcode = amp.barcode
+                WHERE k.employee_status IN ('Permanent', 'Contract', 'Probationary')
+                AND YEAR(amp.AttendanceDate) = 2026
+                
+                UNION
+                
+                SELECT DISTINCT amp.barcode
+                FROM dbo.AttendanceMachinePolling amp
+                LEFT JOIN dbo.karyawan k ON amp.barcode = k.barcode
+                WHERE k.barcode IS NULL
+                AND YEAR(amp.AttendanceDate) = 2026
+            ),
+            KaryawanHadirHariIni AS (
+                SELECT DISTINCT amp2.barcode
+                FROM dbo.AttendanceMachinePolling amp2
+                WHERE $dateCondition
+            )
+            SELECT COUNT(*) AS TotalTidakHadir
+            FROM SemuaKaryawan2026 sk
+            WHERE sk.barcode NOT IN (SELECT barcode FROM KaryawanHadirHariIni)";
+
     $stmt = sqlsrv_query($conn, $sql, $params);
 
     if ($stmt === false) {
@@ -438,19 +478,35 @@ function fetchSingleValue($conn, string $sql, array $params): int
     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
     sqlsrv_free_stmt($stmt);
 
-    return (int)($row['total'] ?? 0);
+    return (int)($row['TotalTidakHadir'] ?? 0);
 }
 
 function countEmployees(): int
 {
     global $conn;
 
-    $tsql   = "SELECT COUNT(*) AS total FROM dbo.karyawan where employee_status IN ('Permanent', 'Contract', 'Probationary')";
+    $tsql = "SELECT COUNT(DISTINCT barcode) AS total
+             FROM (
+                SELECT k.barcode
+                FROM dbo.karyawan k
+                INNER JOIN dbo.AttendanceMachinePolling amp ON k.barcode = amp.barcode
+                WHERE k.employee_status IN ('Permanent', 'Contract', 'Probationary')
+                AND YEAR(amp.AttendanceDate) = 2026
+                
+                UNION
+                
+                SELECT amp.barcode
+                FROM dbo.AttendanceMachinePolling amp
+                LEFT JOIN dbo.karyawan k ON amp.barcode = k.barcode
+                WHERE k.barcode IS NULL
+                AND YEAR(amp.AttendanceDate) = 2026
+             ) AS AllEmployees";
+    
     $result = sqlsrv_query($conn, $tsql);
     if ($result === false) {
         die(print_r(sqlsrv_errors(), true));
     }
-    $data   = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
+    $data = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
 
     return (int)$data['total'];
 }

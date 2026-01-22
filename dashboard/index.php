@@ -7,17 +7,14 @@ require __DIR__ . "../../function.php";
 $startDate = $_GET['start_date'] ?? null;
 $endDate   = $_GET['end_date'] ?? null;
 
-$totalTerlambat = getTotalTerlambatHariIni();
-
-if ($startDate && $endDate) {
-    $totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate);
+if (empty($startDate) && empty($endDate)) {
+    $startDate = date('Y-m-d');
+    $endDate   = date('Y-m-d');
 }
 
-$totalHadir = getTotalHadirHariIni();
-
-if ($startDate && $endDate) {
-    $totalHadir = getTotalHadirByDateRange($startDate, $endDate);
-}
+$totalHadir = getTotalHadirByDateRange($startDate, $endDate);
+$totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate);
+$totalTidakHadir = getTotalTidakHadirByDateRange($startDate, $endDate);
 
 ob_start();
 
@@ -55,8 +52,6 @@ ob_start();
             </button>
         </form>
     </div>
-
-
 </div>
 
 <div class="row g-3">
@@ -137,7 +132,7 @@ ob_start();
 
                <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
-                    
+                    <?= $totalTidakHadir ?>
                     </h3>
 
                     <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
@@ -148,8 +143,6 @@ ob_start();
         </div>
     </div>
 </div>
-
-
 
 <div class="row g-3">
     <div class="col-lg-6">
@@ -216,7 +209,6 @@ ob_start();
                         <span class="badge bg-warning d-flex align-items-center">9x</span>
                     </li>
                 </ul>
-
             </div>
         </div>
     </div>
