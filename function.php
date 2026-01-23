@@ -142,7 +142,7 @@ function getEmployees(): array
 }
 
 # Attendance Functions
-function getAttendances($offset = 0, $limit = 500): array
+function getAttendances($offset = 0, $limit = 1000): array
 {
     global $conn;
     $tsql = "WITH Base AS (
@@ -583,3 +583,159 @@ function countPresentEmployeesThisMonth(): int
 
     return (int)$row['total_present'];
 }
+
+function getTrendKehadiran7Hari(): array
+{
+    global $conn;
+    
+    $sql = "WITH Last7Days AS (
+                SELECT CAST(DATEADD(DAY, -6, GETDATE()) AS DATE) AS Date
+                UNION ALL SELECT CAST(DATEADD(DAY, -5, GETDATE()) AS DATE)
+                UNION ALL SELECT CAST(DATEADD(DAY, -4, GETDATE()) AS DATE)
+                UNION ALL SELECT CAST(DATEADD(DAY, -3, GETDATE()) AS DATE)
+                UNION ALL SELECT CAST(DATEADD(DAY, -2, GETDATE()) AS DATE)
+                UNION ALL SELECT CAST(DATEADD(DAY, -1, GETDATE()) AS DATE)
+                UNION ALL SELECT CAST(GETDATE() AS DATE)
+            ),
+            SemuaKaryawan2026 AS (
+                SELECT DISTINCT k.barcode
+                FROM dbo.karyawan k
+                INNER JOIN dbo.AttendanceMachinePolling amp ON k.barcode = amp.barcode
+                WHERE k.employee_status IN ('Permanent', 'Contract', 'Probationary')
+                AND YEAR(amp.AttendanceDate) = 2026
+                
+                UNION
+                
+                SELECT DISTINCT amp.barcode
+                FROM dbo.AttendanceMachinePolling amp
+                LEFT JOIN dbo.karyawan k ON amp.barcode = k.barcode
+                WHERE k.barcode IS NULL
+                AND YEAR(amp.AttendanceDate) = 2026
+            ),
+            KehadiranPerHari AS (
+                SELECT 
+                    l7.Date,
+                    COUNT(DISTINCT amp.barcode) AS TotalHadir
+                FROM Last7Days l7
+                LEFT JOIN dbo.AttendanceMachinePolling amp ON CAST(amp.AttendanceDate AS DATE) = l7.Date
+                GROUP BY l7.Date
+            ),
+            TotalKaryawan AS (
+                SELECT COUNT(*) AS Total FROM SemuaKaryawan2026
+            )
+            SELECT 
+                kph.Date,
+                FORMAT(kph.Date, 'dd MMM', 'id-ID') AS Tanggal,
+                ISNULL(kph.TotalHadir, 0) AS Hadir,
+                (SELECT Total FROM TotalKaryawan) - ISNULL(kph.TotalHadir, 0) AS TidakHadir
+            FROM KehadiranPerHari kph
+            ORDER BY kph.Date";
+    
+    $stmt = sqlsrv_query($conn, $sql);
+    
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+    
+    $data = [];
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $tanggal = $row['Date'];
+        if ($tanggal instanceof DateTime) {
+            $tanggal = $tanggal->format('Y-m-d');
+        }
+        
+        $data[] = [
+            'tanggal' => $row['Tanggal'],
+            'hadir' => (int)$row['Hadir'],
+            'tidak_hadir' => (int)$row['TidakHadir']
+        ];
+    }
+    
+    sqlsrv_free_stmt($stmt);
+    
+    return $data;
+}
+
+function getKaryawanPalingBanyakTerlambat(int $limit = 5, string $startDate = null, string $endDate = null): array
+{
+    global $conn;
+    
+    if (is_null($startDate) && is_null($endDate)) {
+        $dateCondition = "YEAR(AttendanceDate) = 2026";
+        $params = [$limit];
+    }
+    elseif (!is_null($startDate) && is_null($endDate)) {
+        $dateCondition = "AttendanceDate = ?";
+        $params = [$startDate, $limit];
+    }
+    else {
+        $dateCondition = "AttendanceDate BETWEEN ? AND ?";
+        $params = [$startDate, $endDate, $limit];
+    }
+    
+    $sql = "WITH Base AS (
+                SELECT DISTINCT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime
+                FROM dbo.AttendanceMachinePolling
+                WHERE $dateCondition
+            ),
+            CalculatedIO AS (
+                SELECT 
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
+                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
+                FROM Base
+            ),
+            IO AS (
+                SELECT
+                    barcode,
+                    AttendanceDate,
+                    AttendanceTime,
+                    CASE 
+                        WHEN AttendanceTime = MinTime THEN 'IN'
+                        WHEN AttendanceTime = MaxTime THEN 'OUT'
+                        ELSE NULL
+                    END AS AttendanceType
+                FROM CalculatedIO
+            ),
+            Terlambat AS (
+                SELECT 
+                    barcode,
+                    COUNT(*) AS total_terlambat
+                FROM IO
+                WHERE AttendanceType = 'IN'
+                AND CAST(AttendanceTime AS TIME) > '07:30:00'
+                GROUP BY barcode
+            )
+            SELECT TOP (?)
+                t.barcode,
+                ISNULL(k.employee_name, 'TIDAK TERDAFTAR') AS employee_name,
+                ISNULL(k.departement, '-') AS departement,
+                t.total_terlambat
+            FROM Terlambat t
+            LEFT JOIN dbo.karyawan k ON t.barcode = k.barcode
+            ORDER BY t.total_terlambat DESC";
+    
+    $stmt = sqlsrv_query($conn, $sql, $params);
+    
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+    
+    $data = [];
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $data[] = $row;
+    }
+    
+    sqlsrv_free_stmt($stmt);
+    
+    return $data;
+}
+
+
+
+

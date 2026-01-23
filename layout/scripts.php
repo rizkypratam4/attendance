@@ -28,19 +28,12 @@
     });
 </script>
 
-
-
-
-
-
-
-
-  <?php if (isset($_SESSION['swal']['icon'])): ?>
-    <script>
-      Swal.fire({
-        title: '<?= $_SESSION['swal']['title'] ?>',
-        text: '<?= $_SESSION['swal']['text'] ?>',
-        icon: '<?= $_SESSION['swal']['icon'] ?>',
-      });
-    </script>
-  <?php unset($_SESSION['swal']); endif;?>
+<?php if (isset($_SESSION['swal']['icon'])): ?>
+  <script>
+    Swal.fire({
+      title: '<?= $_SESSION['swal']['title'] ?>',
+      text: '<?= $_SESSION['swal']['text'] ?>',
+      icon: '<?= $_SESSION['swal']['icon'] ?>',
+    });
+  </script>
+<?php unset($_SESSION['swal']); endif;?>

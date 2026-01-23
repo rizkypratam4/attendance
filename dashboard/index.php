@@ -16,6 +16,16 @@ $totalHadir = getTotalHadirByDateRange($startDate, $endDate);
 $totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate);
 $totalTidakHadir = getTotalTidakHadirByDateRange($startDate, $endDate);
 
+$trendKehadiran = getTrendKehadiran7Hari();
+
+if ($_GET['start_date'] ?? null) {
+    $karyawanTerlambat = getKaryawanPalingBanyakTerlambat(5, $startDate, $endDate);
+    $periodeLabel = date('d M Y', strtotime($startDate)) . ' - ' . date('d M Y', strtotime($endDate));
+} else {
+    $karyawanTerlambat = getKaryawanPalingBanyakTerlambat(6);
+    $periodeLabel = 'Tahun 2026';
+}
+
 ob_start();
 
 ?>
@@ -29,7 +39,6 @@ ob_start();
             </p>
         </div>
 
-        <!-- Date Range -->
         <form method="GET" class="d-flex align-items-end gap-2">
             <div>
                 <label class="form-label mb-0">Dari</label>
@@ -108,7 +117,7 @@ ob_start();
                     Terlambat
                 </h6>
 
-               <div class="d-flex align-items-center justify-content-between mt-auto">
+                <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
                         <?= $totalTerlambat ?>
                     </h3>
@@ -130,9 +139,9 @@ ob_start();
                     Tidak Hadir
                 </h6>
 
-               <div class="d-flex align-items-center justify-content-between mt-auto">
+                <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
-                    <?= $totalTidakHadir ?>
+                        <?= $totalTidakHadir ?>
                     </h3>
 
                     <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
@@ -184,35 +193,35 @@ ob_start();
         <div class="card shadow-sm h-100">
             <div class="card-body">
                 <h5 class="card-title">Karyawan Paling Banyak Terlambat</h5>
+                <p class="text-muted small mb-3">Data tahun 2026</p>
                 <ul class="list-group list-group-flush mt-3">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <div>
-                            <strong>Andi Pratama</strong><br>
-                            <small class="text-muted">Produksi</small>
-                        </div>
-                        <span class="badge bg-danger d-flex align-items-center">15x</span>
-                    </li>
-
-                    <li class="list-group-item d-flex justify-content-between">
-                        <div>
-                            <strong>Budi Santoso</strong><br>
-                            <small class="text-muted">Gudang</small>
-                        </div>
-                        <span class="badge bg-warning d-flex align-items-center">11x</span>
-                    </li>
-
-                    <li class="list-group-item d-flex justify-content-between">
-                        <div>
-                            <strong>Siti Rahma</strong><br>
-                            <small class="text-muted">HR</small>
-                        </div>
-                        <span class="badge bg-warning d-flex align-items-center">9x</span>
-                    </li>
+                    <?php if (empty($karyawanTerlambat)) : ?>
+                        <li class="list-group-item text-muted text-center">
+                            Tidak ada data keterlambatan
+                        </li>
+                    <?php else : ?>
+                        <?php foreach ($karyawanTerlambat as $kt) : ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong><?= htmlspecialchars($kt['employee_name']) ?></strong><br>
+                                    <small class="text-muted">
+                                        <?= htmlspecialchars($kt['departement'] ?? '-') ?>
+                                    </small>
+                                </div>
+                                <span class="badge <?= (int)$kt['total_terlambat'] >= 10 ? 'bg-danger' : 'bg-warning' ?>">
+                                    <?= (int)$kt['total_terlambat'] ?>x
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
     </div>
 </div>
+
+
+
 
 <?php
 $content = ob_get_clean();
