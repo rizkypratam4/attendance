@@ -85,6 +85,7 @@ $(document).ready(function () {
     $("#edit_id").val($(this).data("id"));
     $("#edit_name").val($(this).data("name"));
     $("#edit_nik").val($(this).data("nik"));
+    $("#edit_branch").val($(this).data("branch"));
     $("#editEmployeeModal").modal("show");
   });
 

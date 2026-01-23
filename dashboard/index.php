@@ -64,7 +64,6 @@ ob_start();
 </div>
 
 <div class="row g-3">
-    <!-- Total Karyawan -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-body d-flex flex-column">
@@ -86,7 +85,6 @@ ob_start();
         </div>
     </div>
 
-    <!-- Hadir -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-body d-flex flex-column">
@@ -108,7 +106,6 @@ ob_start();
         </div>
     </div>
 
-    <!-- Terlambat -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-body d-flex flex-column">
@@ -130,7 +127,6 @@ ob_start();
         </div>
     </div>
 
-    <!-- Tidak Hadir -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-body d-flex flex-column">

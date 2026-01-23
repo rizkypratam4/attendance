@@ -24,6 +24,14 @@ if ($name === '' || $username === '' || $password === '') {
     exit;
 }
 
+if (strlen($username) < 6) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => "Username harus terdiri dari 6 karakter"
+    ]);
+    exit;
+}
+
 $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
 $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
