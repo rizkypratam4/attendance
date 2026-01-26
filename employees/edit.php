@@ -19,6 +19,7 @@
             <label class="form-label">Nama</label>
             <input type="text" name="name" id="edit_name" class="form-control" required>
           </div>
+
           <div class="col-md-6">
             <label class="form-label">NIK</label>
             <input type="text" name="nik" id="edit_nik" class="form-control" required>
@@ -71,7 +72,6 @@
             <label class="form-label">Departement</label>
             <input type="text" name="departement" id="edit_departement" class="form-control" required>
           </div>
-
           <div class="col-md-6">
             <label class="form-label">Position</label>
             <input type="text" name="position" id="edit_position" class="form-control" required>
@@ -113,7 +113,6 @@
             <label class="form-label">Personal Email</label>
             <input type="email" name="personal_email" id="edit_personal_email" class="form-control" required>
           </div>
-
           <div class="col-md-4">
             <label class="form-label">NPWP</label>
             <input type="text" name="npwp" id="edit_npwp" class="form-control" required>
@@ -126,7 +125,6 @@
             <label class="form-label">BPJS Health</label>
             <input type="text" name="bpjs_health" id="edit_bpjs_health" class="form-control" required>
           </div>
-
           <div class="col-md-12">
             <label class="form-label">KTP Number</label>
             <input type="text" name="ktp_number" id="edit_ktp_number" class="form-control" required>
@@ -138,6 +136,7 @@
         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
         <button type="submit" class="btn btn-primary px-4">Simpan</button>
       </div>
+
     </form>
   </div>
 </div>

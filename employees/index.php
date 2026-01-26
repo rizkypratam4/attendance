@@ -39,6 +39,7 @@ ob_start();
                         <th scope="col" class="text-center">No</th>
                         <th scope="col">Nama</th>
                         <th scope="col">Branch</th>
+                        <th scope="col">Location</th>
                         <th scope="col">Jabatan</th>
                         <th scope="col">Status</th>
                         <th scope="col" class="text-center">Action</th>
@@ -52,14 +53,13 @@ ob_start();
                             <td class="text-center"><?= $index + 1 ?></td>
                             <td><?= htmlspecialchars($employee['employee_name']) ?></td>
                             <td><?= htmlspecialchars($employee['branch']) ?></td>
+                            <td><?= htmlspecialchars($employee['location']) ?></td>
                             <td><?= htmlspecialchars($employee['position']) ?></td>
                             <td><?= htmlspecialchars($employee['employee_status']) ?></td>
                             <td class="col-md-2 text-center">
                                 <button
                                     class="btn btn-sm btn-info btn-edit-employee"
-                                    data-id="<?= $employee['barcode']; ?>"
-                                    data-name="<?= htmlspecialchars($employee['employee_name']); ?>"
-                                    data-nik="<?= htmlspecialchars($employee['nik']); ?>"
+                                    data-barcode="<?= $employee['barcode']; ?>"
                                     title="Edit Employee"
                                     >
                                         <i class="ti ti-pencil"></i>

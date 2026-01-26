@@ -130,7 +130,7 @@ function importExcel(
 function getEmployees(): array
 {
     global $conn;
-    $tsql    = "SELECT * FROM dbo.karyawan ORDER BY employee_name ASC";
+    $tsql   = "SELECT * FROM dbo.karyawan ORDER BY employee_name ASC";
     $result = sqlsrv_query($conn, $tsql);
 
     $employees = [];

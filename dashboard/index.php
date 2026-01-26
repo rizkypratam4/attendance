@@ -41,6 +41,14 @@ ob_start();
 
         <form method="GET" class="d-flex align-items-end gap-2">
             <div>
+                <label class="form-label mb-0">Lokasi</label>
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>--- Pilih lokasi ---</option>
+                    <option value="1">CKG</option>
+                    <option value="2">KIP</option>
+                </select>
+            </div>
+            <div>
                 <label class="form-label mb-0">Dari</label>
                 <input
                     type="date"
