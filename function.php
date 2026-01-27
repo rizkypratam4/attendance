@@ -203,14 +203,14 @@ function getAttendances($offset = 0, $limit = 1000): array
 function getAttendanceCTE(string $dateCondition, ?string $locationCondition = null): string
 {
     $whereClause = $dateCondition;
-    
+
     // Jika ada filter location, tambahkan JOIN ke tabel karyawan
     $joinKaryawan = "";
     if ($locationCondition) {
         $joinKaryawan = "INNER JOIN dbo.karyawan k ON Base_Raw.barcode = k.barcode";
         $whereClause .= " AND $locationCondition";
     }
-    
+
     return "WITH Base_Raw AS (
                 SELECT DISTINCT
                     barcode,
@@ -257,7 +257,7 @@ function getAttendanceCTE(string $dateCondition, ?string $locationCondition = nu
 function buildDateCondition($startDate, $endDate, string $tableAlias = ''): array
 {
     $prefix = $tableAlias ? "$tableAlias." : "";
-    
+
     // Validasi dan konversi format tanggal
     if (!is_null($startDate) && !empty($startDate)) {
         $startDate = date('Y-m-d', strtotime($startDate));
@@ -265,21 +265,21 @@ function buildDateCondition($startDate, $endDate, string $tableAlias = ''): arra
     if (!is_null($endDate) && !empty($endDate)) {
         $endDate = date('Y-m-d', strtotime($endDate));
     }
-    
+
     if (is_null($startDate) && is_null($endDate)) {
         return [
             'condition' => "{$prefix}AttendanceDate = CAST(GETDATE() AS DATE)",
             'params' => []
         ];
     }
-    
+
     if (!is_null($startDate) && is_null($endDate)) {
         return [
             'condition' => "{$prefix}AttendanceDate = ?",
             'params' => [$startDate]
         ];
     }
-    
+
     return [
         'condition' => "{$prefix}AttendanceDate BETWEEN ? AND ?",
         'params' => [$startDate, $endDate]
@@ -297,9 +297,9 @@ function buildLocationCondition(?string $location, string $tableAlias = 'k', str
             'params' => []
         ];
     }
-    
+
     $prefix = $tableAlias ? "$tableAlias." : "";
-    
+
     return [
         'condition' => "{$prefix}{$columnName} = ?",
         'params' => [$location]
@@ -312,90 +312,73 @@ function buildLocationCondition(?string $location, string $tableAlias = 'k', str
 function executeQuery(string $sql, array $params = []): array
 {
     global $conn;
-    
+
     $stmt = sqlsrv_query($conn, $sql, $params);
-    
+
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
-    
+
     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
     sqlsrv_free_stmt($stmt);
-    
+
     return $row ?: [];
 }
 
-/**
- * Get total hadir untuk hari ini
- */
 function getTotalHadirHariIni(?string $location = null): int
 {
     return getTotalHadirByDateRange(null, null, $location);
 }
 
-/**
- * Get total hadir berdasarkan date range
- */
+
 function getTotalHadirByDateRange($startDate = null, $endDate = null, ?string $location = null): int
 {
     $dateConfig = buildDateCondition($startDate, $endDate);
     $locationConfig = buildLocationCondition($location);
     $cte = getAttendanceCTE($dateConfig['condition'], $locationConfig['condition']);
-    
-    // Gabungkan params: date + location
+
     $params = array_merge($dateConfig['params'], $locationConfig['params']);
-    
+
     $sql = "$cte
             SELECT COUNT(*) AS TotalMasuk
             FROM IO
             WHERE AttendanceType = 'IN'";
-    
+
     $row = executeQuery($sql, $params);
     return (int)($row['TotalMasuk'] ?? 0);
 }
 
-/**
- * Get total terlambat untuk hari ini
- */
 function getTotalTerlambatHariIni(string $jamMasuk = '07:30:00', ?string $location = null): int
 {
     return getTotalTerlambatByDateRange(null, null, $jamMasuk, $location);
 }
 
-/**
- * Get total terlambat berdasarkan date range
- */
 function getTotalTerlambatByDateRange($startDate = null, $endDate = null, string $jamMasuk = '07:30:00', ?string $location = null): int
 {
     $dateConfig = buildDateCondition($startDate, $endDate);
     $locationConfig = buildLocationCondition($location);
     $cte = getAttendanceCTE($dateConfig['condition'], $locationConfig['condition']);
-    
-    // Gabungkan params: date + location + jamMasuk
+
     $params = array_merge($dateConfig['params'], $locationConfig['params'], [$jamMasuk]);
-    
+
     $sql = "$cte
             SELECT COUNT(*) AS TotalTerlambat
             FROM IO
             WHERE AttendanceType = 'IN'
             AND CAST(AttendanceTime AS TIME) > ?";
-    
+
     $row = executeQuery($sql, $params);
     return (int)($row['TotalTerlambat'] ?? 0);
 }
 
-/**
- * Get total tidak hadir berdasarkan date range
- */
+
 function getTotalTidakHadirByDateRange($startDate = null, $endDate = null, ?string $location = null): int
 {
     $dateConfig = buildDateCondition($startDate, $endDate, 'amp2');
     $locationConfig = buildLocationCondition($location, 'k');
-    
-    // Build location condition untuk SemuaKaryawan2026
+
     $locationWhereSemuaKaryawan = $locationConfig['condition'] ? "AND {$locationConfig['condition']}" : "";
-    
-    // Build location JOIN dan WHERE untuk KaryawanHadirHariIni
+
     $joinKaryawanHadir = "";
     $locationWhereHadir = "";
     if ($locationConfig['condition']) {
@@ -403,26 +386,19 @@ function getTotalTidakHadirByDateRange($startDate = null, $endDate = null, ?stri
         $locationConfigHadir = buildLocationCondition($location, 'k2');
         $locationWhereHadir = "AND {$locationConfigHadir['condition']}";
     }
-    
-    // Params untuk query ini: 
-    // - 1x untuk location di SemuaKaryawan (hanya di bagian pertama UNION yang pakai karyawan)
-    // - 1x untuk date di KaryawanHadir
-    // - 1x untuk location di KaryawanHadir (jika ada)
+
     $params = [];
-    
-    // Untuk SemuaKaryawan2026 - UNION pertama (yang pakai inner join karyawan)
+
     if (!empty($locationConfig['params'])) {
         $params = array_merge($params, $locationConfig['params']);
     }
-    
-    // Untuk KaryawanHadirHariIni - date
+
     $params = array_merge($params, $dateConfig['params']);
-    
-    // Untuk KaryawanHadirHariIni - location
+
     if (!empty($locationConfig['params'])) {
         $params = array_merge($params, $locationConfig['params']);
     }
-    
+
     $sql = "WITH SemuaKaryawan2026 AS (
                 SELECT DISTINCT k.barcode
                 FROM dbo.karyawan k
@@ -449,81 +425,76 @@ function getTotalTidakHadirByDateRange($startDate = null, $endDate = null, ?stri
             SELECT COUNT(*) AS TotalTidakHadir
             FROM SemuaKaryawan2026 sk
             WHERE sk.barcode NOT IN (SELECT barcode FROM KaryawanHadirHariIni)";
-    
+
     $row = executeQuery($sql, $params);
     return (int)($row['TotalTidakHadir'] ?? 0);
 }
 
-/**
- * Helper function untuk build date condition dengan tahun default
- */
 function buildDateConditionWithYear($startDate, $endDate, int $defaultYear = 2026, string $tableAlias = ''): array
 {
     $prefix = $tableAlias ? "$tableAlias." : "";
-    
-    // Validasi dan konversi format tanggal
-    if (!is_null($startDate) && !empty($startDate)) {
+
+    if (empty($startDate)) $startDate = null;
+    if (empty($endDate)) $endDate = null;
+
+    if (!is_null($startDate)) {
         $startDate = date('Y-m-d', strtotime($startDate));
     }
-    if (!is_null($endDate) && !empty($endDate)) {
+    if (!is_null($endDate)) {
         $endDate = date('Y-m-d', strtotime($endDate));
     }
-    
+
     if (is_null($startDate) && is_null($endDate)) {
         return [
             'condition' => "YEAR({$prefix}AttendanceDate) = $defaultYear",
             'params' => []
         ];
     }
-    
+
     if (!is_null($startDate) && is_null($endDate)) {
         return [
             'condition' => "{$prefix}AttendanceDate = ?",
             'params' => [$startDate]
         ];
     }
-    
+
     return [
         'condition' => "{$prefix}AttendanceDate BETWEEN ? AND ?",
         'params' => [$startDate, $endDate]
     ];
 }
 
-/**
- * Helper function untuk fetch multiple rows
- */
+
 function fetchAllRows(string $sql, array $params = []): array
 {
     global $conn;
-    
+
     $stmt = sqlsrv_query($conn, $sql, $params);
-    
+
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
-    
+
     $data = [];
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $data[] = $row;
     }
-    
+
     sqlsrv_free_stmt($stmt);
-    
+
     return $data;
 }
 
-/**
- * Get karyawan yang paling banyak terlambat
- */
-function getKaryawanPalingBanyakTerlambat(int $limit = 5, ?string $startDate = null, ?string $endDate = null, ?string $jamMasuk = '07:30:00', ?string $location = null): array
+
+function getKaryawanPalingBanyakTerlambat(int $limit = 5, ?string $startDate = null, ?string $endDate = null, ?string $jamMasuk = '07:30:00', 
+?string $location = null): array
 {
     $dateConfig = buildDateConditionWithYear($startDate, $endDate);
     $locationConfig = buildLocationCondition($location);
     $cte = getAttendanceCTE($dateConfig['condition'], $locationConfig['condition']);
-    
-    // Gabungkan params: date + location + jamMasuk + limit
+
     $params = array_merge($dateConfig['params'], $locationConfig['params'], [$jamMasuk, $limit]);
-    
+
     $sql = "$cte,
             Terlambat AS (
                 SELECT 
@@ -542,7 +513,38 @@ function getKaryawanPalingBanyakTerlambat(int $limit = 5, ?string $startDate = n
             FROM Terlambat t
             LEFT JOIN dbo.karyawan k ON t.barcode = k.barcode
             ORDER BY t.total_terlambat DESC";
-    
+
+    return fetchAllRows($sql, $params);
+}
+
+function getDepartemenPalingBanyakTerlambat(int $limit = 5, ?string $startDate = null, ?string $endDate = null, 
+?string $jamMasuk = '07:30:00', ?string $location = null): array
+{
+    $dateConfig = buildDateConditionWithYear($startDate, $endDate);
+    $locationConfig = buildLocationCondition($location);
+    $cte = getAttendanceCTE($dateConfig['condition'], $locationConfig['condition']);
+
+    $params = array_merge($dateConfig['params'], $locationConfig['params'], [$jamMasuk, $limit]);
+
+    $sql = "$cte,
+            Terlambat AS (
+                SELECT 
+                    barcode,
+                    COUNT(*) AS total_terlambat
+                FROM IO
+                WHERE AttendanceType = 'IN'
+                AND CAST(AttendanceTime AS TIME) > ?
+                GROUP BY barcode
+            )
+            SELECT TOP (?)
+                ISNULL(k.departement, 'TIDAK TERDAFTAR') AS departement,
+                COUNT(*) AS jumlah_karyawan,
+                SUM(t.total_terlambat) AS total_keterlambatan
+            FROM Terlambat t
+            LEFT JOIN dbo.karyawan k ON t.barcode = k.barcode
+            GROUP BY k.departement
+            ORDER BY total_keterlambatan DESC";
+
     return fetchAllRows($sql, $params);
 }
 

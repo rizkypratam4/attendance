@@ -252,17 +252,26 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+
+// Chart: Departemen dengan Keterlambatan Terbanyak
 document.addEventListener("DOMContentLoaded", function () {
-  const deptCtx = document.getElementById("deptLateChart").getContext("2d");
+  const deptChartElement = document.getElementById("deptLateChart");
+  
+  // Check if element exists and data is available
+  if (!deptChartElement || typeof deptChartData === 'undefined') {
+    return;
+  }
+  
+  const deptCtx = deptChartElement.getContext("2d");
 
   new Chart(deptCtx, {
     type: "bar",
     data: {
-      labels: ["Produksi", "Gudang", "HR", "IT", "Finance"],
+      labels: deptChartData.labels,
       datasets: [
         {
           label: "Jumlah Keterlambatan",
-          data: [42, 31, 18, 9, 6],
+          data: deptChartData.data,
           backgroundColor: "#dc3545",
           borderRadius: 6,
         },
@@ -272,14 +281,19 @@ document.addEventListener("DOMContentLoaded", function () {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: false },
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { stepSize: 5 },
+        legend: { 
+          display: false 
         },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return 'Keterlambatan: ' + context.parsed.y + ' kali';
+            }
+          }
+        }
       },
+    
     },
   });
 });
+  

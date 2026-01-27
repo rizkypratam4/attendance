@@ -17,9 +17,23 @@ $totalHadir = getTotalHadirByDateRange($startDate, $endDate, $location);
 $totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate, '07:30:00', $location);
 $totalTidakHadir = getTotalTidakHadirByDateRange($startDate, $endDate, $location);
 $topTerlambat = getKaryawanPalingBanyakTerlambat(5, $startDate, $endDate, '07:30:00', $location);
+$deptTerlambat = getDepartemenPalingBanyakTerlambat(5, $startDate, $endDate, '07:30:00', $location);
+
+$deptLabels = [];
+$deptData = [];
+foreach ($deptTerlambat as $dept) {
+    $deptLabels[] = $dept['departement'];
+    $deptData[] = (int)$dept['total_keterlambatan'];
+}   
 
 ob_start();
 ?>
+<script>
+    const deptChartData = {
+        labels: <?= json_encode($deptLabels) ?>,
+        data: <?= json_encode($deptData) ?>
+    };
+</script>
 
 <div class="row">
     <div class="col-12 d-flex justify-content-between align-items-end flex-wrap gap-3">
