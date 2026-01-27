@@ -199,75 +199,19 @@ function getAttendances($offset = 0, $limit = 1000): array
 }
 
 # Dashboard Functions
-function getTotalHadirHariIni(): int
+
+function getAttendanceCTE(string $dateCondition, ?string $locationCondition = null): string
 {
-    global $conn;
-    $sql = "WITH Base AS (
-                SELECT DISTINCT
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime
-                FROM dbo.AttendanceMachinePolling
-                WHERE AttendanceDate = CAST(GETDATE() AS DATE)
-            ),
-            CalculatedIO AS (
-                SELECT 
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime,
-                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
-                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
-                FROM Base
-            ),
-            IO AS (
-                SELECT
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime,
-                    CASE 
-                        WHEN AttendanceTime = MinTime THEN 'IN'
-                        WHEN AttendanceTime = MaxTime THEN 'OUT'
-                        ELSE NULL
-                    END AS AttendanceType
-                FROM CalculatedIO
-            )
-            SELECT COUNT(*) AS TotalMasuk
-            FROM IO
-            WHERE AttendanceType = 'IN'";
-
-    $stmt = sqlsrv_query($conn, $sql);
-
-    if ($stmt === false) {
-        die(print_r(sqlsrv_errors(), true));
-    }
-
-    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-    sqlsrv_free_stmt($stmt);
-
-    return (int)($row['TotalMasuk'] ?? 0);
-}
-
-
-function getTotalHadirByDateRange($startDate = null, $endDate = null): int
-{
-    global $conn;
+    $whereClause = $dateCondition;
     
-    if (is_null($startDate) && is_null($endDate)) {
-        $dateCondition = "AttendanceDate = CAST(GETDATE() AS DATE)";
-        $params = [];
-    }
-
-    elseif (!is_null($startDate) && is_null($endDate)) {
-        $dateCondition = "AttendanceDate = ?";
-        $params = [$startDate];
-    }
-
-    else {
-        $dateCondition = "AttendanceDate BETWEEN ? AND ?";
-        $params = [$startDate, $endDate];
+    // Jika ada filter location, tambahkan JOIN ke tabel karyawan
+    $joinKaryawan = "";
+    if ($locationCondition) {
+        $joinKaryawan = "INNER JOIN dbo.karyawan k ON Base_Raw.barcode = k.barcode";
+        $whereClause .= " AND $locationCondition";
     }
     
-    $sql = "WITH Base AS (
+    return "WITH Base_Raw AS (
                 SELECT DISTINCT
                     barcode,
                     AttendanceDate,
@@ -275,6 +219,15 @@ function getTotalHadirByDateRange($startDate = null, $endDate = null): int
                 FROM dbo.AttendanceMachinePolling
                 WHERE $dateCondition
             ),
+            Base AS (
+                SELECT DISTINCT
+                    Base_Raw.barcode,
+                    Base_Raw.AttendanceDate,
+                    Base_Raw.AttendanceTime
+                FROM Base_Raw
+                $joinKaryawan
+                " . ($locationCondition ? "WHERE $locationCondition" : "") . "
+            ),
             CalculatedIO AS (
                 SELECT 
                     barcode,
@@ -295,154 +248,179 @@ function getTotalHadirByDateRange($startDate = null, $endDate = null): int
                         ELSE NULL
                     END AS AttendanceType
                 FROM CalculatedIO
-            )
-            SELECT COUNT(*) AS TotalMasuk
-            FROM IO
-            WHERE AttendanceType = 'IN'";
+            )";
+}
 
+/**
+ * Helper function untuk build date condition dan params
+ */
+function buildDateCondition($startDate, $endDate, string $tableAlias = ''): array
+{
+    $prefix = $tableAlias ? "$tableAlias." : "";
+    
+    // Validasi dan konversi format tanggal
+    if (!is_null($startDate) && !empty($startDate)) {
+        $startDate = date('Y-m-d', strtotime($startDate));
+    }
+    if (!is_null($endDate) && !empty($endDate)) {
+        $endDate = date('Y-m-d', strtotime($endDate));
+    }
+    
+    if (is_null($startDate) && is_null($endDate)) {
+        return [
+            'condition' => "{$prefix}AttendanceDate = CAST(GETDATE() AS DATE)",
+            'params' => []
+        ];
+    }
+    
+    if (!is_null($startDate) && is_null($endDate)) {
+        return [
+            'condition' => "{$prefix}AttendanceDate = ?",
+            'params' => [$startDate]
+        ];
+    }
+    
+    return [
+        'condition' => "{$prefix}AttendanceDate BETWEEN ? AND ?",
+        'params' => [$startDate, $endDate]
+    ];
+}
+
+/**
+ * Helper function untuk build location condition dan params
+ */
+function buildLocationCondition(?string $location, string $tableAlias = 'k', string $columnName = 'location'): array
+{
+    if (empty($location)) {
+        return [
+            'condition' => null,
+            'params' => []
+        ];
+    }
+    
+    $prefix = $tableAlias ? "$tableAlias." : "";
+    
+    return [
+        'condition' => "{$prefix}{$columnName} = ?",
+        'params' => [$location]
+    ];
+}
+
+/**
+ * Helper function untuk execute query
+ */
+function executeQuery(string $sql, array $params = []): array
+{
+    global $conn;
+    
     $stmt = sqlsrv_query($conn, $sql, $params);
-
+    
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
-
+    
     $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
     sqlsrv_free_stmt($stmt);
+    
+    return $row ?: [];
+}
 
+/**
+ * Get total hadir untuk hari ini
+ */
+function getTotalHadirHariIni(?string $location = null): int
+{
+    return getTotalHadirByDateRange(null, null, $location);
+}
+
+/**
+ * Get total hadir berdasarkan date range
+ */
+function getTotalHadirByDateRange($startDate = null, $endDate = null, ?string $location = null): int
+{
+    $dateConfig = buildDateCondition($startDate, $endDate);
+    $locationConfig = buildLocationCondition($location);
+    $cte = getAttendanceCTE($dateConfig['condition'], $locationConfig['condition']);
+    
+    // Gabungkan params: date + location
+    $params = array_merge($dateConfig['params'], $locationConfig['params']);
+    
+    $sql = "$cte
+            SELECT COUNT(*) AS TotalMasuk
+            FROM IO
+            WHERE AttendanceType = 'IN'";
+    
+    $row = executeQuery($sql, $params);
     return (int)($row['TotalMasuk'] ?? 0);
 }
 
-function getTotalTerlambatHariIni(string $jamMasuk = '07:30:00'): int
+/**
+ * Get total terlambat untuk hari ini
+ */
+function getTotalTerlambatHariIni(string $jamMasuk = '07:30:00', ?string $location = null): int
 {
-    global $conn;
-    $sql = "WITH Base AS (
-                SELECT DISTINCT
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime
-                FROM dbo.AttendanceMachinePolling
-                WHERE AttendanceDate = CAST(GETDATE() AS DATE)
-            ),
-            CalculatedIO AS (
-                SELECT 
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime,
-                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
-                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
-                FROM Base
-            ),
-            IO AS (
-                SELECT
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime,
-                    CASE 
-                        WHEN AttendanceTime = MinTime THEN 'IN'
-                        WHEN AttendanceTime = MaxTime THEN 'OUT'
-                        ELSE NULL
-                    END AS AttendanceType
-                FROM CalculatedIO
-            )
-            SELECT COUNT(*) AS TotalTerlambat
-            FROM IO
-            WHERE AttendanceType = 'IN'
-            AND CAST(AttendanceTime AS TIME) > ?";  
-
-    $stmt = sqlsrv_query($conn, $sql, [$jamMasuk]);
-
-    if ($stmt === false) {
-        die(print_r(sqlsrv_errors(), true));
-    }
-
-    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-    sqlsrv_free_stmt($stmt);
-
-    return (int)($row['TotalTerlambat'] ?? 0);
+    return getTotalTerlambatByDateRange(null, null, $jamMasuk, $location);
 }
 
-function getTotalTerlambatByDateRange($startDate = null, $endDate = null, string $jamMasuk = '07:30:00'): int
+/**
+ * Get total terlambat berdasarkan date range
+ */
+function getTotalTerlambatByDateRange($startDate = null, $endDate = null, string $jamMasuk = '07:30:00', ?string $location = null): int
 {
-    global $conn;
+    $dateConfig = buildDateCondition($startDate, $endDate);
+    $locationConfig = buildLocationCondition($location);
+    $cte = getAttendanceCTE($dateConfig['condition'], $locationConfig['condition']);
     
-    if (is_null($startDate) && is_null($endDate)) {
-        $dateCondition = "AttendanceDate = CAST(GETDATE() AS DATE)";
-        $params = [$jamMasuk];
-    } 
-
-    elseif (!is_null($startDate) && is_null($endDate)) {
-        $dateCondition = "AttendanceDate = ?";
-        $params = [$startDate, $jamMasuk];
-    }
-
-    else {
-        $dateCondition = "AttendanceDate BETWEEN ? AND ?";
-        $params = [$startDate, $endDate, $jamMasuk];
-    }
+    // Gabungkan params: date + location + jamMasuk
+    $params = array_merge($dateConfig['params'], $locationConfig['params'], [$jamMasuk]);
     
-    $sql = "WITH Base AS (
-                SELECT DISTINCT
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime
-                FROM dbo.AttendanceMachinePolling
-                WHERE $dateCondition
-            ),
-            CalculatedIO AS (
-                SELECT 
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime,
-                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
-                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
-                FROM Base
-            ),
-            IO AS (
-                SELECT
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime,
-                    CASE 
-                        WHEN AttendanceTime = MinTime THEN 'IN'
-                        WHEN AttendanceTime = MaxTime THEN 'OUT'
-                        ELSE NULL
-                    END AS AttendanceType
-                FROM CalculatedIO
-            )
+    $sql = "$cte
             SELECT COUNT(*) AS TotalTerlambat
             FROM IO
             WHERE AttendanceType = 'IN'
             AND CAST(AttendanceTime AS TIME) > ?";
-
-    $stmt = sqlsrv_query($conn, $sql, $params);
-
-    if ($stmt === false) {
-        die(print_r(sqlsrv_errors(), true));
-    }
-
-    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-    sqlsrv_free_stmt($stmt);
-
+    
+    $row = executeQuery($sql, $params);
     return (int)($row['TotalTerlambat'] ?? 0);
 }
 
-function getTotalTidakHadirByDateRange($startDate = null, $endDate = null): int
+/**
+ * Get total tidak hadir berdasarkan date range
+ */
+function getTotalTidakHadirByDateRange($startDate = null, $endDate = null, ?string $location = null): int
 {
-    global $conn;
+    $dateConfig = buildDateCondition($startDate, $endDate, 'amp2');
+    $locationConfig = buildLocationCondition($location, 'k');
     
-    if (is_null($startDate) && is_null($endDate)) {
-        $dateCondition = "amp2.AttendanceDate = CAST(GETDATE() AS DATE)";
-        $params = [];
-    } 
-
-    elseif (!is_null($startDate) && is_null($endDate)) {
-        $dateCondition = "amp2.AttendanceDate = ?";
-        $params = [$startDate];
+    // Build location condition untuk SemuaKaryawan2026
+    $locationWhereSemuaKaryawan = $locationConfig['condition'] ? "AND {$locationConfig['condition']}" : "";
+    
+    // Build location JOIN dan WHERE untuk KaryawanHadirHariIni
+    $joinKaryawanHadir = "";
+    $locationWhereHadir = "";
+    if ($locationConfig['condition']) {
+        $joinKaryawanHadir = "INNER JOIN dbo.karyawan k2 ON amp2.barcode = k2.barcode";
+        $locationConfigHadir = buildLocationCondition($location, 'k2');
+        $locationWhereHadir = "AND {$locationConfigHadir['condition']}";
     }
-
-    else {
-        $dateCondition = "amp2.AttendanceDate = ?";
-        $params = [$startDate];
+    
+    // Params untuk query ini: 
+    // - 1x untuk location di SemuaKaryawan (hanya di bagian pertama UNION yang pakai karyawan)
+    // - 1x untuk date di KaryawanHadir
+    // - 1x untuk location di KaryawanHadir (jika ada)
+    $params = [];
+    
+    // Untuk SemuaKaryawan2026 - UNION pertama (yang pakai inner join karyawan)
+    if (!empty($locationConfig['params'])) {
+        $params = array_merge($params, $locationConfig['params']);
+    }
+    
+    // Untuk KaryawanHadirHariIni - date
+    $params = array_merge($params, $dateConfig['params']);
+    
+    // Untuk KaryawanHadirHariIni - location
+    if (!empty($locationConfig['params'])) {
+        $params = array_merge($params, $locationConfig['params']);
     }
     
     $sql = "WITH SemuaKaryawan2026 AS (
@@ -451,6 +429,7 @@ function getTotalTidakHadirByDateRange($startDate = null, $endDate = null): int
                 INNER JOIN dbo.AttendanceMachinePolling amp ON k.barcode = amp.barcode
                 WHERE k.employee_status IN ('Permanent', 'Contract', 'Probationary')
                 AND YEAR(amp.AttendanceDate) = 2026
+                $locationWhereSemuaKaryawan
                 
                 UNION
                 
@@ -463,22 +442,108 @@ function getTotalTidakHadirByDateRange($startDate = null, $endDate = null): int
             KaryawanHadirHariIni AS (
                 SELECT DISTINCT amp2.barcode
                 FROM dbo.AttendanceMachinePolling amp2
-                WHERE $dateCondition
+                $joinKaryawanHadir
+                WHERE {$dateConfig['condition']}
+                $locationWhereHadir
             )
             SELECT COUNT(*) AS TotalTidakHadir
             FROM SemuaKaryawan2026 sk
             WHERE sk.barcode NOT IN (SELECT barcode FROM KaryawanHadirHariIni)";
+    
+    $row = executeQuery($sql, $params);
+    return (int)($row['TotalTidakHadir'] ?? 0);
+}
 
+/**
+ * Helper function untuk build date condition dengan tahun default
+ */
+function buildDateConditionWithYear($startDate, $endDate, int $defaultYear = 2026, string $tableAlias = ''): array
+{
+    $prefix = $tableAlias ? "$tableAlias." : "";
+    
+    // Validasi dan konversi format tanggal
+    if (!is_null($startDate) && !empty($startDate)) {
+        $startDate = date('Y-m-d', strtotime($startDate));
+    }
+    if (!is_null($endDate) && !empty($endDate)) {
+        $endDate = date('Y-m-d', strtotime($endDate));
+    }
+    
+    if (is_null($startDate) && is_null($endDate)) {
+        return [
+            'condition' => "YEAR({$prefix}AttendanceDate) = $defaultYear",
+            'params' => []
+        ];
+    }
+    
+    if (!is_null($startDate) && is_null($endDate)) {
+        return [
+            'condition' => "{$prefix}AttendanceDate = ?",
+            'params' => [$startDate]
+        ];
+    }
+    
+    return [
+        'condition' => "{$prefix}AttendanceDate BETWEEN ? AND ?",
+        'params' => [$startDate, $endDate]
+    ];
+}
+
+/**
+ * Helper function untuk fetch multiple rows
+ */
+function fetchAllRows(string $sql, array $params = []): array
+{
+    global $conn;
+    
     $stmt = sqlsrv_query($conn, $sql, $params);
-
+    
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
-
-    $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    
+    $data = [];
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $data[] = $row;
+    }
+    
     sqlsrv_free_stmt($stmt);
+    
+    return $data;
+}
 
-    return (int)($row['TotalTidakHadir'] ?? 0);
+/**
+ * Get karyawan yang paling banyak terlambat
+ */
+function getKaryawanPalingBanyakTerlambat(int $limit = 5, ?string $startDate = null, ?string $endDate = null, ?string $jamMasuk = '07:30:00', ?string $location = null): array
+{
+    $dateConfig = buildDateConditionWithYear($startDate, $endDate);
+    $locationConfig = buildLocationCondition($location);
+    $cte = getAttendanceCTE($dateConfig['condition'], $locationConfig['condition']);
+    
+    // Gabungkan params: date + location + jamMasuk + limit
+    $params = array_merge($dateConfig['params'], $locationConfig['params'], [$jamMasuk, $limit]);
+    
+    $sql = "$cte,
+            Terlambat AS (
+                SELECT 
+                    barcode,
+                    COUNT(*) AS total_terlambat
+                FROM IO
+                WHERE AttendanceType = 'IN'
+                AND CAST(AttendanceTime AS TIME) > ?
+                GROUP BY barcode
+            )
+            SELECT TOP (?)
+                t.barcode,
+                ISNULL(k.employee_name, 'TIDAK TERDAFTAR') AS employee_name,
+                ISNULL(k.departement, '-') AS departement,
+                t.total_terlambat
+            FROM Terlambat t
+            LEFT JOIN dbo.karyawan k ON t.barcode = k.barcode
+            ORDER BY t.total_terlambat DESC";
+    
+    return fetchAllRows($sql, $params);
 }
 
 function countEmployees(): int
@@ -501,7 +566,7 @@ function countEmployees(): int
                 WHERE k.barcode IS NULL
                 AND YEAR(amp.AttendanceDate) = 2026
              ) AS AllEmployees";
-    
+
     $result = sqlsrv_query($conn, $tsql);
     if ($result === false) {
         die(print_r(sqlsrv_errors(), true));
@@ -514,7 +579,7 @@ function countEmployees(): int
 function countPresentEmployeesToday(): int
 {
     global $conn;
-    
+
     $today = date('Y-m-d');
     $tsql  = "SELECT COUNT(DISTINCT barcode) AS total_present
             FROM dbo.AttendanceMachinePolling
@@ -587,7 +652,7 @@ function countPresentEmployeesThisMonth(): int
 function getTrendKehadiran7Hari(): array
 {
     global $conn;
-    
+
     $sql = "WITH Last7Days AS (
                 SELECT CAST(DATEADD(DAY, -6, GETDATE()) AS DATE) AS Date
                 UNION ALL SELECT CAST(DATEADD(DAY, -5, GETDATE()) AS DATE)
@@ -630,112 +695,28 @@ function getTrendKehadiran7Hari(): array
                 (SELECT Total FROM TotalKaryawan) - ISNULL(kph.TotalHadir, 0) AS TidakHadir
             FROM KehadiranPerHari kph
             ORDER BY kph.Date";
-    
+
     $stmt = sqlsrv_query($conn, $sql);
-    
+
     if ($stmt === false) {
         die(print_r(sqlsrv_errors(), true));
     }
-    
+
     $data = [];
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $tanggal = $row['Date'];
         if ($tanggal instanceof DateTime) {
             $tanggal = $tanggal->format('Y-m-d');
         }
-        
+
         $data[] = [
             'tanggal' => $row['Tanggal'],
             'hadir' => (int)$row['Hadir'],
             'tidak_hadir' => (int)$row['TidakHadir']
         ];
     }
-    
+
     sqlsrv_free_stmt($stmt);
-    
+
     return $data;
 }
-
-function getKaryawanPalingBanyakTerlambat(int $limit = 5, string $startDate = null, string $endDate = null): array
-{
-    global $conn;
-    
-    if (is_null($startDate) && is_null($endDate)) {
-        $dateCondition = "YEAR(AttendanceDate) = 2026";
-        $params = [$limit];
-    }
-    elseif (!is_null($startDate) && is_null($endDate)) {
-        $dateCondition = "AttendanceDate = ?";
-        $params = [$startDate, $limit];
-    }
-    else {
-        $dateCondition = "AttendanceDate BETWEEN ? AND ?";
-        $params = [$startDate, $endDate, $limit];
-    }
-    
-    $sql = "WITH Base AS (
-                SELECT DISTINCT
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime
-                FROM dbo.AttendanceMachinePolling
-                WHERE $dateCondition
-            ),
-            CalculatedIO AS (
-                SELECT 
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime,
-                    MIN(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MinTime,
-                    MAX(AttendanceTime) OVER(PARTITION BY barcode, AttendanceDate) as MaxTime
-                FROM Base
-            ),
-            IO AS (
-                SELECT
-                    barcode,
-                    AttendanceDate,
-                    AttendanceTime,
-                    CASE 
-                        WHEN AttendanceTime = MinTime THEN 'IN'
-                        WHEN AttendanceTime = MaxTime THEN 'OUT'
-                        ELSE NULL
-                    END AS AttendanceType
-                FROM CalculatedIO
-            ),
-            Terlambat AS (
-                SELECT 
-                    barcode,
-                    COUNT(*) AS total_terlambat
-                FROM IO
-                WHERE AttendanceType = 'IN'
-                AND CAST(AttendanceTime AS TIME) > '07:30:00'
-                GROUP BY barcode
-            )
-            SELECT TOP (?)
-                t.barcode,
-                ISNULL(k.employee_name, 'TIDAK TERDAFTAR') AS employee_name,
-                ISNULL(k.departement, '-') AS departement,
-                t.total_terlambat
-            FROM Terlambat t
-            LEFT JOIN dbo.karyawan k ON t.barcode = k.barcode
-            ORDER BY t.total_terlambat DESC";
-    
-    $stmt = sqlsrv_query($conn, $sql, $params);
-    
-    if ($stmt === false) {
-        die(print_r(sqlsrv_errors(), true));
-    }
-    
-    $data = [];
-    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        $data[] = $row;
-    }
-    
-    sqlsrv_free_stmt($stmt);
-    
-    return $data;
-}
-
-
-
-

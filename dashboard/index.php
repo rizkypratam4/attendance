@@ -4,30 +4,21 @@ require_once __DIR__ . '/../layout/a_config.php';
 require __DIR__ . "/../config/database.php";
 require __DIR__ . "../../function.php";
 
+$location = $_GET['location'] ?? null;
 $startDate = $_GET['start_date'] ?? null;
-$endDate   = $_GET['end_date'] ?? null;
+$endDate = $_GET['end_date'] ?? null;
 
-if (empty($startDate) && empty($endDate)) {
-    $startDate = date('Y-m-d');
-    $endDate   = date('Y-m-d');
-}
+if (empty($location)) $location = null;
+if (empty($startDate)) $startDate = null;
+if (empty($endDate)) $endDate = null;
 
-$totalHadir = getTotalHadirByDateRange($startDate, $endDate);
-$totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate);
-$totalTidakHadir = getTotalTidakHadirByDateRange($startDate, $endDate);
-
-$trendKehadiran = getTrendKehadiran7Hari();
-
-if ($_GET['start_date'] ?? null) {
-    $karyawanTerlambat = getKaryawanPalingBanyakTerlambat(5, $startDate, $endDate);
-    $periodeLabel = date('d M Y', strtotime($startDate)) . ' - ' . date('d M Y', strtotime($endDate));
-} else {
-    $karyawanTerlambat = getKaryawanPalingBanyakTerlambat(6);
-    $periodeLabel = 'Tahun 2026';
-}
+$totalKaryawan = countEmployees($location);
+$totalHadir = getTotalHadirByDateRange($startDate, $endDate, $location);
+$totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate, '07:30:00', $location);
+$totalTidakHadir = getTotalTidakHadirByDateRange($startDate, $endDate, $location);
+$topTerlambat = getKaryawanPalingBanyakTerlambat(5, $startDate, $endDate, '07:30:00', $location);
 
 ob_start();
-
 ?>
 
 <div class="row">
@@ -42,18 +33,20 @@ ob_start();
         <form method="GET" class="d-flex align-items-end gap-2">
             <div>
                 <label class="form-label mb-0">Lokasi</label>
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>--- Pilih lokasi ---</option>
-                    <option value="1">CKG</option>
-                    <option value="2">KIP</option>
+                <select class="form-select" name="location" aria-label="Default select example">
+                    <option value="">Semua Lokasi</option>
+                    <option value="CKG" <?= ($location === 'CKG') ? 'selected' : '' ?>>CKG</option>
+                    <option value="KIP" <?= ($location === 'KIP') ? 'selected' : '' ?>>KIP</option>
                 </select>
             </div>
+            
             <div>
                 <label class="form-label mb-0">Dari</label>
                 <input
                     type="date"
                     name="start_date"
-                    class="form-control">
+                    class="form-control"
+                    value="<?= htmlspecialchars($startDate ?? '') ?>">
             </div>
 
             <div>
@@ -61,17 +54,25 @@ ob_start();
                 <input
                     type="date"
                     name="end_date"
-                    class="form-control">
+                    class="form-control"
+                    value="<?= htmlspecialchars($endDate?? '') ?>">
             </div>
 
             <button type="submit" class="btn btn-primary">
-                Filter
+                <i class="ti ti-filter"></i> Filter
             </button>
+            
+            <?php if ($startDate || $endDate || $location): ?>
+                <a href="<?= $_SERVER['PHP_SELF'] ?>" class="btn btn-secondary">
+                    <i class="ti ti-x"></i> Reset
+                </a>
+            <?php endif; ?>
         </form>
     </div>
 </div>
 
 <div class="row g-3">
+    <!-- Total Karyawan -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-body d-flex flex-column">
@@ -82,7 +83,7 @@ ob_start();
 
                 <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
-                        <?= countEmployees(); ?>
+                        <?= $totalKaryawan ?>
                     </h3>
 
                     <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
@@ -93,6 +94,7 @@ ob_start();
         </div>
     </div>
 
+    <!-- Hadir -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-body d-flex flex-column">
@@ -103,7 +105,7 @@ ob_start();
 
                 <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
-                        <?= $totalHadir; ?>
+                        <?= $totalHadir ?>
                     </h3>
 
                     <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
@@ -114,6 +116,7 @@ ob_start();
         </div>
     </div>
 
+    <!-- Terlambat -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-body d-flex flex-column">
@@ -122,7 +125,7 @@ ob_start();
                     Terlambat
                 </h6>
 
-                <div class="d-flex align-items-center justify-content-between mt-auto">
+               <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
                         <?= $totalTerlambat ?>
                     </h3>
@@ -135,6 +138,7 @@ ob_start();
         </div>
     </div>
 
+    <!-- Tidak Hadir -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-body d-flex flex-column">
@@ -143,12 +147,14 @@ ob_start();
                     Tidak Hadir
                 </h6>
 
-                <div class="d-flex align-items-center justify-content-between mt-auto">
+               <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
                         <?= $totalTidakHadir ?>
                     </h3>
 
-                    <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
+                    <a href="tidak_hadir.php?start_date=<?= $startDate ?>&end_date=<?= $endDate ?>&location=<?= $location ?>" 
+                       class="text-muted mt-2" 
+                       title="Lihat Detail">
                         <i class="ti ti-arrow-right fs-7"></i>
                     </a>
                 </div>
@@ -157,6 +163,7 @@ ob_start();
     </div>
 </div>
 
+<!-- Charts -->
 <div class="row g-3">
     <div class="col-lg-6">
         <div class="card shadow-sm h-100">
@@ -197,14 +204,28 @@ ob_start();
         <div class="card shadow-sm h-100">
             <div class="card-body">
                 <h5 class="card-title">Karyawan Paling Banyak Terlambat</h5>
-                <p class="text-muted small mb-3">Data tahun 2026</p>
+                <p class="text-muted small mb-3">
+                    <?php if ($startDate || $endDate || $location): ?>
+                        <div class="alert alert-info mt-3">
+                            <strong>Filter Aktif:</strong>
+                            <?php if ($location): ?>
+                                Lokasi: <strong><?= htmlspecialchars($location) ?></strong>
+                            <?php endif; ?>
+                            <?php if ($startDate && $endDate): ?>
+                                | Periode: <strong><?= date('d/m/Y', strtotime($startDate)) ?></strong> - <strong><?= date('d/m/Y', strtotime($endDate)) ?></strong>
+                            <?php elseif ($startDate): ?>
+                                | Tanggal: <strong><?= date('d/m/Y', strtotime($startDate)) ?></strong>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </p>
                 <ul class="list-group list-group-flush mt-3">
-                    <?php if (empty($karyawanTerlambat)) : ?>
+                    <?php if (empty($topTerlambat)) : ?>
                         <li class="list-group-item text-muted text-center">
                             Tidak ada data keterlambatan
                         </li>
                     <?php else : ?>
-                        <?php foreach ($karyawanTerlambat as $kt) : ?>
+                        <?php foreach ($topTerlambat as $kt) : ?>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong><?= htmlspecialchars($kt['employee_name']) ?></strong><br>
@@ -224,9 +245,19 @@ ob_start();
     </div>
 </div>
 
-
-
+<!-- Pass data ke JavaScript -->
+<script>
+    window.dashboardData = {
+        trend: <?= json_encode($trendKehadiran) ?>,
+        today: {
+            hadir: <?= $totalHadir ?>,
+            terlambat: <?= $totalTerlambat ?>,
+            tidakHadir: <?= $totalTidakHadir ?>
+        }
+    };
+</script>
 
 <?php
 $content = ob_get_clean();
 include __DIR__ . '/../layout/main.php';
+?>
