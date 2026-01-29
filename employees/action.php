@@ -23,17 +23,7 @@ if (isset($_POST['import'])) {
                 'end_effective_date' => 13,
                 'religion' => 14,
                 'gender' => 15,
-                'marital_status' => 16,
-                'place_of_birth' => 17,
-                'date_of_birth' => 18,
-                'address' => 19,
-                'phone' => 20,
-                'office_email' => 21,
-                'personal_email' => 22,
-                'npwp' => 23,
-                'bpjs_tk' => 24,
-                'bpjs_health' => 25,
-                'ktp_number' => 26,
+                'personal_email' => 16,
             ]
         );
 

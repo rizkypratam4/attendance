@@ -5,26 +5,43 @@ require __DIR__ . "/../config/database.php";
 require __DIR__ . "../../function.php";
 
 $location = $_GET['location'] ?? null;
+$shift = $_GET['shift'] ?? null;
 $startDate = $_GET['start_date'] ?? null;
 $endDate = $_GET['end_date'] ?? null;
 
 if (empty($location)) $location = null;
+if (empty($shift)) $shift = null;
 if (empty($startDate)) $startDate = null;
 if (empty($endDate)) $endDate = null;
 
-$totalKaryawan = countEmployees($location);
-$totalHadir = getTotalHadirByDateRange($startDate, $endDate, $location);
-$totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate, '07:30:00', $location);
-$totalTidakHadir = getTotalTidakHadirByDateRange($startDate, $endDate, $location);
-$topTerlambat = getKaryawanPalingBanyakTerlambat(5, $startDate, $endDate, '07:30:00', $location);
-$deptTerlambat = getDepartemenPalingBanyakTerlambat(5, $startDate, $endDate, '07:30:00', $location);
+// Validasi shift berdasarkan lokasi
+if ($location === 'CKG' && $shift !== 'Shift 1' && !empty($shift)) {
+    $shift = null;
+}
+
+$totalKaryawan = countEmployees($startDate, $endDate, $location);
+$totalHadir = getTotalHadirByDateRange($startDate, $endDate, $location, $shift);
+$totalTerlambat = getTotalTerlambatByDateRange($startDate, $endDate, null, $location, $shift);
+$totalTidakHadir = getTotalTidakHadirByDateRange($startDate, $endDate, $location, $shift);
+$totalEmployees = countEmployees($startDate, $endDate, $location, $shift);
+$topTerlambat = getKaryawanPalingBanyakTerlambat(5, $startDate, $endDate, null, $location, $shift);
+$deptTerlambat = getDepartemenPalingBanyakTerlambat(10, $startDate, $endDate, null, $location, $shift);
 
 $deptLabels = [];
 $deptData = [];
 foreach ($deptTerlambat as $dept) {
     $deptLabels[] = $dept['departement'];
     $deptData[] = (int)$dept['total_keterlambatan'];
-}   
+}
+
+$jamMasukYangDigunakan = getJamMasuk($location, $shift, $startDate);
+
+$queryString = http_build_query([
+    'location' => $location,
+    'shift' => $shift,
+    'start_date' => $startDate,
+    'end_date' => $endDate
+]);
 
 ob_start();
 ?>
@@ -47,13 +64,23 @@ ob_start();
         <form method="GET" class="d-flex align-items-end gap-2">
             <div>
                 <label class="form-label mb-0">Lokasi</label>
-                <select class="form-select" name="location" aria-label="Default select example">
+                <select class="form-select" name="location" id="locationSelect" aria-label="Select location">
                     <option value="">Semua Lokasi</option>
                     <option value="CKG" <?= ($location === 'CKG') ? 'selected' : '' ?>>CKG</option>
                     <option value="KIP" <?= ($location === 'KIP') ? 'selected' : '' ?>>KIP</option>
                 </select>
             </div>
-            
+
+            <div>
+                <label class="form-label mb-0">Shift</label>
+                <select class="form-select" name="shift" id="shiftSelect" aria-label="Select shift">
+                    <option value="">Semua Shift</option>
+                    <option value="Shift 1" <?= ($shift === 'Shift 1') ? 'selected' : '' ?>>Shift 1</option>
+                    <option value="Shift 2" <?= ($shift === 'Shift 2') ? 'selected' : '' ?> class="kip-only">Shift 2</option>
+                    <option value="Shift 3" <?= ($shift === 'Shift 3') ? 'selected' : '' ?> class="kip-only">Shift 3</option>
+                </select>
+            </div>
+
             <div>
                 <label class="form-label mb-0">Dari</label>
                 <input
@@ -69,14 +96,14 @@ ob_start();
                     type="date"
                     name="end_date"
                     class="form-control"
-                    value="<?= htmlspecialchars($endDate?? '') ?>">
+                    value="<?= htmlspecialchars($endDate ?? '') ?>">
             </div>
 
             <button type="submit" class="btn btn-primary">
                 <i class="ti ti-filter"></i> Filter
             </button>
-            
-            <?php if ($startDate || $endDate || $location): ?>
+
+            <?php if ($startDate || $endDate || $location || $shift): ?>
                 <a href="<?= $_SERVER['PHP_SELF'] ?>" class="btn btn-secondary">
                     <i class="ti ti-x"></i> Reset
                 </a>
@@ -85,7 +112,30 @@ ob_start();
     </div>
 </div>
 
-<div class="row g-3">
+<!-- Informasi Filter Aktif -->
+<?php if ($location || $shift || $startDate || $endDate): ?>
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <strong><i class="ti ti-info-circle"></i> Filter Aktif:</strong>
+            <?php if ($location): ?>
+                Lokasi: <strong><?= htmlspecialchars($location) ?></strong>
+            <?php endif; ?>
+            <?php if ($shift): ?>
+                | Shift: <strong><?= htmlspecialchars($shift) ?></strong>
+                (Jam Masuk: <strong><?= substr($jamMasukYangDigunakan, 0, 5) ?></strong>)
+            <?php endif; ?>
+            <?php if ($startDate && $endDate): ?>
+                | Periode: <strong><?= date('d/m/Y', strtotime($startDate)) ?></strong> - <strong><?= date('d/m/Y', strtotime($endDate)) ?></strong>
+            <?php elseif ($startDate): ?>
+                | Tanggal: <strong><?= date('d/m/Y', strtotime($startDate)) ?></strong>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<div class="row g-3 mt-2">
     <!-- Total Karyawan -->
     <div class="col-xl-3 col-md-6">
         <div class="card shadow-sm h-100">
@@ -100,7 +150,7 @@ ob_start();
                         <?= $totalKaryawan ?>
                     </h3>
 
-                    <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
+                    <a href="employees?<?= $queryString ?>" class="text-muted mt-2" title="Lihat Detail">
                         <i class="ti ti-arrow-right fs-7"></i>
                     </a>
                 </div>
@@ -122,7 +172,7 @@ ob_start();
                         <?= $totalHadir ?>
                     </h3>
 
-                    <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
+                    <a href="hadir?<?= $queryString ?>" class="text-muted mt-2" title="Lihat Detail">
                         <i class="ti ti-arrow-right fs-7"></i>
                     </a>
                 </div>
@@ -139,12 +189,12 @@ ob_start();
                     Terlambat
                 </h6>
 
-               <div class="d-flex align-items-center justify-content-between mt-auto">
+                <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
                         <?= $totalTerlambat ?>
                     </h3>
 
-                    <a href="employees.php" class="text-muted mt-2" title="Lihat Detail">
+                    <a href="terlambat?<?= $queryString ?>" class="text-muted mt-2" title="Lihat Detail">
                         <i class="ti ti-arrow-right fs-7"></i>
                     </a>
                 </div>
@@ -161,14 +211,14 @@ ob_start();
                     Tidak Hadir
                 </h6>
 
-               <div class="d-flex align-items-center justify-content-between mt-auto">
+                <div class="d-flex align-items-center justify-content-between mt-auto">
                     <h3 class="fw-bold mb-0">
                         <?= $totalTidakHadir ?>
                     </h3>
 
-                    <a href="tidak_hadir.php?start_date=<?= $startDate ?>&end_date=<?= $endDate ?>&location=<?= $location ?>" 
-                       class="text-muted mt-2" 
-                       title="Lihat Detail">
+                    <a href="tidak_hadir?<?= $queryString ?>"
+                        class="text-muted mt-2"
+                        title="Lihat Detail">
                         <i class="ti ti-arrow-right fs-7"></i>
                     </a>
                 </div>
@@ -178,7 +228,7 @@ ob_start();
 </div>
 
 <!-- Charts -->
-<div class="row g-3">
+<div class="row g-3 mt-2">
     <div class="col-lg-6">
         <div class="card shadow-sm h-100">
             <div class="card-body">
@@ -202,7 +252,7 @@ ob_start();
     </div>
 </div>
 
-<div class="row g-3">
+<div class="row g-3 mt-2">
     <div class="col-lg-6">
         <div class="card shadow-sm h-100">
             <div class="card-body">
@@ -218,21 +268,6 @@ ob_start();
         <div class="card shadow-sm h-100">
             <div class="card-body">
                 <h5 class="card-title">Karyawan Paling Banyak Terlambat</h5>
-                <p class="text-muted small mb-3">
-                    <?php if ($startDate || $endDate || $location): ?>
-                        <div class="alert alert-info mt-3">
-                            <strong>Filter Aktif:</strong>
-                            <?php if ($location): ?>
-                                Lokasi: <strong><?= htmlspecialchars($location) ?></strong>
-                            <?php endif; ?>
-                            <?php if ($startDate && $endDate): ?>
-                                | Periode: <strong><?= date('d/m/Y', strtotime($startDate)) ?></strong> - <strong><?= date('d/m/Y', strtotime($endDate)) ?></strong>
-                            <?php elseif ($startDate): ?>
-                                | Tanggal: <strong><?= date('d/m/Y', strtotime($startDate)) ?></strong>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                </p>
                 <ul class="list-group list-group-flush mt-3">
                     <?php if (empty($topTerlambat)) : ?>
                         <li class="list-group-item text-muted text-center">
@@ -262,13 +297,45 @@ ob_start();
 <!-- Pass data ke JavaScript -->
 <script>
     window.dashboardData = {
-        trend: <?= json_encode($trendKehadiran) ?>,
+        trend: <?= json_encode($trendKehadiran ?? []) ?>,
         today: {
             hadir: <?= $totalHadir ?>,
             terlambat: <?= $totalTerlambat ?>,
             tidakHadir: <?= $totalTidakHadir ?>
         }
     };
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const locationSelect = document.getElementById('locationSelect');
+    const shiftSelect = document.getElementById('shiftSelect');
+    
+    function updateShiftOptions() {
+        const selectedLocation = locationSelect.value;
+        const kipOnlyOptions = shiftSelect.querySelectorAll('.kip-only');
+        
+        if (selectedLocation === 'CKG') {
+            kipOnlyOptions.forEach(option => {
+                option.disabled = true;
+                option.style.display = 'none';  
+            });
+            
+            if (shiftSelect.value === 'Shift 2' || shiftSelect.value === 'Shift 3') {
+                shiftSelect.value = '';
+            }
+        } else {
+            kipOnlyOptions.forEach(option => {
+                option.disabled = false;
+                option.style.display = '';
+            });
+        }
+    }
+    
+    updateShiftOptions();
+    
+    locationSelect.addEventListener('change', updateShiftOptions);
+});
 </script>
 
 <?php

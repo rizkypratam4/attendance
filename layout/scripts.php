@@ -28,6 +28,18 @@
     });
 </script>
 
+<script>
+    $(function () {
+        $('#detailHadirTable').DataTable();
+    });
+</script>
+
+<script>
+    $(function () {
+        $('#detailTerlambatTable').DataTable();
+    });
+</script>
+
 <?php if (isset($_SESSION['swal']['icon'])): ?>
   <script>
     Swal.fire({
