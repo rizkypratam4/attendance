@@ -1,0 +1,42 @@
+<?php
+
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BranchController;
+use App\Http\Controllers\CalenderViewController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EmployeeScheduleController;
+use App\Http\Controllers\FingerprintLogController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\ProcessAttendanceController;
+use App\Http\Controllers\ShiftDayRuleController;
+use App\Http\Controllers\ShiftDefinitionController;
+use App\Http\Controllers\ShiftGroupController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', [AuthController::class, 'index'])->name('login');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+
+    Route::resources([
+        'locations' => LocationController::class,
+        'departments' => DepartmentController::class,
+        'branches' => BranchController::class,
+        'users' => UserController::class,
+        'employees' => EmployeeController::class,
+        'shift_groups' => ShiftGroupController::class,
+        'shift_definitions' => ShiftDefinitionController::class,
+        'shift_day_rules' => ShiftDayRuleController::class,
+        'fingerprint_logs' => FingerprintLogController::class,
+        'process_attendances' => ProcessAttendanceController::class,
+        'employee_schedules' => EmployeeScheduleController::class,
+        'calender_views' => CalenderViewController::class
+    ]);
+});
