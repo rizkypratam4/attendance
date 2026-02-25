@@ -20,4 +20,14 @@ class Location extends Model
         'longitude' => 'float',
         'is_active' => 'boolean',
     ];
+
+    public function branches()
+    {
+        return $this->hasMany(Branch::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
 }
