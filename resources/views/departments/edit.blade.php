@@ -1,11 +1,11 @@
 <x-ui.modal id="mEditDepartment" title="Edit Department" maxWidth="480px">
-     <form id="editLocationForm" action="" method="POST">
+     <form id="editDepartmentForm" action="" method="POST">
         @csrf
         @method('PUT')
         <div class="space-y-4">
             <div>
                 <label class="mlabel">Department Name</label>
-                <input type="text" name="name" placeholder="e.g. Engineering" 
+                <input id="editDepartmentName" type="text" name="name" placeholder="e.g. Engineering" 
                 class="minput @error('name') border-red-500 @enderror">
                 @error('name')
                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -13,7 +13,7 @@
             </div>
             <div>
                 <label class="mlabel">Subtitle / Category</label>
-                <input type="text" name="subtitle" placeholder="e.g. Tech & Infrastructure" 
+                <input id="editDepartmentSubtitle" type="text" name="subtitle" placeholder="e.g. Tech & Infrastructure" 
                 class="minput @error('subtitle') border-red-500 @enderror">
                 @error('subtitle')
                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -21,7 +21,7 @@
             </div>
             <div>
                 <label class="mlabel">Head of Department</label>
-                <input type="text" name="head_employee_id" placeholder="Full name" 
+                <input id="editDepartmentHead" type="text" name="head_employee_id" placeholder="Full name" 
                 class="minput @error('head_employee_id') border-red-500 @enderror">
                 @error('head_employee_id')
                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -40,3 +40,9 @@
         </div>
     </form>
 </x-ui.modal>
+
+@if ($errors->any() && old('_method') === 'PUT')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => openM('mEditDepartment'));
+    </script>
+@endif

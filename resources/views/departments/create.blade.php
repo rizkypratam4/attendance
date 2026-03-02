@@ -1,5 +1,6 @@
 <x-ui.modal id="mAddDepartment" title="Add New Department" maxWidth="480px">
     <form action="{{ route('departments.store') }}" method="POST">
+        @csrf
         <div class="space-y-4">
             <div>
                 <label class="mlabel">Department Name</label>

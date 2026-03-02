@@ -11,19 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shift_groups', function (Blueprint $table) {
+        Schema::create('shift_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->integer('sort_order')->default(0);
+            $table->foreignId('shift_id')->constrained('shifts')->cascadeOnDelete();
+            $table->string('code', 20)->unique();   // 1AA, 1PR, 1PQ, dst.
+            $table->boolean('has_idt')->default(false); // hanya 1AA = true
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('shift_groups');
+        Schema::dropIfExists('shift_codes');
     }
 };

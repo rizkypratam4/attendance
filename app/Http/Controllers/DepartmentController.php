@@ -2,14 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DepartmentRequest;
 use App\Models\Department;
+use App\Services\DepartmentService;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
+    public function __construct(private DepartmentService $departmentService){}
+    
     public function index()
     {
         $departments = Department::latest()->paginate(5)->withQueryString();
         return view('departments.index', compact('departments'));
+    }
+
+    public function store(DepartmentRequest $request)
+    {
+        try {
+            $this->departmentService->createDepartment($request);
+            return redirect()->route('departments.index');
+        } catch (\Throwable $e) {
+            logger()->error('Add department failed', [
+                'error' => $e->getMessage(),
+            ]);
+            return redirect()->route('departments.index')->withErrors('Failed to add department');
+        }
+    }
+
+    public function update(DepartmentRequest $request, Department $department)
+    {
+        try {
+            $this->departmentService->updateDepartment($department, $request);
+            return redirect()->route('departments.index');
+        } catch (\Throwable $e) {
+            logger()->error('Update department failed', [
+                'department_id' => $department->id,
+                'error'       => $e->getMessage(),
+            ]);
+            return redirect()->route('departments.index')->withErrors('Failed to update department');
+        }
+    }
+
+    public function destroy(Department $department)
+    {
+        $this->departmentService->deleteDepartment($department);
+        return redirect()->route('departments.index');
     }
 }

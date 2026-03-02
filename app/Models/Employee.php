@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model
 {
@@ -20,34 +23,61 @@ class Employee extends Model
         'is_active',
     ];
 
-    public function department()
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function branch()
+    public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
     }
 
-    public function location()
+    public function location(): BelongsTo
     {
         return $this->belongsTo(Location::class);
     }
 
-    public function schedules()
+    public function shiftAssignments(): HasMany
     {
-        return $this->hasMany(EmployeeSchedule::class);
+        return $this->hasMany(EmployeeShiftAssignment::class);
     }
 
-    public function attendances()
+    public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
     }
-
-    public function fingerprintLogs()
+   
+    public function getActiveShiftCode(?string $date = null): ?ShiftCode
     {
-        return $this->hasMany(FingerprintLog::class, 'barcode', 'machine_barcode');
+        $date = $date ?? now()->toDateString();
+
+        $assignment = $this->shiftAssignments()
+            ->where('effective_date', '<=', $date)
+            ->where(function ($q) use ($date) {
+                $q->whereNull('end_date')->orWhere('end_date', '>=', $date);
+            })
+            ->latest('effective_date')
+            ->first();
+
+        return $assignment?->shiftCode;
     }
-    
+
+    public function getActiveShiftSchedule(?string $date = null): ?ShiftSchedule
+    {
+        $date      = $date ?? now()->toDateString();
+        $dayType   = self::determineDayType($date);
+        $shiftCode = $this->getActiveShiftCode($date);
+
+        return $shiftCode?->schedules()->where('day_type', $dayType)->first();
+    }
+
+    public static function determineDayType(string $date): string
+    {
+        return match (Carbon::parse($date)->dayOfWeek) {
+            Carbon::FRIDAY   => 'jumat',
+            Carbon::SATURDAY => 'sabtu',
+            default          => 'senin_kamis',
+        };
+    }
 }

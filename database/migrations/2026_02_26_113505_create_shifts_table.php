@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shift_groups', function (Blueprint $table) {
+        Schema::create('shifts', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->integer('sort_order')->default(0);
+            $table->string('name', 50);         // Shift1, Shift2, Shift3
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('shift_groups');
+        Schema::dropIfExists('shifts');
     }
 };
