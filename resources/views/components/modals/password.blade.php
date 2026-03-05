@@ -1,6 +1,6 @@
-<form method="POST" action="#">
+<form method="POST" action="{{ route('password.change') }}">
     @csrf
-    @method('PUT')
+    @method('PATCH')
     <div class="space-y-4">
 
         <div>
@@ -55,6 +55,9 @@
                     </svg>
                 </button>
             </div>
+            @error('password_confirmation')
+                <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
 
         <div class="rounded-xl p-4 space-y-2"
@@ -89,3 +92,9 @@
         </button>
     </div>
 </form>
+
+@if ($errors->hasAny(['current_password', 'password', 'password_confirmation']))
+    <script>
+        document.addEventListener('DOMContentLoaded', () => openM('mPassword'));
+    </script>
+@endif

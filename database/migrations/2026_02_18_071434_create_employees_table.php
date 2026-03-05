@@ -22,7 +22,6 @@ return new class extends Migration
             $table->foreignId('location_id')->nullable()->constrained('locations')->cascadeOnUpdate()->restrictOnDelete();
             $table->string('title');
             $table->string('employee_status');
-            $table->integer('contract_count')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

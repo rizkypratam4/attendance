@@ -38,6 +38,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     @include('sweetalert::alert')
+
+    @if(session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '{{ session("success") }}',
+                    timer: 3000,
+                    showConfirmButton: false,
+                    background: '#1e1b2e',
+                    color: '#e2e8f0'
+                });
+            });
+        </script>
+    @endif
+
     @stack('scripts')
 </body>
 </html>

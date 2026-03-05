@@ -70,9 +70,14 @@
                     </div>
                 </div>
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-pink-500
-                            flex items-center justify-center font-bold text-white flex-shrink-0"
+                            flex items-center justify-center font-bold text-white flex-shrink-0 overflow-hidden"
                      style="font-size:15px">
-                    {{ strtoupper(substr(auth()->user()->first_name ." ".auth()->user()->last_name ?? 'AT', 0, 2)) }}
+                    @if(auth()->user()->image)
+                        <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="Profile Picture"
+                             class="w-full h-full object-cover">
+                    @else
+                        {{ strtoupper(substr(auth()->user()->first_name ." ".auth()->user()->last_name ?? 'AT', 0, 2)) }}
+                    @endif
                 </div>
                 <svg class="hidden lg:block flex-shrink-0" width="14" height="14" viewBox="0 0 24 24"
                      fill="none" stroke="var(--text-3)" stroke-width="2.5">
@@ -85,9 +90,14 @@
                 <div class="px-4 py-4" style="border-bottom:1px solid var(--dd-border)">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-pink-500
-                                    flex items-center justify-center font-bold text-white flex-shrink-0"
+                                    flex items-center justify-center font-bold text-white flex-shrink-0 overflow-hidden"
                              style="font-size:16px">
-                            {{ strtoupper(substr(auth()->user()->first_name ." ".auth()->user()->last_name ?? 'AT', 0, 2)) }}
+                            @if(auth()->user()->image)
+                                <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="Profile Picture"
+                                     class="w-full h-full object-cover">
+                            @else
+                                {{ strtoupper(substr(auth()->user()->first_name ." ".auth()->user()->last_name ?? 'AT', 0, 2)) }}
+                            @endif
                         </div>
                         <div>
                             <div style="font-size:15px;font-weight:600;color:var(--text-1)">

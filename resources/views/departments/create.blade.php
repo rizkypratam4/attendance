@@ -36,7 +36,6 @@
                 Save Department
             </button>
         </div>
-        </div>
     </form>
 </x-ui.modal>
 

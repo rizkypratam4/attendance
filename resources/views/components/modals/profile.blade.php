@@ -1,15 +1,23 @@
 <div class="flex flex-col items-center mb-6">
     <div class="w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-pink-500
-                flex items-center justify-center font-bold text-white mb-3"
-         style="font-size:24px">
-        {{ strtoupper(substr(auth()->user()->name ?? 'AT', 0, 2)) }}
+                flex items-center justify-center font-bold text-white mb-3 overflow-hidden">
+        @if(auth()->user()->image)
+            <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="Profile Picture"
+                 class="w-full h-full object-cover">
+        @else
+            {{ strtoupper(substr(auth()->user()->name ?? 'AT', 0, 2)) }}
+        @endif
     </div>
-    <button style="font-size:13px;color:#a78bfa;font-weight:600;background:none;border:none;cursor:pointer">
-        Change Photo
-    </button>
+    <label for="profileImageInput" class="cursor-pointer">
+        <span style="font-size:13px;color:#a78bfa;font-weight:600;">Change Photo</span>
+        <input type="file" id="profileImageInput" name="image" accept="image/*" class="hidden">
+    </label>
+    @error('image')
+        <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+    @enderror
 </div>
 
-<form method="POST" action="">
+<form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
     @csrf
     @method('PATCH')
     <div class="space-y-4">
@@ -18,23 +26,26 @@
                 <label class="mlabel">First Name</label>
                 <input type="text" name="first_name"
                        value="{{ auth()->user()->first_name ?? 'Alex' }}" class="minput">
+                @error('first_name')
+                    <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
             <div>
                 <label class="mlabel">Last Name</label>
                 <input type="text" name="last_name"
                        value="{{ auth()->user()->last_name ?? 'Thompson' }}" class="minput">
+                @error('last_name')
+                    <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
         </div>
         <div>
             <label class="mlabel">Email Address</label>
             <input type="email" name="email"
                    value="{{ auth()->user()->email ?? 'alex.thompson@company.com' }}" class="minput">
-        </div>
-        <div>
-            <label class="mlabel">Phone Number</label>
-            <input type="tel" name="phone"
-                   value="{{ auth()->user()->phone ?? '' }}"
-                   placeholder="+1 (555) 000-0000" class="minput">
+            @error('email')
+                <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         <div>
             <label class="mlabel">Role</label>
@@ -54,3 +65,23 @@
         </button>
     </div>
 </form>
+
+@if ($errors->hasAny(['first_name', 'last_name', 'email', 'image']))
+    <script>
+        document.addEventListener('DOMContentLoaded', () => openM('mProfile'));
+    </script>
+@endif
+
+<script>
+document.getElementById('profileImageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const profileImg = document.querySelector('.w-20.h-20.rounded-full');
+            profileImg.innerHTML = `<img src="${e.target.result}" alt="Profile Preview" class="w-full h-full object-cover">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>

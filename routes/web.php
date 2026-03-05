@@ -39,4 +39,9 @@ Route::middleware('auth')->group(function () {
         'employee_schedules' => EmployeeScheduleController::class,
         'calender_views' => CalenderViewController::class
     ]);
+
+    Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
+
+    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
+    Route::patch('/password', [UserController::class, 'changePassword'])->name('password.change');
 });

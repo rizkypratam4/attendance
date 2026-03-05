@@ -36,6 +36,9 @@
     {{-- ── MODAL: ADD NEW BRANCH ── --}}
     @include('branches.create')
 
+    {{-- ── MODAL: EDIT BRANCH ── --}}
+    @include('branches.edit')
+
 @endsection
 
 @push('styles')
@@ -94,7 +97,6 @@
         </svg>`;
             document.getElementById('cityMenu').classList.add('hidden');
 
-            // Filter table by city
             const q = val === 'All Cities' ? '' : val.toLowerCase();
             document.querySelectorAll('.branch-row').forEach(row => {
                 const name = row.getAttribute('data-name') || '';
@@ -109,12 +111,12 @@
             <line x1="8" y1="18" x2="21" y2="18"/>
             <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/>
             <line x1="3" y1="18" x2="3.01" y2="18"/>
-        </svg>
-        Sort: ${val}
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M6 9l6 6 6-6"/>
-        </svg>`;
-            document.getElementById('sortMenu').classList.add('hidden');
+            </svg>
+            Sort: ${val}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>`;
+                document.getElementById('sortMenu').classList.add('hidden');
         }
     </script>
 @endpush

@@ -44,7 +44,15 @@ class BranchController extends Controller
 
     public function destroy(Branch $branch)
     {
-        $this->branchService->deleteBranch($branch);
-        return redirect()->route('branches.index');
+        try {
+            $this->branchService->deleteBranch($branch);
+            return redirect()->route('branches.index')->with('success', 'Branch deleted successfully');
+        } catch (\Throwable $e) {
+            logger()->error('Delete branch failed', [
+                'branch_id' => $branch->id,
+                'error'       => $e->getMessage(),
+            ]);
+            return redirect()->route('branches.index')->withErrors('Failed to delete branch');
+        }
     }
 }

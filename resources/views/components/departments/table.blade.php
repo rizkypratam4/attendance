@@ -38,7 +38,7 @@
                         </div>
                         <div>
                             <p style="font-size:15px;font-weight:700;color:var(--text-1)">{{ $department->name }}</p>
-                            <p style="font-size:12px;color:var(--text-3)">Tech &amp; Infrastructure</p>
+                            <p style="font-size:12px;color:var(--text-3)">{{ $department->subtitle }}</p>
                         </div>
                     </div>
                 </td>

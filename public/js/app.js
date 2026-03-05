@@ -136,21 +136,94 @@ function initUserDropdown() {
 function _onEditClick() {
     if (!_activeTrigger) return;
     closeDD();
-    openEditUser(
-        _activeTrigger.dataset.name,
-        _activeTrigger.dataset.email,
-        _activeTrigger.dataset.role,
-        _activeTrigger.dataset.updateRoute
-    );
+    if (_activeTrigger.dataset.entity === 'employee') {
+        openEditEmployee(_activeTrigger);
+    } else {
+        openEditUser(
+            _activeTrigger.dataset.name,
+            _activeTrigger.dataset.email,
+            _activeTrigger.dataset.role,
+            _activeTrigger.dataset.updateRoute
+        );
+    }
+}
+
+function openAddEmployee() {
+    document.getElementById('addEmployeeForm').reset();
+    document.getElementById('addBranch').selectedIndex = 0;
+    document.getElementById('addDepartment').selectedIndex = 0;
+    document.getElementById('addLocation').selectedIndex = 0;
+    document.getElementById('addIsActive').value = '1';
+    openM('mAddEmployee');
+}
+
+function openEditEmployee(trigger) {
+    document.getElementById('editEmployeeName').value = trigger.dataset.name || '';
+    document.getElementById('editEmployeeNIK').value = trigger.dataset.nik || '';
+    document.getElementById('editMachineBarcode').value = trigger.dataset.machineBarcode || '';
+
+    const branchSel = document.getElementById('editBranch');
+    Array.from(branchSel.options).forEach(opt => {
+        opt.selected = opt.value === (trigger.dataset.branchId || '');
+    });
+
+    const deptSel = document.getElementById('editDepartment');
+    Array.from(deptSel.options).forEach(opt => {
+        opt.selected = opt.value === (trigger.dataset.departmentId || '');
+    });
+
+    document.getElementById('editPosition').value = trigger.dataset.position || '';
+
+    const locSel = document.getElementById('editLocation');
+    Array.from(locSel.options).forEach(opt => {
+        opt.selected = opt.value === (trigger.dataset.locationId || '');
+    });
+
+    document.getElementById('editTitle').value = trigger.dataset.title || '';
+    document.getElementById('editEmployeeStatus').value = trigger.dataset.employeeStatus || '';
+
+    const activeSel = document.getElementById('editIsActive');
+    Array.from(activeSel.options).forEach(opt => {
+        opt.selected = opt.value === (trigger.dataset.isActive ?? '1');
+    });
+
+    document.getElementById('editEmployeeForm').action = trigger.dataset.updateRoute;
+    openM('mUpdateEmployee');
 }
 
 function _onDeleteClick() {
     if (!_activeTrigger) return;
     closeDD();
-    openDeleteUser(
-        _activeTrigger.dataset.name,
-        _activeTrigger.dataset.deleteId
-    );
+    if (_activeTrigger.dataset.entity === 'employee') {
+        openDeleteEmployee(
+            _activeTrigger.dataset.name,
+            _activeTrigger.dataset.deleteId
+        );
+    } else {
+        openDeleteUser(
+            _activeTrigger.dataset.name,
+            _activeTrigger.dataset.deleteId
+        );
+    }
+}
+
+function openDeleteEmployee(name, id) {
+    Swal.fire({
+        title: `Delete ${name}?`,
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#374151',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        background: '#1e1b2e',
+        color: '#e2e8f0',
+    }).then(result => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-${id}`).submit();
+        }
+    });
 }
 
 function _onOutsideClick(e) {
@@ -432,6 +505,34 @@ function openDeleteDepartment(name, id) {
     }).then(result => {
         if (result.isConfirmed) {
             document.getElementById(`delete-form-department-${id}`).submit();
+        }
+    });
+}
+
+
+function openEditBranch(id, name, is_active) {
+    document.getElementById('editBranchForm').action = `/branches/${id}`;
+    document.getElementById('editBranchName').value = name;
+    document.getElementById('editBranchIsActive').value = is_active;
+
+    openM('mEditBranch');
+}
+
+function openDeleteBranch(name, id) {
+    Swal.fire({
+        title: `Delete ${name}?`,
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#374151',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        background: '#1e1b2e',
+        color: '#e2e8f0',
+    }).then(result => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-branch-${id}`).submit();
         }
     });
 }
