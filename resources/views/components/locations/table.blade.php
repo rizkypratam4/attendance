@@ -81,6 +81,7 @@
                                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
+                        
                         <form id="delete-form-location-{{ $location->id }}"
                             action="{{ route('locations.destroy', $location->id) }}" method="POST">
                             @csrf

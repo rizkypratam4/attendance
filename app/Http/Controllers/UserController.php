@@ -9,6 +9,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -85,14 +86,11 @@ class UserController extends Controller
                 'email' => $request->email,
             ];
 
-            // Handle image upload
             if ($request->hasFile('image')) {
-                // Delete old image if exists
                 if ($user->image && Storage::disk('public')->exists($user->image)) {
                     Storage::disk('public')->delete($user->image);
                 }
 
-                // Store new image
                 $imagePath = $request->file('image')->store('profile-images', 'public');
                 $data['image'] = $imagePath;
             }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Shift extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'description'];
 
     public function shiftCodes(): HasMany
     {

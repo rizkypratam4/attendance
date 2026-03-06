@@ -536,3 +536,30 @@ function openDeleteBranch(name, id) {
         }
     });
 }
+
+function openEditShiftGroup(id, name, description) {
+    document.getElementById('editShiftGroupForm').action = `/shift_groups/${id}`;
+    document.getElementById('editShiftGroupName').value = name;
+    document.getElementById('editShiftGroupDescription').value = description;
+
+    openM('mEditShiftGroup');
+}
+
+function openDeleteShiftGroup(name, id) {
+    Swal.fire({
+        title: `Delete ${name}?`,
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#374151',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        background: '#1e1b2e',
+        color: '#e2e8f0',
+    }).then(result => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-shift-group-${id}`).submit();
+        }
+    });
+}

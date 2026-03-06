@@ -6,7 +6,7 @@
             <div>
                 <label class="mlabel">Location Name</label>
                 <input id="editLocationName" type="text" name="name" placeholder="e.g. Global Headquarters"
-                    class="minput @error('name') border-red-500 @enderror"">
+                    class="minput @error('name') border-red-500 @enderror">
                     @error('name')
                         <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                     @enderror
