@@ -55,6 +55,22 @@
         </script>
     @endif
 
+    @if(session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: '{{ session("error") }}',
+                    timer: 3000,
+                    showConfirmButton: false,
+                    background: '#1e1b2e',
+                    color: '#e2e8f0'
+                });
+            });
+        </script>
+    @endif
+
     @stack('scripts')
 </body>
 </html>

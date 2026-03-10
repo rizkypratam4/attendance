@@ -60,16 +60,11 @@
             </button>
 
             <div class="submenu"
-                style="max-height:{{ in_array($active, ['users', 'employees', 'location', 'department', 'branch']) ? '200px' : '0' }};
+                style="max-height:{{ in_array($active, ['users', 'location', 'department', 'branch']) ? '200px' : '0' }};
                     overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
                 <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
                     <a href="{{ route('users.index') }}" class="sub-a {{ $active === 'users' ? 'sub-act' : '' }}">
                         <span class="sl">User Accounts</span>
-                    </a>
-
-                    <a href="{{ route('employees.index') }}"
-                        class="sub-a {{ $active === 'employees' ? 'sub-act' : '' }}">
-                        <span class="sl">Employees</span>
                     </a>
 
                     <a href="{{ route('locations.index') }}"
@@ -85,6 +80,47 @@
                     <a href="{{ route('branches.index') }}"
                         class="sub-a {{ $active === 'branch' ? 'sub-act' : '' }}">
                         <span class="sl">Branch</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-group">
+            <button type="button" onclick="toggleSubmenu(this)"
+                    class="nav-a w-full text-left">
+                <!-- Ikon Grup / Employee -->
+                <svg class="flex-shrink-0" width="19" height="19" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Kepala orang 1 -->
+                    <circle cx="8" cy="8" r="3" />
+                    <!-- Kepala orang 2 -->
+                    <circle cx="16" cy="8" r="3" />
+                    <!-- Badan orang 1 -->
+                    <path d="M5 21v-2a4 4 0 0 1 6 0v2" />
+                    <!-- Badan orang 2 -->
+                    <path d="M13 21v-2a4 4 0 0 1 6 0v2" />
+                </svg>
+
+                <span class="sl flex-1">Employee Management</span>
+
+                <span class="caret flex-shrink-0">
+                    <svg class="caretIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" style="transition:transform .3s">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </span>
+            </button>
+
+            <div class="submenu"
+                style="max-height:{{ in_array($active, ['employees', 'employee-shift-assignments']) ? '200px' : '0' }};
+                    overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
+                <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
+                    <a href="{{ route('employees.index') }}" class="sub-a {{ $active === 'employees' ? 'sub-act' : '' }}">
+                        <span class="sl">Data Karyawan</span>
+                    </a>
+
+                    <a href="{{ route('employee_shift_assignments.index') }}" class="sub-a {{ $active === 'employee-shift-assignments' ? 'sub-act' : '' }}">
+                        <span class="sl">Assignment Shift</span>
                     </a>
                 </div>
             </div>
@@ -117,19 +153,19 @@
             </button>
 
             <div class="submenu"
-                style="max-height:{{ in_array($active, ['shift-groups', 'shift-definition', 'shift-rules']) ? '200px' : '0' }};
+                style="max-height:{{ in_array($active, ['shift-groups', 'shift-definition', 'shift-codes', 'shift-schedules', 'shift-rules']) ? '200px' : '0' }};
                     overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
                 <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
                     <a href="{{ route('shift_groups.index') }}" class="sub-a {{ $active === 'shift-groups' ? 'sub-act' : '' }}">
-                        <span class="sl">Shift Group</span>
+                        <span class="sl">Master Shift</span>
                     </a>
 
-                    <a href="{{ route('shift_definitions.index') }}" class="sub-a {{ $active === 'shift-definition' ? 'sub-act' : '' }}">
-                        <span class="sl">Shift Definitions</span>
+                    <a href="{{ route('shift_codes.index') }}" class="sub-a {{ $active === 'shift-codes' ? 'sub-act' : '' }}">
+                        <span class="sl">Kode Shift</span>
                     </a>
 
-                    <a href="{{ route('shift_day_rules.index') }}" class="sub-a {{ $active === 'shift-rules' ? 'sub-act' : '' }}">
-                        <span class="sl">Shift Day Rules</span>
+                    <a href="{{ route('shift_schedules.index') }}" class="sub-a {{ $active === 'shift-schedules' ? 'sub-act' : '' }}">
+                        <span class="sl">Jadwal Shift</span>
                     </a>
                 </div>
             </div>
@@ -157,7 +193,7 @@
                 style="max-height:{{ in_array($active, ['fingerprint', 'process-attendance', 'attendance']) ? '200px' : '0' }};
                     overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
                 <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
-                    <a href="{{ route('fingerprint_logs.index') }}" class="sub-a {{ $active === 'fingerprint' ? 'sub-act' : '' }}">
+                    <a href="{{ route('fingerprint.index') }}" class="sub-a {{ $active === 'fingerprint' ? 'sub-act' : '' }}">
                         <span class="sl">Fingerprint Logs</span>
                     </a>
                     <a href="{{ route('process_attendances.index') }}" class="sub-a {{ $active === 'process-attendance' ? 'sub-act' : '' }}">

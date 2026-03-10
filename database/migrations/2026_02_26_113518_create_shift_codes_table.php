@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('shift_codes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('shift_id')->constrained('shifts')->cascadeOnDelete();
-            $table->string('code', 20)->unique();   // 1AA, 1PR, 1PQ, dst.
-            $table->boolean('has_idt')->default(false); // hanya 1AA = true
+            $table->string('code', 20)->unique();
+            $table->boolean('has_idt')->default(false);
             $table->timestamps();
         });
     }

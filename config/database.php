@@ -98,14 +98,14 @@ return [
             'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
-        'sqlsrv' => [
+        'sqlsrv_finger' => [
             'driver' => 'sqlsrv',
             'url' => env('DB_URL'),
-            'host' => env('VENDOR_DB_HOST', '10.4.1.8'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'DB_ATT'),
-            'username' => env('DB_USERNAME', 'att'),
-            'password' => env('DB_PASSWORD', 'P@ss!N@cT'),
+            'host' => env('FINGER_DB_HOST'),
+            'port' => env('FINGER_DB_PORT', '1433'),
+            'database' => env('FINGER_DB_DATABASE'),
+            'username' => env('FINGER_DB_USERNAME'),
+            'password' => env('FINGER_DB_PASSWORD'),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,

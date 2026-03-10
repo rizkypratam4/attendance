@@ -283,6 +283,82 @@ function openEditUser(name, email, role, updateRoute) {
     openM('mUpdateUser');
 }
 
+// shift schedule helpers
+function openAddShiftSchedule() {
+    const form = document.getElementById('addShiftScheduleForm');
+    if (form) form.reset();
+    openM('mAddShiftSchedule');
+}
+
+function openEditShiftSchedule(trigger) {
+    const form = document.getElementById('editShiftScheduleForm');
+    form.action = trigger.dataset.updateRoute;
+
+    // Select by ID/form context instead of index
+    const form_ = document.querySelector('#mEditShiftSchedule form');
+    
+    // Shift Code
+    const codeSelect = form_.querySelector('select[name="shift_code_id"]');
+    if (codeSelect) {
+        codeSelect.value = trigger.dataset.shiftCodeId || '';
+    }
+
+    // Day Type
+    const daySelect = form_.querySelector('select[name="day_type"]');
+    if (daySelect) {
+        daySelect.value = trigger.dataset.dayType || '';
+    }
+
+    // Schedule Code
+    const schedCode = form_.querySelector('input[name="schedule_code"]');
+    if (schedCode) {
+        schedCode.value = trigger.dataset.scheduleCode || '';
+    }
+
+    // Times
+    const startTime = form_.querySelector('input[name="start_time"]');
+    if (startTime) {
+        startTime.value = trigger.dataset.startTime || '';
+    }
+
+    const endTime = form_.querySelector('input[name="end_time"]');
+    if (endTime) {
+        endTime.value = trigger.dataset.endTime || '';
+    }
+
+    // Checkboxes - use type selector to get checkbox, not hidden field
+    const isDayOff = form_.querySelector('input[type="checkbox"][name="is_day_off"]');
+    if (isDayOff) {
+        isDayOff.checked = trigger.dataset.isDayOff === '1';
+    }
+
+    const isOvernight = form_.querySelector('input[type="checkbox"][name="is_overnight"]');
+    if (isOvernight) {
+        isOvernight.checked = trigger.dataset.isOvernight === '1';
+    }
+
+    openM('mEditShiftSchedule');
+}
+
+function openDeleteShiftSchedule(name, id) {
+    Swal.fire({
+        title: `Delete ${name}?`,
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#374151',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        background: '#1e1b2e',
+        color: '#e2e8f0',
+    }).then(result => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-${id}`).submit();
+        }
+    });
+}
+
 function openDeleteUser(name, id) {
     Swal.fire({
         title: `Delete ${name}?`,
@@ -545,6 +621,40 @@ function openEditShiftGroup(id, name, description) {
     openM('mEditShiftGroup');
 }
 
+// ── ShiftCode modal helpers ──
+function openEditShiftCode(id, code, shiftId, hasIdt) {
+    const form = document.getElementById('editShiftCodeForm');
+    if (!form) return;
+    form.action = `/shift_codes/${id}`;
+    const codeInput = form.querySelector('input[name="code"]');
+    const shiftSelect = form.querySelector('select[name="shift_id"]');
+    const idtSelect = form.querySelector('select[name="has_idt"]');
+    if (codeInput) codeInput.value = code;
+    if (shiftSelect) shiftSelect.value = shiftId;
+    if (idtSelect) idtSelect.value = hasIdt;
+
+    openM('mEditShiftCode');
+}
+
+function openDeleteShiftCode(code, id) {
+    Swal.fire({
+        title: `Delete ${code}?`,
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#374151',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        background: '#1e1b2e',
+        color: '#e2e8f0',
+    }).then(result => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-shift-code-${id}`).submit();
+        }
+    });
+}
+
 function openDeleteShiftGroup(name, id) {
     Swal.fire({
         title: `Delete ${name}?`,
@@ -560,6 +670,111 @@ function openDeleteShiftGroup(name, id) {
     }).then(result => {
         if (result.isConfirmed) {
             document.getElementById(`delete-form-shift-group-${id}`).submit();
+        }
+    });
+}
+
+// ── Search + Filter ──
+document.getElementById('shiftSearch').addEventListener('input', filterShifts);
+
+function filterShifts() {
+    const search = document.getElementById('shiftSearch').value.toLowerCase();
+    const status = document.getElementById('statusFilter').value.toLowerCase();
+
+    document.querySelectorAll('.shift-row').forEach(row => {
+        const code    = row.dataset.code.toLowerCase();
+        const name    = row.dataset.name.toLowerCase();
+        const rowStat = row.dataset.status.toLowerCase();
+
+        const matchSearch = !search || code.includes(search) || name.includes(search);
+        const matchStatus = !status || rowStat === status;
+
+        row.style.display = (matchSearch && matchStatus) ? '' : 'none';
+    });
+}
+
+// ── Sort AZ ──
+let _sortAsc = true;
+function toggleSort(btn) {
+    _sortAsc = !_sortAsc;
+    btn.textContent = _sortAsc ? 'AZ' : 'ZA';
+    btn.style.background = _sortAsc ? 'var(--bg-ghost)' : 'rgba(124,58,237,.2)';
+    btn.style.color = _sortAsc ? 'var(--text-2)' : '#a78bfa';
+
+    const tbody = document.querySelector('#shiftTable tbody');
+    const rows  = Array.from(tbody.querySelectorAll('.shift-row'));
+    rows.sort((a, b) => {
+        const na = a.dataset.name, nb = b.dataset.name;
+        return _sortAsc ? na.localeCompare(nb) : nb.localeCompare(na);
+    });
+    rows.forEach(r => tbody.appendChild(r));
+}
+
+// ── Color picker (Add modal) ──
+function selectColor(el, color) {
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('selectedColor').value = color;
+}
+// ── Shift schedule search + filter ──
+document.getElementById('scheduleSearch')?.addEventListener('input', filterSchedules);
+
+function filterSchedules() {
+    const search = document.getElementById('scheduleSearch').value.toLowerCase();
+    const dayType = document.getElementById('dayTypeFilter').value.toLowerCase();
+
+    document.querySelectorAll('.schedule-row').forEach(row => {
+        const code    = row.dataset.scheduleCode.toLowerCase();
+        const scode   = row.dataset.shiftCodeName.toLowerCase();
+        const dtype   = row.dataset.dayType.toLowerCase();
+
+        const matchSearch = !search || code.includes(search) || scode.includes(search);
+        const matchDay    = !dayType || dtype === dayType;
+
+        row.style.display = (matchSearch && matchDay) ? '' : 'none';
+    });
+}
+
+// ── Sort schedules by shift code name ┎
+let _sortSchedAsc = true;
+function toggleSortSchedules(btn) {
+    _sortSchedAsc = !_sortSchedAsc;
+    btn.textContent = _sortSchedAsc ? 'AZ' : 'ZA';
+    btn.style.background = _sortSchedAsc ? 'var(--bg-ghost)' : 'rgba(124,58,237,.2)';
+    btn.style.color = _sortSchedAsc ? 'var(--text-2)' : '#a78bfa';
+
+    const tbody = document.querySelector('#scheduleTable tbody');
+    const rows  = Array.from(tbody.querySelectorAll('.schedule-row'));
+    rows.sort((a, b) => {
+        const na = a.dataset.shiftCodeName, nb = b.dataset.shiftCodeName;
+        return _sortSchedAsc ? na.localeCompare(nb) : nb.localeCompare(na);
+    });
+    rows.forEach(r => tbody.appendChild(r));
+}
+// ── Color picker (Edit modal) ──
+function selectEditColor(el, color) {
+    document.querySelectorAll('.edit-color-dot').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+
+
+
+function openDeleteShiftCode(name, id) {
+    Swal.fire({
+        title: `Delete ${name}?`,
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#374151',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        background: '#1e1b2e',
+        color: '#e2e8f0',
+    }).then(result => {
+        if (result.isConfirmed) {
+            document.getElementById(`delete-form-shift-code-${id}`).submit();
         }
     });
 }

@@ -6,8 +6,8 @@
 /* ── THEME TOKENS ── */
 :root {
     --bg-body: #0d0d12;
-    --bg-sidebar: #12121a;
-    --bg-header: #12121a;
+    --bg-sidebar: #1a1b1f;
+    --bg-header: #1a1b1f;
     --bg-card: #18181f;
     --bg-input: rgba(0, 0, 0, 0.3);
     --bg-hover: rgba(255, 255, 255, 0.05);

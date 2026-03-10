@@ -8,12 +8,15 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeScheduleController;
+use App\Http\Controllers\EmployeeShiftAssignmentController;
 use App\Http\Controllers\FingerprintLogController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProcessAttendanceController;
+use App\Http\Controllers\ShiftCodeController;
 use App\Http\Controllers\ShiftDayRuleController;
 use App\Http\Controllers\ShiftDefinitionController;
 use App\Http\Controllers\ShiftGroupController;
+use App\Http\Controllers\ShiftScheduleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,14 +37,22 @@ Route::middleware('auth')->group(function () {
         'shift_groups' => ShiftGroupController::class,
         'shift_definitions' => ShiftDefinitionController::class,
         'shift_day_rules' => ShiftDayRuleController::class,
-        'fingerprint_logs' => FingerprintLogController::class,
         'process_attendances' => ProcessAttendanceController::class,
         'employee_schedules' => EmployeeScheduleController::class,
-        'calender_views' => CalenderViewController::class
+        'calender_views' => CalenderViewController::class,
+        'employee_shift_assignments' => EmployeeShiftAssignmentController::class,
     ]);
+
+    Route::resource('shift_schedules', ShiftScheduleController::class)->except(['show','edit']);
+    Route::resource('shift_codes', ShiftCodeController::class)->except(['show','edit']);
 
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
 
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::patch('/password', [UserController::class, 'changePassword'])->name('password.change');
+
+    Route::prefix('fingerprint')->name('fingerprint.')->group(function () {
+        Route::get('/',      [FingerprintLogController::class, 'index'])->name('index');
+        Route::post('/sync', [FingerprintLogController::class, 'sync'])->name('sync');
+    });
 });
