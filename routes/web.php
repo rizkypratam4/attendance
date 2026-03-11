@@ -48,6 +48,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
 
+    // assignment import
+    Route::post('/employee_shift_assignments/import', [EmployeeShiftAssignmentController::class, 'import'])
+        ->name('employee_shift_assignments.import');
+
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::patch('/password', [UserController::class, 'changePassword'])->name('password.change');
 

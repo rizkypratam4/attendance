@@ -6,6 +6,20 @@
 
 @section('content')
 
+{{-- feedback messages --}}
+@if(session('import_success'))
+    <div class="mb-4 text-green-500">Imported {{ session('import_success') }} rows successfully.</div>
+@endif
+@if(session('import_errors'))
+    <div class="mb-4 text-red-500">
+        <ul class="list-disc pl-5">
+            @foreach(session('import_errors') as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 {{-- ── PAGE HEADER ── --}}
 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
     <div>
@@ -13,15 +27,15 @@
         <p style="font-size:13px;color:var(--text-3);margin-top:5px">Assign employees to specific shifts and schedules efficiently.</p>
     </div>
     <div class="flex items-center gap-2 flex-shrink-0">
-        {{-- Bulk Assign --}}
-        <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold ib-bg"
-                style="font-size:13.5px;color:var(--text-2)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        {{-- Import assignments --}}
+        <button onclick="openM('mImportAssignments')"
+                class="purbtn flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold"
+                style="font-size:13.5px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 5v14M5 12h14" stroke="currentColor"/>
+                <path d="M4 4l16 16" stroke="currentColor" opacity="0"/><!-- invisible to keep size -->
             </svg>
-            Bulk Assign
+            Import
         </button>
         {{-- New Assignment --}}
         <button onclick="openM('mNewAssignment')"
@@ -111,146 +125,90 @@
                 </tr>
             </thead>
             <tbody>
-
-                {{-- Sarah Johnson - Morning --}}
-                <tr class="assign-row" data-name="sarah johnson" data-id="sm-8842" data-dept="Engineering" data-shift="morning"
-                    style="border-bottom:1px solid var(--border)">
-                    <td class="px-5 py-4">
-                        <div class="flex items-center gap-3">
-                            <img src="https://i.pravatar.cc/38?img=1" class="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="">
-                            <div>
-                                <p style="font-size:14px;font-weight:700;color:var(--text-1)">Sarah Johnson</p>
-                                <p style="font-size:11.5px;color:var(--text-3)">ID: SM-8842</p>
+                @foreach($assignments as $assignment)
+                    @php
+                        $emp   = $assignment->employee;
+                        $group = strtolower($assignment->shiftCode->shift->name ?? '');
+                        switch($group) {
+                            case 'morning':
+                                $bg = 'rgba(34,197,94,.15)';
+                                $border = 'rgba(34,197,94,.25)';
+                                $color = '#4ade80';
+                                $icon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" class="flex-shrink-0"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>';
+                                break;
+                            case 'afternoon':
+                                $bg = 'rgba(249,115,22,.15)';
+                                $border = 'rgba(249,115,22,.25)';
+                                $color = '#fdba74';
+                                $icon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" class="flex-shrink-0"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>';
+                                break;
+                            case 'night':
+                                $bg = 'rgba(99,102,241,.15)';
+                                $border = 'rgba(99,102,241,.25)';
+                                $color = '#a5b4fc';
+                                $icon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" class="flex-shrink-0"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+                                break;
+                            default:
+                                $bg = 'var(--bg-ghost)';
+                                $border = 'var(--border)';
+                                $color = 'var(--text-3)';
+                                $icon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+                        }
+                    @endphp
+                    <tr class="assign-row"
+                        data-name="{{ strtolower($emp->name) }}"
+                        data-id="{{ strtolower($emp->nik ?? $emp->id) }}"
+                        data-dept="{{ $emp->department->name ?? '' }}"
+                        data-shift="{{ $group }}"
+                        data-assignment-id="{{ $assignment->id }}"
+                        data-employee-id="{{ $emp->id }}"
+                        data-shift-code-id="{{ $assignment->shift_code_id }}"
+                        data-effective-date="{{ optional($assignment->effective_date)->format('Y-m-d') }}"
+                        data-end-date="{{ optional($assignment->end_date)->format('Y-m-d') }}"
+                        style="border-bottom:1px solid var(--border)">
+                        <td class="px-5 py-4">
+                            <div class="flex items-center gap-3">
+                                <img src="https://i.pravatar.cc/38?u={{ $emp->id }}" class="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="">
+                                <div>
+                                    <p style="font-size:14px;font-weight:700;color:var(--text-1)">{{ $emp->name }}</p>
+                                    <p style="font-size:11.5px;color:var(--text-3)">ID: {{ $emp->nik }}</p>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">Engineering</td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl w-fit"
-                             style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.25)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" class="flex-shrink-0">
-                                <circle cx="12" cy="12" r="5"/>
-                                <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                            </svg>
-                            <span style="font-size:12.5px;font-weight:600;color:#4ade80;white-space:nowrap">Morning (08:00 - 17:00)</span>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">Oct 01, 2023 - Dec 31,<br>2023</td>
-                    <td class="px-5 py-4 text-right">
-                        <button class="assign-trigger ib-bg w-8 h-8 rounded-lg flex items-center justify-center ml-auto"
-                                data-name="Sarah Johnson" data-id="SM-8842">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-
-                {{-- Michael Chen - Afternoon --}}
-                <tr class="assign-row" data-name="michael chen" data-id="sm-7123" data-dept="Operations" data-shift="afternoon"
-                    style="border-bottom:1px solid var(--border)">
-                    <td class="px-5 py-4">
-                        <div class="flex items-center gap-3">
-                            <img src="https://i.pravatar.cc/38?img=3" class="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="">
-                            <div>
-                                <p style="font-size:14px;font-weight:700;color:var(--text-1)">Michael Chen</p>
-                                <p style="font-size:11.5px;color:var(--text-3)">ID: SM-7123</p>
+                        </td>
+                        <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">{{ $emp->department->name ?? '-' }}</td>
+                        <td class="px-4 py-4">
+                            <div class="flex items-center gap-2 px-3 py-2 rounded-xl w-fit" style="background:{{ $bg }};border:1px solid {{ $border }}">
+                                {!! $icon !!}
+                                <span style="font-size:12.5px;font-weight:600;color:{{ $color }};white-space:nowrap">
+                                    {{ $assignment->shiftCode->code }}
+                                    @if($assignment->shiftCode->shift)
+                                        ({{ ucfirst($assignment->shiftCode->shift->name) }})
+                                    @endif
+                                </span>
                             </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">Operations</td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl w-fit"
-                             style="background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.25)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" class="flex-shrink-0">
-                                <circle cx="12" cy="12" r="5"/>
-                                <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                            </svg>
-                            <span style="font-size:12.5px;font-weight:600;color:#fdba74;white-space:nowrap">Afternoon (14:00 - 23:00)</span>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">Sep 15, 2023 -<br>Permanent</td>
-                    <td class="px-5 py-4 text-right">
-                        <button class="assign-trigger ib-bg w-8 h-8 rounded-lg flex items-center justify-center ml-auto"
-                                data-name="Michael Chen" data-id="SM-7123">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-
-                {{-- Alex Rivera - Night --}}
-                <tr class="assign-row" data-name="alex rivera" data-id="sm-3390" data-dept="Customer Support" data-shift="night"
-                    style="border-bottom:1px solid var(--border)">
-                    <td class="px-5 py-4">
-                        <div class="flex items-center gap-3">
-                            <img src="https://i.pravatar.cc/38?img=9" class="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="">
-                            <div>
-                                <p style="font-size:14px;font-weight:700;color:var(--text-1)">Alex Rivera</p>
-                                <p style="font-size:11.5px;color:var(--text-3)">ID: SM-3390</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">Customer<br>Support</td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl w-fit"
-                             style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2" class="flex-shrink-0">
-                                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-                            </svg>
-                            <span style="font-size:12.5px;font-weight:600;color:#a5b4fc;white-space:nowrap">Night (22:00 - 07:00)</span>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">Oct 20, 2023 - Jan 20,<br>2024</td>
-                    <td class="px-5 py-4 text-right">
-                        <button class="assign-trigger ib-bg w-8 h-8 rounded-lg flex items-center justify-center ml-auto"
-                                data-name="Alex Rivera" data-id="SM-3390">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-
-                {{-- Elena Rodriguez - Unassigned --}}
-                <tr class="assign-row" data-name="elena rodriguez" data-id="sm-4412" data-dept="Human Resources" data-shift="unassigned"
-                    style="border-bottom:1px solid var(--border)">
-                    <td class="px-5 py-4">
-                        <div class="flex items-center gap-3">
-                            <img src="https://i.pravatar.cc/38?img=20" class="w-10 h-10 rounded-full object-cover flex-shrink-0" alt="">
-                            <div>
-                                <p style="font-size:14px;font-weight:700;color:var(--text-1)">Elena Rodriguez</p>
-                                <p style="font-size:11.5px;color:var(--text-3)">ID: SM-4412</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">Human<br>Resources</td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl w-fit"
-                             style="background:var(--bg-ghost);border:1px solid var(--border)">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
-                                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                            <span style="font-size:12.5px;font-weight:600;color:var(--text-3)">Unassigned</span>
-                        </div>
-                    </td>
-                    <td class="px-4 py-4" style="font-size:14px;color:var(--text-3)">--</td>
-                    <td class="px-5 py-4 text-right">
-                        <button class="assign-trigger ib-bg w-8 h-8 rounded-lg flex items-center justify-center ml-auto"
-                                data-name="Elena Rodriguez" data-id="SM-4412">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-
+                        </td>
+                        <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">
+                            @if($assignment->effective_date)
+                                {{ $assignment->effective_date->format('M d, Y') }}
+                                @if($assignment->end_date)
+                                    - {{ $assignment->end_date->format('M d, Y') }}
+                                @else
+                                    - Permanent
+                                @endif
+                            @else
+                                --
+                            @endif
+                        </td>
+                        <td class="px-5 py-4 text-right">
+                            <button class="assign-trigger ib-bg w-8 h-8 rounded-lg flex items-center justify-center ml-auto"
+                                    data-name="{{ $emp->name }}" data-id="{{ $emp->nik }}">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -276,125 +234,15 @@
     </div>
 </div>
 
-{{-- ── MODAL: NEW ASSIGNMENT ── --}}
-<div class="mbk" id="mNewAssignment" onclick="closeOut(event,'mNewAssignment')">
-    <div class="mbox" style="max-width:500px">
-        <div class="mhdr">
-            <span class="mtitle">New Assignment</span>
-            <button class="mclose" onclick="closeM('mNewAssignment')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-            </button>
-        </div>
-        <div class="mbdy">
-            <div class="space-y-4">
-                <div>
-                    <label class="mlabel">Employee</label>
-                    <select class="minput" style="cursor:pointer">
-                        <option value="">-- Select Employee --</option>
-                        <option>Sarah Johnson (SM-8842)</option>
-                        <option>Michael Chen (SM-7123)</option>
-                        <option>Alex Rivera (SM-3390)</option>
-                        <option>Elena Rodriguez (SM-4412)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="mlabel">Department</label>
-                    <select class="minput" style="cursor:pointer">
-                        <option>Engineering</option>
-                        <option>Operations</option>
-                        <option>Customer Support</option>
-                        <option>Human Resources</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="mlabel">Shift</label>
-                    <select class="minput" style="cursor:pointer">
-                        <option>Morning (08:00 - 17:00)</option>
-                        <option>Afternoon (14:00 - 23:00)</option>
-                        <option>Night (22:00 - 07:00)</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="mlabel">Effective Date</label>
-                        <input type="date" class="minput">
-                    </div>
-                    <div>
-                        <label class="mlabel">End Date</label>
-                        <div class="relative">
-                            <input type="date" id="endDateInput" class="minput">
-                            <div class="flex items-center gap-2 mt-2">
-                                <input type="checkbox" id="permanentCheck" onchange="togglePermanent(this)" class="cursor-pointer">
-                                <label for="permanentCheck" style="font-size:12px;color:var(--text-3);cursor:pointer">Permanent</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-3 mt-6">
-                <button onclick="closeM('mNewAssignment')" class="flex-1 py-2.5 rounded-xl font-medium"
-                        style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">
-                    Cancel
-                </button>
-                <button class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">
-                    Save Assignment
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+@include('employee_shift_assignments.partials.create-modal')
+@include('employee_shift_assignments.partials.edit-modal')
+@include('employee_shift_assignments.partials.import-modal')
 
-{{-- ── MODAL: EDIT ASSIGNMENT ── --}}
-<div class="mbk" id="mEditAssignment" onclick="closeOut(event,'mEditAssignment')">
-    <div class="mbox" style="max-width:500px">
-        <div class="mhdr">
-            <span class="mtitle">Edit Assignment</span>
-            <button class="mclose" onclick="closeM('mEditAssignment')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-            </button>
-        </div>
-        <div class="mbdy">
-            <div class="space-y-4">
-                <div>
-                    <label class="mlabel">Employee</label>
-                    <input type="text" id="editAssignName" class="minput" readonly
-                           style="opacity:.7;cursor:not-allowed">
-                </div>
-                <div>
-                    <label class="mlabel">Shift</label>
-                    <select id="editAssignShift" class="minput" style="cursor:pointer">
-                        <option>Morning (08:00 - 17:00)</option>
-                        <option>Afternoon (14:00 - 23:00)</option>
-                        <option>Night (22:00 - 07:00)</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="mlabel">Effective Date</label>
-                        <input type="date" class="minput">
-                    </div>
-                    <div>
-                        <label class="mlabel">End Date</label>
-                        <input type="date" class="minput">
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-3 mt-6">
-                <button onclick="closeM('mEditAssignment')" class="flex-1 py-2.5 rounded-xl font-medium"
-                        style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">
-                    Cancel
-                </button>
-                <button class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">
-                    Save Changes
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+@if ($errors->has('file') || session('import_errors'))
+    <script>
+        document.addEventListener('DOMContentLoaded', () => openM('mImportAssignments'));
+    </script>
+@endif
 
 @endsection
 
@@ -469,8 +317,10 @@ function resetAssignFilters() {
     filterAssign();
 }
 
-function togglePermanent(cb) {
-    const input = document.getElementById('endDateInput');
+function togglePermanent(cb, targetId) {
+    const inputId = targetId || 'endDateInput';
+    const input = document.getElementById(inputId);
+    if (!input) return;
     input.disabled = cb.checked;
     input.style.opacity = cb.checked ? '.4' : '1';
     if (cb.checked) input.value = '';
@@ -532,11 +382,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // auto-fill department when employee selected in new modal
+    document.getElementById('newEmployee')?.addEventListener('change', e => {
+        const dept = e.target.selectedOptions[0]?.dataset.dept || '';
+        if (dept) document.getElementById('newDept').value = dept;
+    });
+
     // Edit
     document.getElementById('assignEditBtn').addEventListener('click', () => {
         if (!_activeAssignTrigger) return;
         closeAssignDD();
-        document.getElementById('editAssignName').value = _activeAssignTrigger.dataset.name;
+        const row = _activeAssignTrigger.closest('.assign-row');
+        const id = row.dataset.assignmentId;
+        const name = _activeAssignTrigger.dataset.name;
+        const form = document.getElementById('editAssignForm');
+        const baseUrl = '{{ url('employee_shift_assignments') }}';
+        form.action = `${baseUrl}/${id}`;
+        document.getElementById('editAssignName').value = name;
+        document.getElementById('editAssignShift').value = row.dataset.shiftCodeId || '';
+        document.getElementById('editEffDate').value = row.dataset.effectiveDate || '';
+        document.getElementById('editEndDate').value = row.dataset.endDate || '';
         openM('mEditAssignment');
     });
 
@@ -544,13 +409,22 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('assignReassignBtn').addEventListener('click', () => {
         if (!_activeAssignTrigger) return;
         closeAssignDD();
+        const row = _activeAssignTrigger.closest('.assign-row');
+        const empId = row.dataset.employeeId;
+        const dept = row.dataset.dept;
+        const selEmp = document.getElementById('newEmployee');
+        const selDept = document.getElementById('newDept');
+        if (selEmp && empId) selEmp.value = empId;
+        if (selDept && dept) selDept.value = dept;
         openM('mNewAssignment');
     });
 
     // Remove
     document.getElementById('assignRemoveBtn').addEventListener('click', () => {
         if (!_activeAssignTrigger) return;
+        const row = _activeAssignTrigger.closest('.assign-row');
         const name = _activeAssignTrigger.dataset.name;
+        const id   = row.dataset.assignmentId;
         closeAssignDD();
         Swal.fire({
             title: 'Remove Assignment?',
@@ -565,16 +439,7 @@ document.addEventListener('DOMContentLoaded', function () {
             color: '#e2e8f0',
         }).then(result => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Removed!',
-                    text: name + ' has been unassigned.',
-                    icon: 'success',
-                    background: '#1e1b2e',
-                    color: '#e2e8f0',
-                    confirmButtonColor: '#7c3aed',
-                    timer: 2000,
-                    timerProgressBar: true,
-                });
+                performDelete(id);
             }
         });
     });
@@ -586,6 +451,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     window.addEventListener('scroll', closeAssignDD, true);
 });
+
+function performDelete(id) {
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const form = document.createElement('form');
+    form.method = 'POST';
+    const baseUrl = '{{ url('employee_shift_assignments') }}';
+    form.action = `${baseUrl}/${id}`;
+    form.style.display = 'none';
+    form.innerHTML = `<input type="hidden" name="_token" value="${token}"><input type="hidden" name="_method" value="DELETE">`;
+    document.body.appendChild(form);
+    form.submit();
+}
 
 function closeAssignDD() {
     document.getElementById('assignActDD')?.classList.remove('show');

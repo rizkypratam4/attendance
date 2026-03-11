@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
             $table->foreignId('shift_code_id')->constrained('shift_codes')->cascadeOnDelete();
-            $table->date('effective_date');             // mulai berlaku
-            $table->date('end_date')->nullable();       // NULL = berlaku hingga diganti
+            $table->date('effective_date');             
+            $table->date('end_date')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('employees')->nullOnDelete();
             $table->timestamps();
 
