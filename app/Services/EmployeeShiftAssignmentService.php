@@ -115,12 +115,10 @@ class EmployeeShiftAssignmentService
                 if (!$emp && !empty($assoc['employee_id'])) {
                     $emp = Employee::find($assoc['employee_id']);
                 }
-
                 if (!$emp) {
                     throw new \Exception('Employee not found (' . ($assoc['nik'] ?? $assoc['employee_id'] ?? '').')');
                 }
 
-                // find shift code
                 $shiftCode = null;
                 if (!empty($assoc['shift_code'])) {
                     $shiftCode = ShiftCode::where('code', trim($assoc['shift_code']))->first();

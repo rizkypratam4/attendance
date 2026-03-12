@@ -28,7 +28,7 @@
             <tr class="emp-row" style="border-bottom:1px solid var(--border)"
                 data-name="{{ strtolower($employee->name . ' ' . ($employee->department?->name ?? '') . ' ' . $employee->nik . ' ' . $employee->position) }}">
                 <td class="px-5 py-3.5">
-                    {{ $loop->iteration }}
+                    {{ ($employees->currentPage() - 1) * $employees->perPage() + $loop->iteration }}
                 </td>
                 <td class="px-4 py-3.5">
                     <p style="font-size:14px;font-weight:700;color:var(--text-1)">{{ $employee->name }}</p>
@@ -39,7 +39,7 @@
                 <td class="px-4 py-3.5">
                     <span class="px-3 py-1 rounded-full font-bold"
                         style="font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;background:rgba(99,179,237,.18);color:#63b3ed">
-                        {{ $employee->department->name }}
+                        {{ $employee->department?->name }}
                     </span>
                 </td>
 
@@ -63,7 +63,6 @@
                             data-department-id="{{ $employee->department_id }}"
                             data-position="{{ $employee->position }}"
                             data-location-id="{{ $employee->location_id }}"
-                            data-title="{{ $employee->title }}"
                             data-employee-status="{{ $employee->employee_status }}"
                             data-contract-count="{{ $employee->contract_count }}"
                             data-is-active="{{ $employee->is_active }}"

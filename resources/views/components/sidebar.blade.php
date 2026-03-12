@@ -163,10 +163,6 @@
                     <a href="{{ route('shift_codes.index') }}" class="sub-a {{ $active === 'shift-codes' ? 'sub-act' : '' }}">
                         <span class="sl">Kode Shift</span>
                     </a>
-
-                    <a href="{{ route('shift_schedules.index') }}" class="sub-a {{ $active === 'shift-schedules' ? 'sub-act' : '' }}">
-                        <span class="sl">Jadwal Shift</span>
-                    </a>
                 </div>
             </div>
         </div>

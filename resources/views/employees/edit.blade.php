@@ -83,15 +83,6 @@
             </div>
 
             <div>
-                <label class="mlabel">Title</label>
-                <input type="text" id="editTitle" name="title" placeholder="Title" required
-                    class="minput @error('title') border-red-500 @enderror">
-                @error('title')
-                    <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
                 <label class="mlabel">Employee Status</label>
                 <input type="text" id="editEmployeeStatus" name="employee_status" placeholder="Employee Status" required
                     class="minput @error('employee_status') border-red-500 @enderror">

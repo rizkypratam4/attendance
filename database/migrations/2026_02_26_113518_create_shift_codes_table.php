@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shift_codes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shift_id')->constrained('shifts')->cascadeOnDelete();
+            $table->foreignId('shift_id')->nullable()->constrained('shifts')->nullOnDelete();
             $table->string('code', 20)->unique();
             $table->boolean('has_idt')->default(false);
             $table->timestamps();

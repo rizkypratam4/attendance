@@ -24,7 +24,6 @@ class EmployeeRequest extends FormRequest
             'department_id' => ['nullable', 'exists:departments,id'],
             'location_id' => ['nullable', 'exists:locations,id'],
             'position' => ['required', 'string', 'max:100'],
-            'title' => ['required', 'string', 'max:100'],
             'employee_status' => ['required', 'string', 'max:100'],
             'is_active' => ['required', 'boolean'],
         ];

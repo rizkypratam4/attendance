@@ -33,11 +33,6 @@ class ShiftScheduleRequest extends FormRequest
                     return $query->where('shift_code_id', $this->input('shift_code_id'));
                 })->ignore($scheduleId),
             ],
-            'schedule_code' => 'nullable|string|max:20',
-            'start_time' => 'nullable|regex:/^\d{2}:\d{2}(:\d{2})?$/',
-            'end_time' => 'nullable|regex:/^\d{2}:\d{2}(:\d{2})?$/',
-            'is_day_off' => 'boolean',
-            'is_overnight' => 'boolean',
         ];
     }
 
@@ -49,9 +44,6 @@ class ShiftScheduleRequest extends FormRequest
             'day_type.required' => 'Day type is required.',
             'day_type.in' => 'Invalid day type.',
             'day_type.unique' => 'Schedule for this day and shift code already exists.',
-            'schedule_code.max' => 'Schedule code must not exceed 20 characters.',
-            'start_time.regex' => 'Start time must be in HH:MM format.',
-            'end_time.regex' => 'End time must be in HH:MM format.',
         ];
     }
 }

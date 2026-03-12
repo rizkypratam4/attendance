@@ -43,7 +43,6 @@ Route::middleware('auth')->group(function () {
         'employee_shift_assignments' => EmployeeShiftAssignmentController::class,
     ]);
 
-    Route::resource('shift_schedules', ShiftScheduleController::class)->except(['show','edit']);
     Route::resource('shift_codes', ShiftCodeController::class)->except(['show','edit']);
 
     Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');

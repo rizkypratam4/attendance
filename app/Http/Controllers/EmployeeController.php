@@ -16,7 +16,7 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = Employee::with(['branch','department','location'])->latest()->paginate(10)->withQueryString();
+        $employees = Employee::with(['branch','department','location'])->paginate(10)->withQueryString();
         $branches = Branch::orderBy('name')->get();
         $departments = Department::orderBy('name')->get();
         $locations = Location::orderBy('name')->get();
@@ -27,7 +27,7 @@ class EmployeeController extends Controller
     public function import(Request $request, EmployeeImportService $importService)
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,xlsx,xls|max:5120',
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:10240',
         ]);
 
         try {

@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignId('department_id')->nullable()->constrained('departments')->cascadeOnUpdate()->restrictOnDelete();
             $table->string('position');
             $table->foreignId('location_id')->nullable()->constrained('locations')->cascadeOnUpdate()->restrictOnDelete();
-            $table->string('title');
             $table->string('employee_status');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
