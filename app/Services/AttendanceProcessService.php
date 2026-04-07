@@ -198,35 +198,19 @@ class AttendanceProcessService
             return Attendance::STATUS_ABSENT;
         }
 
+        // Jika ada keterlambatan
         if ($lateMinutes > 0) {
-            if ($this->isWithinLateTolerance($assignment, $clockIn)) {
-                return Attendance::STATUS_PRESENT;
+            // Untuk shift 1AA dan 1AB, batasi sampai jam 10:00
+            if (in_array($assignment?->shiftCode?->code, ['1AA', '1AB'])) {
+                $cutoffTime = Carbon::parse($clockIn->toDateString() . ' 10:00:00');
+                if ($clockIn->gt($cutoffTime)) {
+                    return Attendance::STATUS_ABSENT;
+                }
             }
             return Attendance::STATUS_LATE;
         }
 
         return Attendance::STATUS_PRESENT;
-    }
-
-    private function isWithinLateTolerance(
-        ?EmployeeShiftAssignment $assignment,
-        Carbon $clockIn
-    ): bool {
-        if (!$assignment?->shiftCode) return false;
-
-        $code    = $assignment->shiftCode->code;
-        $date    = $clockIn->toDateString();
-        $onTime  = $assignment->shiftCode->on_time;
-
-        if (!$onTime) return false;
-
-        if ($code === '1AA') {
-            $deadline = Carbon::parse($date . ' 10:00:00');
-        } else {
-            $deadline = Carbon::parse($date . ' ' . $onTime)->addHour();
-        }
-
-        return $clockIn->lte($deadline);
     }
 
     private function isDayOff(?EmployeeShiftAssignment $assignment): bool
