@@ -35,41 +35,6 @@
     :total="$total"
 />
 
-{{-- Stat Cards --}}
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <x-shift-groups.stat-card
-        label="Total Members"
-        value="634"
-        subtext="+12 this month"
-        subtext-color="#22c55e"
-        icon-bg="rgba(124,58,237,.18)"
-        icon='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-              </svg>'
-    />
-    <x-shift-groups.stat-card
-        label="Active Shifts"
-        value="12"
-        subtext="Across 4 groups"
-        icon-bg="rgba(124,58,237,.18)"
-        icon='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-              </svg>'
-    />
-    <x-shift-groups.stat-card
-        label="Roster Health"
-        value="98.2%"
-        subtext="Optimized"
-        subtext-color="#22c55e"
-        icon-bg="rgba(34,197,94,.15)"
-        icon='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>'
-    />
-</div>
 
 {{-- Modal --}}
 @include('shift_groups.create')

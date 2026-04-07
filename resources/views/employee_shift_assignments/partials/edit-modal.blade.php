@@ -13,38 +13,48 @@
                 @csrf
                 @method('patch')
                 <div class="space-y-4">
+
+                    {{-- Employee (readonly) --}}
                     <div>
                         <label class="mlabel">Employee</label>
-                        <input type="text" id="editAssignName" class="minput" readonly style="opacity:.7;cursor:not-allowed">
+                        <input type="text" id="editAssignName" class="minput" readonly
+                               style="opacity:.7;cursor:not-allowed">
                     </div>
+
+                    {{-- Shift Code --}}
                     <div>
-                        <label class="mlabel">Shift</label>
-                        <select id="editAssignShift" name="shift_code_id" class="minput" style="cursor:pointer">
+                        <label class="mlabel">Shift Code</label>
+                        <select id="editAssignShift" name="shift_code_id" class="minput" style="cursor:pointer" required>
                             <option value="">-- Select Shift --</option>
                             @foreach($shiftCodes as $sc)
                                 <option value="{{ $sc->id }}">
-                                    {{ $sc->code }}@if($sc->shift) ({{ ucfirst($sc->shift->name) }})@endif
+                                    {{ $sc->code }}
+                                    @if(!$sc->is_day_off && $sc->on_time)
+                                        — {{ \Carbon\Carbon::parse($sc->on_time)->format('H:i') }}
+                                        s/d {{ \Carbon\Carbon::parse($sc->off_time)->format('H:i') }}
+                                    @endif
+                                    @if($sc->shift) ({{ $sc->shift->name }}) @endif
                                 </option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="mlabel">Effective Date</label>
-                            <input type="date" name="effective_date" id="editEffDate" class="minput">
-                        </div>
-                        <div>
-                            <label class="mlabel">End Date</label>
-                            <input type="date" name="end_date" id="editEndDate" class="minput">
-                        </div>
+
+                    {{-- Tanggal --}}
+                    <div>
+                        <label class="mlabel">Tanggal</label>
+                        <input type="date" name="date" id="editAssignDate" class="minput" required>
                     </div>
+
                 </div>
-                <div class="flex gap" style="gap:1rem; margin-top:1.5rem;">
-                    <button type="button" onclick="closeM('mEditAssignment')" class="flex-1 py-2.5 rounded-xl font-medium"
+
+                <div class="flex gap-3 mt-6">
+                    <button type="button" onclick="closeM('mEditAssignment')"
+                            class="flex-1 py-2.5 rounded-xl font-medium"
                             style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">
                         Cancel
                     </button>
-                    <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">
+                    <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold"
+                            style="font-size:14px">
                         Save Changes
                     </button>
                 </div>

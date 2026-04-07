@@ -18,10 +18,11 @@ class ShiftSeeder extends Seeder
         ShiftCode::create(['shift_id' => $shift1->id, 'code' => '1PR', 'has_idt' => false]);
         ShiftCode::create(['shift_id' => $shift1->id, 'code' => '1PQ', 'has_idt' => false]);
         ShiftCode::create(['shift_id' => $shift1->id, 'code' => '1ZA', 'has_idt' => false]);
- 
+        ShiftCode::create(['shift_id' => $shift1->id, 'code' => '1AA Puasa', 'has_idt' => false]);
+        ShiftCode::create(['shift_id' => $shift1->id, 'code' => '1AB', 'has_idt' => false]);
+        ShiftCode::create(['shift_id' => $shift1->id, 'code' => '1PRB Puasa', 'has_idt' => false]);
 
         ShiftCode::create(['shift_id' => $shift2->id, 'code' => '2ZB', 'has_idt' => false]);
- 
         ShiftCode::create(['shift_id' => $shift3->id, 'code' => '3ZZ', 'has_idt' => false]);
         ShiftCode::create(['shift_id' => $shift3->id, 'code' => '3ZC', 'has_idt' => false]);
  

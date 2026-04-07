@@ -202,43 +202,7 @@
             </div>
         </div>
 
-        <div class="menu-group">
-            <button type="button" onclick="toggleSubmenu(this)" class="nav-a w-full text-left">
-                <svg class="flex-shrink-0" width="19" height="19" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                    <circle cx="12" cy="15" r="1" />
-                </svg>
-
-                <span class="sl flex-1">Schedules</span>
-
-                <span class="caret flex-shrink-0">
-                    <svg class="caretIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.5" style="transition:transform .3s">
-                        <path d="M6 9l6 6 6-6" />
-                    </svg>
-                </span>
-            </button>
-
-            <div class="submenu"
-                style="max-height:{{ in_array($active, ['schedule', 'calendar']) ? '200px' : '0' }};
-            overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
-                <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
-                    <a href="{{ route('employee_schedules.index') }}" class="sub-a {{ $active === 'schedule' ? 'sub-act' : '' }}">
-                        <span class="sl">Employee Schedule</span>
-                    </a>
-
-                    <a href="{{ route('calender_views.index') }}" class="sub-a {{ $active === 'calendar' ? 'sub-act' : '' }}">
-                        <span class="sl">Calender View</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="menu-group">
+        {{-- <div class="menu-group">
             <button type="button" onclick="toggleSubmenu(this)" class="nav-a w-full text-left">
                 <svg class="flex-shrink-0" width="19" height="19" viewBox="0 0 24 24"
                     fill="none" stroke="currentColor" stroke-width="2"
@@ -283,7 +247,7 @@
                     </a>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </nav>
 
     <div class="px-3 pb-5 pt-3" style="border-top:1px solid var(--border)">

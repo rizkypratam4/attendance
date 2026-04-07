@@ -64,11 +64,23 @@
                     </th>
                     <th class="text-left px-4 py-3.5 font-semibold"
                         style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                        Shift Name
+                        Shift
                     </th>
                     <th class="text-left px-4 py-3.5 font-semibold"
                         style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                        IDT Status
+                        Jam Masuk
+                    </th>
+                    <th class="text-left px-4 py-3.5 font-semibold"
+                        style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
+                        Jam Pulang
+                    </th>
+                    <th class="text-left px-4 py-3.5 font-semibold"
+                        style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
+                        Tipe
+                    </th>
+                    <th class="text-left px-4 py-3.5 font-semibold"
+                        style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
+                        IDT
                     </th>
                     <th class="text-left px-4 py-3.5 font-semibold"
                         style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
@@ -82,7 +94,11 @@
             </thead>
             <tbody>
                 @forelse($shiftCodes as $shiftCode)
-                <tr class="shift-row" style="border-bottom:1px solid var(--border)" data-code="{{ $shiftCode->code }}" data-name="{{ $shiftCode->shift->name ?? '' }}" data-status="{{ $shiftCode->has_idt ? 'active' : 'inactive' }}">
+                <tr class="shift-row" style="border-bottom:1px solid var(--border)"
+                    data-code="{{ $shiftCode->code }}"
+                    data-name="{{ $shiftCode->shift->name ?? '' }}"
+                    data-status="{{ $shiftCode->has_idt ? 'active' : 'inactive' }}">
+
                     <td class="px-5 py-4">
                         <p style="font-size:14px;font-weight:700;color:var(--text-1)">
                             {{ $shiftCode->code }}
@@ -90,6 +106,22 @@
                     </td>
                     <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">
                         {{ $shiftCode->shift->name ?? 'N/A' }}
+                    </td>
+                    <td class="px-4 py-4">
+                        <p style="font-size:14px;font-weight:600;color:var(--text-1)">
+                            {{ $shiftCode->on_time ?? '—' }}
+                        </p>
+                    </td>
+                    <td class="px-4 py-4">
+                        <p style="font-size:14px;font-weight:600;color:var(--text-1)">
+                            {{ $shiftCode->off_time ?? '—' }}
+                        </p>
+                    </td>
+                    <td class="px-4 py-4">
+                        <span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;
+                            {{ $shiftCode->is_day_off ? 'background:rgba(251,146,60,.15);color:#fb923c' : 'background:rgba(34,197,94,.15);color:#22c55e' }}">
+                            {{ $shiftCode->is_day_off ? 'Day Off' : 'Working Day' }}
+                        </span>
                     </td>
                     <td class="px-4 py-4">
                         <span class="px-2 py-1 rounded-full text-xs font-medium {{ $shiftCode->has_idt ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
@@ -129,7 +161,8 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="py-8 px-6 text-center text-gray-500" style="border-bottom:1px solid var(--border)">
+                    <td colspan="8" class="py-8 px-6 text-center text-gray-500"
+                        style="border-bottom:1px solid var(--border)">
                         No shift codes found.
                     </td>
                 </tr>

@@ -12,54 +12,46 @@
             <form action="{{ route('employee_shift_assignments.store') }}" method="post">
                 @csrf
                 <div class="space-y-4">
+
+                    {{-- Employee --}}
                     <div>
                         <label class="mlabel">Employee</label>
-                        <select name="employee_id" id="newEmployee" class="minput" style="cursor:pointer">
+                        <select name="employee_id" class="minput" style="cursor:pointer" required>
                             <option value="">-- Select Employee --</option>
                             @foreach($employees as $emp)
-                                <option value="{{ $emp->id }}" data-dept="{{ $emp->department?->name }}">
+                                <option value="{{ $emp->id }}">
                                     {{ $emp->name }} ({{ $emp->nik }})
                                 </option>
                             @endforeach
                         </select>
                     </div>
+
+                    {{-- Shift Code --}}
                     <div>
-                        <label class="mlabel">Department</label>
-                        <select name="department" id="newDept" class="minput" style="cursor:pointer">
-                            <option value="">-- Select Department --</option>
-                            @foreach($departments as $dept)
-                                <option value="{{ $dept->name }}">{{ $dept->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="mlabel">Shift</label>
-                        <select name="shift_code_id" class="minput" style="cursor:pointer">
+                        <label class="mlabel">Shift Code</label>
+                        <select name="shift_code_id" class="minput" style="cursor:pointer" required>
                             <option value="">-- Select Shift --</option>
                             @foreach($shiftCodes as $sc)
                                 <option value="{{ $sc->id }}">
-                                    {{ $sc->code }}@if($sc->shift) ({{ ucfirst($sc->shift->name) }})@endif
+                                    {{ $sc->code }}
+                                    @if(!$sc->is_day_off && $sc->on_time)
+                                        — {{ \Carbon\Carbon::parse($sc->on_time)->format('H:i') }}
+                                        s/d {{ \Carbon\Carbon::parse($sc->off_time)->format('H:i') }}
+                                    @endif
+                                    @if($sc->shift) ({{ $sc->shift->name }}) @endif
                                 </option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="mlabel">Effective Date</label>
-                            <input type="date" name="effective_date" class="minput" value="{{ old('effective_date') }}">
-                        </div>
-                        <div>
-                            <label class="mlabel">End Date</label>
-                            <div class="relative">
-                                <input type="date" name="end_date" id="newEndDateInput" class="minput">
-                                <div class="flex items-center gap-2 mt-2">
-                                    <input type="checkbox" id="newPermanentCheck" onchange="togglePermanent(this,'newEndDateInput')" class="cursor-pointer">
-                                    <label for="newPermanentCheck" style="font-size:12px;color:var(--text-3);cursor:pointer">Permanent</label>
-                                </div>
-                            </div>
-                        </div>
+
+                    {{-- Tanggal --}}
+                    <div>
+                        <label class="mlabel">Tanggal</label>
+                        <input type="date" name="date" class="minput" value="{{ old('date') }}" required>
                     </div>
+
                 </div>
+
                 <div class="flex gap-3 mt-6">
                     <button type="button" onclick="closeM('mNewAssignment')" class="flex-1 py-2.5 rounded-xl font-medium"
                             style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">

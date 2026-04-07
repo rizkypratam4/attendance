@@ -758,8 +758,6 @@ function selectEditColor(el, color) {
 }
 
 
-
-
 function openDeleteShiftCode(name, id) {
     Swal.fire({
         title: `Delete ${name}?`,

@@ -10,14 +10,12 @@ class EmployeeShiftAssignment extends Model
     protected $fillable = [
         'employee_id',
         'shift_code_id',
-        'effective_date',
-        'end_date',
+        'date',
         'created_by',
     ];
 
     protected $casts = [
-        'effective_date' => 'date',
-        'end_date'       => 'date',
+        'date' => 'date',
     ];
 
     public function employee(): BelongsTo

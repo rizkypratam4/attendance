@@ -2,7 +2,6 @@
     'employees' => [],
 ])
 
-
     <table class="w-full" style="border-collapse:collapse;min-width:640px">
         <thead>
             <tr style="border-bottom:1px solid var(--border)">

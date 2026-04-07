@@ -8,18 +8,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ShiftCode extends Model
 {
-    protected $fillable = ['shift_id', 'code', 'has_idt'];
+    protected $fillable = [
+        'shift_id',
+        'code',
+        'on_time',
+        'off_time',
+        'is_day_off',
+        'has_idt',
+    ];
 
-    protected $casts = ['has_idt' => 'boolean'];
+    protected $casts = [
+        'is_day_off' => 'boolean',
+        'has_idt'    => 'boolean',
+    ];
 
     public function shift(): BelongsTo
     {
         return $this->belongsTo(Shift::class);
-    }
-
-    public function schedules(): HasMany
-    {
-        return $this->hasMany(ShiftSchedule::class);
     }
 
     public function assignments(): HasMany
