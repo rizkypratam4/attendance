@@ -2,188 +2,321 @@
 
 @section('title', 'Sign In')
 
+@push('styles')
+<style>
+    body { background: #1a1b1f; }
+
+    .login-page {
+        min-height: 100vh;
+        background: #1a1b1f;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    /* Logo */
+    .logo-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 28px;
+    }
+    .logo-icon {
+        width: 44px;
+        height: 44px;
+        background: #7c3aed;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .logo-name {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+    }
+    .logo-sub {
+        color: #6b7280;
+        font-size: 13px;
+    }
+
+    /* Card */
+    .login-card {
+        background: #16171c;
+        border: 1px solid #2a2b32;
+        border-radius: 14px;
+        padding: 32px 28px;
+        width: 100%;
+        max-width: 400px;
+    }
+    .login-card h2 {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+    .login-card .card-sub {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 24px;
+    }
+
+    /* Error */
+    .error-box {
+        margin-bottom: 16px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: rgba(239,68,68,0.1);
+        border: 1px solid rgba(239,68,68,0.3);
+        color: #f87171;
+        font-size: 13px;
+    }
+
+    /* Fields */
+    .field { margin-bottom: 18px; }
+    .field label {
+        display: block;
+        color: #d1d5db;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+    .field .label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 7px;
+    }
+    .field .label-row label { margin-bottom: 0; }
+    .forgot-link {
+        color: #a78bfa;
+        font-size: 12px;
+        text-decoration: none;
+        transition: color .2s;
+    }
+    .forgot-link:hover { color: #c4b5fd; }
+
+    .input-wrap { position: relative; }
+    .input-wrap .icon-left {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 15px;
+        height: 15px;
+        color: #4b5563;
+        pointer-events: none;
+    }
+    .input-field {
+        width: 100%;
+        background: #0f1013;
+        border: 1px solid #2a2b32;
+        border-radius: 8px;
+        color: #e5e7eb;
+        font-size: 13.5px;
+        padding: 11px 38px;
+        outline: none;
+        transition: border-color .2s;
+    }
+    .input-field::placeholder { color: #374151; }
+    .input-field:focus { border-color: #7c3aed; }
+    .btn-eye {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #4b5563;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        transition: color .2s;
+    }
+    .btn-eye:hover { color: #9ca3af; }
+
+    /* Remember */
+    .remember-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+    }
+    .remember-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+    .remember-label input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+        accent-color: #7c3aed;
+        cursor: pointer;
+    }
+    .remember-label span { color: #9ca3af; font-size: 13px; }
+
+    /* Sign In Button */
+    .btn-signin {
+        width: 100%;
+        background: #7c3aed;
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background .2s;
+    }
+    .btn-signin:hover { background: #6d28d9; }
+
+    /* Bottom */
+    .contact-text {
+        text-align: center;
+        color: #6b7280;
+        font-size: 12px;
+        margin-top: 18px;
+    }
+    .contact-text a {
+        color: #a78bfa;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 22px;
+    }
+    .footer-links a {
+        color: #4b5563;
+        font-size: 11px;
+        text-decoration: none;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        transition: color .2s;
+    }
+    .footer-links a:hover { color: #9ca3af; }
+</style>
+@endpush
+
 @section('content')
-<div class="flex flex-col md:flex-row min-h-screen">
+<div class="login-page">
 
-    {{-- ═══ LEFT PANEL ═══ --}}
-    <div class="bg-left flex flex-col justify-center flex-1 relative overflow-hidden
-                px-6 py-10
-                sm:px-10 sm:py-12
-                lg:px-16 lg:py-16
-                xl:px-32 xl:py-24
-                2xl:px-40 2xl:py-28">
-
-        {{-- Logo --}}
-        <div class="flex items-center gap-3 mb-10 sm:mb-14 lg:mb-16 xl:mb-20">
-            <div class="w-9 h-9 xl:w-12 xl:h-12 rounded-lg bg-purple-600
-                        flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 xl:w-7 xl:h-7" viewBox="0 0 20 20" fill="none">
-                    <rect x="2"  y="2"  width="7" height="7" rx="1.5" fill="white" />
-                    <rect x="11" y="2"  width="7" height="7" rx="1.5" fill="white" />
-                    <rect x="2"  y="11" width="7" height="7" rx="1.5" fill="white" />
-                    <rect x="11" y="11" width="7" height="7" rx="1.5" fill="white" />
-                </svg>
-            </div>
-            <span class="text-white font-bold text-xl xl:text-2xl 2xl:text-3xl tracking-tight">
-                Attendance<span class="text-purple-400 font-semibold">Pro</span>
-            </span>
+    {{-- Logo --}}
+    <div class="logo-wrap">
+        <div class="logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
         </div>
-
-        {{-- Headline --}}
-        <h1 class="font-black text-white leading-tight mb-4
-                   text-3xl sm:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl">
-            Precision workforce<br />
-            <span class="text-purple-500">management.</span>
-        </h1>
-
-        {{-- Subtext --}}
-        <p class="text-gray-400 leading-relaxed mb-10 sm:mb-12 xl:mb-14
-                  text-sm sm:text-base xl:text-lg
-                  max-w-xs sm:max-w-sm lg:max-w-xs xl:max-w-md 2xl:max-w-lg">
-            The ultimate high-performance dashboard for modern enterprise teams.
-            Real-time insights, automated reporting, and seamless integration.
-        </p>
-
-        {{-- Stat Card --}}
-        <div class="stat-card rounded-xl px-4 py-3 sm:px-5 sm:py-4 xl:px-7 xl:py-5
-                    flex items-center gap-4 xl:gap-5
-                    w-full max-w-xs sm:max-w-sm xl:max-w-md">
-            <div class="flex items-center flex-shrink-0">
-                <img class="avatar xl:!w-11 xl:!h-11" src="https://i.pravatar.cc/36?img=11" alt="" />
-                <img class="avatar xl:!w-11 xl:!h-11" src="https://i.pravatar.cc/36?img=22" alt="" />
-                <img class="avatar xl:!w-11 xl:!h-11" src="https://i.pravatar.cc/36?img=33" alt="" />
-            </div>
-            <div>
-                <p class="text-white font-bold text-sm xl:text-base">94% Attendance</p>
-                <p class="text-gray-500 text-xs xl:text-sm">Real-time team performance active</p>
-            </div>
-        </div>
+        <span class="logo-name">AttendancePro</span>
+        <span class="logo-sub">Manage your attendance and shifts</span>
     </div>
 
-    {{-- ═══ RIGHT PANEL / FORM ═══ --}}
-    <div class="form-card flex flex-col justify-center
-                px-6 py-10
-                sm:px-10 sm:py-12
-                lg:px-12 lg:py-16
-                xl:px-16 xl:py-24
-                2xl:px-20 2xl:py-28
-                w-full
-                md:w-[340px] lg:w-[400px] xl:w-[520px] 2xl:w-[580px]
-                md:flex-shrink-0">
+    {{-- Card --}}
+    <div class="login-card">
+        <h2>Welcome Back</h2>
+        <p class="card-sub">Please enter your details to access your account.</p>
 
-        <h2 class="text-white font-bold mb-1 text-xl sm:text-2xl xl:text-3xl 2xl:text-4xl">
-            Welcome Back
-        </h2>
-        <p class="text-gray-400 text-sm xl:text-base mb-7 sm:mb-8 xl:mb-10">
-            Enter your professional credentials to continue.
-        </p>
-
-        {{-- Session errors --}}
         @if ($errors->any())
-            <div class="mb-5 p-3 rounded-lg bg-red-500/10 border border-red-500/30">
-                <p class="text-red-400 text-sm">{{ $errors->first() }}</p>
-            </div>
+            <div class="error-box">{{ $errors->first() }}</div>
         @endif
 
         <form method="POST" action="{{ route('login.post') }}">
             @csrf
+
             {{-- Email --}}
-            <div class="mb-5 xl:mb-6">
-                <label class="block text-gray-300 text-xs xl:text-sm font-semibold mb-2 tracking-wide">
-                    Work Email Address
-                </label>
-                <div class="relative">
-                    <span class="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                        <svg class="w-4 h-4 xl:w-5 xl:h-5" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="4" width="20" height="16" rx="2" />
-                            <path d="m22 7-10 7L2 7" />
-                        </svg>
-                    </span>
-                    <input type="email" name="email" placeholder="name@company.com"
+            <div class="field">
+                <label>Email Address</label>
+                <div class="input-wrap">
+                    <svg class="icon-left" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="4" width="20" height="16" rx="2"/>
+                        <path d="m22 7-10 7L2 7"/>
+                    </svg>
+                    <input type="email" name="email" class="input-field"
+                           placeholder="name@company.com"
                            value="{{ old('email') }}"
-                           class="input-field rounded-lg pl-10 xl:pl-12 pr-4 py-3 xl:py-4 text-sm xl:text-base"
                            autocomplete="email" required />
                 </div>
             </div>
 
             {{-- Password --}}
-            <div class="mb-5 xl:mb-6">
-                <div class="flex justify-between items-center mb-2">
-                    <label class="text-gray-300 text-xs xl:text-sm font-semibold tracking-wide">Password</label>
+            <div class="field">
+                <div class="label-row">
+                    <label>Password</label>
                     @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}"
-                           class="text-purple-400 text-xs xl:text-sm hover:text-purple-300 transition-colors">
+                        <a href="{{ route('password.request') }}" class="forgot-link">
                             Forgot Password?
                         </a>
                     @endif
                 </div>
-                <div class="relative">
-                    <span class="absolute left-3 xl:left-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                        <svg class="w-4 h-4 xl:w-5 xl:h-5" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" />
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                        </svg>
-                    </span>
+                <div class="input-wrap">
+                    <svg class="icon-left" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
                     <input type="password" id="pwInput" name="password"
-                           class="input-field rounded-lg pl-10 xl:pl-12 pr-11 py-3 xl:py-4 text-sm xl:text-base"
+                           class="input-field" style="padding-right: 40px;"
                            autocomplete="current-password" required />
-                    <button type="button" onclick="togglePw()"
-                            class="absolute right-3 xl:right-4 top-1/2 -translate-y-1/2
-                                   text-gray-500 hover:text-gray-300 transition-colors">
-                        <svg id="eyeIcon" class="w-4 h-4 xl:w-5 xl:h-5" viewBox="0 0 24 24"
+                    <button type="button" class="btn-eye" onclick="togglePw()">
+                        <svg id="eyeIcon" width="15" height="15" viewBox="0 0 24 24"
                              fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                            <circle cx="12" cy="12" r="3" />
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
                         </svg>
                     </button>
                 </div>
             </div>
 
             {{-- Remember --}}
-            <div class="flex items-center gap-2 mb-7 xl:mb-8">
-                <input type="checkbox" id="remember" name="remember"
-                       class="w-4 h-4 xl:w-5 xl:h-5 rounded border-gray-600 bg-transparent
-                              accent-purple-600 cursor-pointer" />
-                <label for="remember" class="text-gray-400 text-sm xl:text-base cursor-pointer select-none">
-                    Remember this session
+            <div class="remember-row">
+                <label class="remember-label">
+                    <input type="checkbox" name="remember" />
+                    <span>Remember me</span>
                 </label>
             </div>
 
-            {{-- Sign In Button --}}
-            <button type="submit"
-                    class="btn-signin w-full py-3 xl:py-4 rounded-lg text-white font-semibold
-                           text-sm xl:text-base flex items-center justify-center gap-2">
+            {{-- Submit --}}
+            <button type="submit" class="btn-signin">
                 Sign In
-                <svg class="w-4 h-4 xl:w-5 xl:h-5" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2.5">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke="white" stroke-width="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
             </button>
-
         </form>
 
-        {{-- Contact Admin --}}
-        <p class="text-center text-gray-500 text-xs xl:text-sm mt-6 xl:mt-8">
-            Don't have an account?
-            <a href="mailto:admin@company.com"
-               class="text-purple-400 font-semibold hover:text-purple-300 transition-colors">
-                Contact Administrator
-            </a>
+        <p class="contact-text">
+            Don't have an account yet?
+            <a href="mailto:admin@company.com">Contact HR</a>
         </p>
-
-        {{-- Footer Links --}}
-        <div class="flex justify-center gap-5 mt-8 xl:mt-10">
-            <a href="#" class="text-gray-600 text-xs xl:text-sm hover:text-gray-400 transition-colors">
-                Privacy Policy
-            </a>
-            <a href="#" class="text-gray-600 text-xs xl:text-sm hover:text-gray-400 transition-colors">
-                Terms of Service
-            </a>
-        </div>
-
     </div>
+
+    {{-- Footer --}}
+    <div class="footer-links">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Support</a>
+    </div>
+
 </div>
 @endsection
 

@@ -29,7 +29,7 @@
 <div class="card rounded-2xl p-5 mb-6">
     <form method="POST" action="{{ route('process_attendances.process') }}" id="processForm">
         @csrf
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
 
             {{-- Start Date --}}
             <div>
@@ -65,24 +65,6 @@
                 @error('end_date')
                     <p style="font-size:11px;color:#f87171;margin-top:4px">{{ $message }}</p>
                 @enderror
-            </div>
-
-            {{-- Department (info only) --}}
-            <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Department</label>
-                <div class="relative">
-                    <select class="w-full px-4 py-2.5 rounded-xl appearance-none"
-                            style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13.5px;cursor:pointer;outline:none;font-family:inherit"
-                            disabled>
-                        <option>All Departments</option>
-                        @foreach($departments as $dept)
-                            <option>{{ $dept->name }}</option>
-                        @endforeach
-                    </select>
-                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2">
-                        <path d="M6 9l6 6 6-6"/>
-                    </svg>
-                </div> 
             </div>
 
             {{-- Submit --}}

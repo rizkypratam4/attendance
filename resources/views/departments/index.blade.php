@@ -63,12 +63,6 @@
             <x-ui.pagination-footer :paginator="$departments" />
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <x-departments.stat-card icon="grid" color="purple" label="Total Depts" value="15" />
-        <x-departments.stat-card icon="shield" color="green" label="Active Heads" value="12" />
-        <x-departments.stat-card icon="users" color="orange" label="Open Roles" value="08" />
-    </div>
-
     @include('departments.create')
     @include('departments.edit')
 

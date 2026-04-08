@@ -17,14 +17,18 @@
             </span>
         </p>
     </div>
-    <button class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold flex-shrink-0"
-            style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-2);font-size:13.5px;cursor:pointer">
+    <a href="{{ route('attendances.export-pdf', request()->only(['date', 'shift_code', 'department', 'status'])) }}"
+       class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold flex-shrink-0"
+       style="background:var(--bg-card);border:1px solid var(--border);color:var(--text-2);font-size:13.5px;cursor:pointer;text-decoration:none;transition:background .15s"
+       title="Download attendance data as PDF"
+       onmouseover="this.style.background='rgba(124,58,237,.1)'" 
+       onmouseout="this.style.background='var(--bg-card)'">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="18" height="18" rx="2"/>
             <path d="M3 9h18M9 21V9"/>
         </svg>
         Download PDF
-    </button>
+    </a>
 </div>
 
 {{-- ── FILTER BAR ── --}}

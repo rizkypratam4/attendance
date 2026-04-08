@@ -9,7 +9,7 @@
                 style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Role</th>
             <th class="text-left px-4 py-3 font-semibold"
                 style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Status</th>
-            <th class="text-left px-4 py-3 font-semibold"
+            <th class="text-left px-5 py-3 font-semibold"
                 style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Last Login</th>
             <th class="text-right px-5 py-3 font-semibold"
                 style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Actions</th>

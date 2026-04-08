@@ -26,7 +26,10 @@ Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Attendance routes - define before resources
     Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+    Route::get('/attendances/export-pdf', [AttendanceController::class, 'exportPdf'])->name('attendances.export-pdf');
 
     Route::resources([
         'locations' => LocationController::class,

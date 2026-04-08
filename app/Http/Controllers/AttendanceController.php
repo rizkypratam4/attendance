@@ -63,4 +63,75 @@ class AttendanceController extends Controller
             'attendances', 'stats', 'departments', 'shiftCodes', 'date', 'status'
         ));
     }
+
+    /**
+     * Export attendance data to PDF with applied filters
+     */
+    public function exportPdf(Request $request)
+    {
+        $date    = $request->input('date', today()->toDateString());
+        $shiftId = $request->input('shift_code');
+        $deptId  = $request->input('department');
+        $status  = $request->input('status');
+
+        // Build base query with all filters (except status) - same as index
+        $baseQuery = Attendance::with(['employee.department', 'shiftCode.shift'])
+            ->whereDate('attendance_date', $date);
+
+        if ($shiftId) {
+            $baseQuery->where('shift_code_id', $shiftId);
+        }
+
+        if ($deptId) {
+            $baseQuery->whereHas('employee', fn($q) => $q->where('department_id', $deptId));
+        }
+
+        // Apply status filter only if provided
+        $query = clone $baseQuery;
+        
+        if ($status) {
+            if ($status === 'present') {
+                $query->whereIn('status', ['present', 'late']);
+            } else {
+                $query->where('status', $status);
+            }
+        }
+
+        // Get all data without pagination for PDF
+        $attendances = $query->orderBy('clock_in', 'desc')->get();
+
+        // Calculate stats based on filtered query
+        $presentCount = (clone $baseQuery)->where('status', 'present')->count();
+        $lateCount    = (clone $baseQuery)->where('status', 'late')->count();
+
+        $stats = [
+            'present' => $presentCount,
+            'late'    => $lateCount,
+            'present_including_late' => $presentCount + $lateCount,
+            'absent'  => (clone $baseQuery)->where('status', 'absent')->count(),
+            'day_off' => (clone $baseQuery)->where('status', 'day_off')->count(),
+            'total'   => (clone $baseQuery)->count(),
+        ];
+
+        $departments = Department::orderBy('name')->get();
+        $shiftCodes  = ShiftCode::orderBy('code')->get();
+
+        // Prepare PDF data
+        $data = [
+            'attendances' => $attendances,
+            'stats' => $stats,
+            'date' => $date,
+            'status' => $status,
+            'deptId' => $deptId,
+            'shiftId' => $shiftId,
+            'departments' => $departments,
+            'shiftCodes' => $shiftCodes,
+        ];
+
+        // Generate PDF using Dompdf
+        $pdf = \PDF::loadView('attendances.pdf', $data);
+        $filename = 'attendance_' . $date . '.pdf';
+        
+        return $pdf->download($filename);
+    }
 }

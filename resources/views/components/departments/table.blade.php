@@ -9,10 +9,7 @@
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
                 Department Name
             </th>
-            <th class="text-left px-6 py-3.5 font-semibold"
-                style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                Head of Dept
-            </th>
+          
             <th class="text-left px-6 py-3.5 font-semibold"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
                 Total Employees
@@ -40,15 +37,6 @@
                             <p style="font-size:15px;font-weight:700;color:var(--text-1)">{{ $department->name }}</p>
                             <p style="font-size:12px;color:var(--text-3)">{{ $department->subtitle }}</p>
                         </div>
-                    </div>
-                </td>
-                <td class="px-6 py-4">
-                    <div class="flex items-center gap-3">
-                        <img src="{{ $department->head_of_dept->avatar ?? 'https://i.pravatar.cc/36?img=5' }}"
-                            class="w-9 h-9 rounded-full object-cover flex-shrink-0"
-                            alt="{{ $department->head_of_dept->name ?? 'No Head' }}">
-                        <span
-                            style="font-size:14px;font-weight:500;color:var(--text-1)">{{ $department->head_of_dept->name ?? 'No Head' }}</span>
                     </div>
                 </td>
                 <td class="px-6 py-4">
