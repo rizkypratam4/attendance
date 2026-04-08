@@ -85,6 +85,14 @@
             </div>
             <div class="mt-5 text-center">
                 <a href="{{ route('attendances.index') }}"
+
+                @foreach ($recentActivity ?? $defaultActivity as $act)
+                    <x-activity-row :activity="$act" />
+                @endforeach
+            </div>
+            <div class="mt-5 text-center">
+                <a href="#"
+
                    style="font-size:13px;color:#a78bfa;font-weight:600;"
                    onmouseover="this.style.color='#7c3aed'" onmouseout="this.style.color='#a78bfa'">
                     VIEW ALL ACTIVITY

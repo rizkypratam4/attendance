@@ -59,4 +59,8 @@ class LocationController extends Controller
         $this->locationService->deleteLocation($location);
         return redirect()->route('locations.index');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7c67ef7f61430f43a52ad45bfb0a02d63d20c38d
