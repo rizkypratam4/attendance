@@ -167,13 +167,8 @@
                 <span style="margin-left:auto;font-size:10px;background:rgba(34,197,94,.2);color:#22c55e;padding:2px 8px;border-radius:20px;white-space:nowrap">Aktif ✓</span>
             @endif
         </div>
-<<<<<<< HEAD
         <p style="font-size:32px;font-weight:800;color:#ffffff;line-height:1">{{ $stats['present_including_late'] }}</p>
         <p style="font-size:12px;color:#22c55e;margin-top:6px">{{ $stats['present'] }} hadir + {{ $stats['late'] }} terlambat</p>
-=======
-        <p style="font-size:32px;font-weight:800;color:#ffffff;line-height:1">{{ $stats['present'] }}</p>
-        <p style="font-size:12px;color:#22c55e;margin-top:6px">termasuk {{ $stats['late'] }} terlambat</p>
->>>>>>> 7c67ef7f61430f43a52ad45bfb0a02d63d20c38d
     </a>
 
     {{-- Terlambat --}}

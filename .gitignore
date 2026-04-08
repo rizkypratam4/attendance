@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-node_modules
-=======
 *.log
 .DS_Store
 .env
@@ -25,4 +22,3 @@ node_modules
 Homestead.json
 Homestead.yaml
 Thumbs.db
->>>>>>> 7c67ef7f61430f43a52ad45bfb0a02d63d20c38d

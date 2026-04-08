@@ -17,7 +17,7 @@
             {{-- Sync Button --}}
             <div class="flex items-center gap-2">
                 {{-- Sync Hari Ini --}}
-                <form method="POST" action="{{ route('fingerprint.sync') }}" id="syncForm">
+                <form method="POST" action="{{ route('fingerprint.sync') }}" id="syncForm" class="mt-4">
                     @csrf
                     <button type="submit" id="syncBtn"
                         class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold"
