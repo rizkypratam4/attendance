@@ -16,17 +16,21 @@ class AttendanceController extends Controller
         $deptId  = $request->input('department');
         $status  = $request->input('status');
 
-        $query = Attendance::with(['employee.department', 'shiftCode.shift'])
+        // Build base query with all filters (except status)
+        $baseQuery = Attendance::with(['employee.department', 'shiftCode.shift'])
             ->whereDate('attendance_date', $date);
 
         if ($shiftId) {
-            $query->where('shift_code_id', $shiftId);
+            $baseQuery->where('shift_code_id', $shiftId);
         }
 
         if ($deptId) {
-            $query->whereHas('employee', fn($q) => $q->where('department_id', $deptId));
+            $baseQuery->whereHas('employee', fn($q) => $q->where('department_id', $deptId));
         }
 
+        // Apply status filter only to the display query
+        $query = clone $baseQuery;
+        
         if ($status) {
             // Jika filter status = 'present', tampilkan karyawan yang hadir dan terlambat
             if ($status === 'present') {
@@ -37,10 +41,9 @@ class AttendanceController extends Controller
         }
 
         // Sort berdasarkan clock_in terbaru (descending)
-        $attendances = $query->orderBy('clock_in', 'desc')->paginate(25)->withQueryString();
+        $attendances = $query->orderBy('clock_in', 'desc')->paginate(10)->withQueryString();
 
-        $baseQuery = Attendance::whereDate('attendance_date', $date);
-
+        // Calculate stats based on filtered query (with date, shift, department filters)
         $presentCount = (clone $baseQuery)->where('status', 'present')->count();
         $lateCount    = (clone $baseQuery)->where('status', 'late')->count();
 

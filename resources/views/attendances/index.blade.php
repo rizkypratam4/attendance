@@ -388,9 +388,6 @@
                                 <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
                             </svg>
                             <p style="font-size:14px;font-weight:600;color:var(--text-3)">Tidak ada data attendance</p>
-                            <p style="font-size:12px;color:var(--text-3);margin-top:4px;opacity:.6">
-                                Jalankan <code style="background:rgba(255,255,255,.1);padding:2px 6px;border-radius:4px">php artisan attendance:process</code>
-                            </p>
                         </td>
                     </tr>
                 @endforelse
