@@ -16,7 +16,32 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = Employee::with(['branch','department','location'])->paginate(10)->withQueryString();
+        $query = Employee::query();
+        
+        // Search
+        if (request('search')) {
+            $search = '%' . request('search') . '%';
+            $query->where('name', 'like', $search)
+                  ->orWhere('nik', 'like', $search)
+                  ->orWhere('machine_barcode', 'like', $search);
+        }
+        
+        // Filter by department
+        if (request('department')) {
+            $query->where('department_id', request('department'));
+        }
+        
+        // Filter by branch
+        if (request('branch')) {
+            $query->where('branch_id', request('branch'));
+        }
+        
+        // Filter by status
+        if (request('status')) {
+            $query->where('is_active', request('status'));
+        }
+        
+        $employees = $query->with(['branch', 'department', 'location'])->paginate(10)->withQueryString();
         $branches = Branch::orderBy('name')->get();
         $departments = Department::orderBy('name')->get();
         $locations = Location::orderBy('name')->get();

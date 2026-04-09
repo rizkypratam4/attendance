@@ -11,7 +11,20 @@ class BranchController extends Controller
     public function __construct(private BranchService $branchService){}
     public function index()
     {
-        $branches = Branch::latest()->paginate(5)->withQueryString();
+        $query = Branch::query();
+        
+        // Search
+        if (request('search')) {
+            $search = '%' . request('search') . '%';
+            $query->where('name', 'like', $search);
+        }
+        
+        // Filter
+        if (request('status')) {
+            $query->where('is_active', request('status'));
+        }
+        
+        $branches = $query->latest()->paginate(10)->withQueryString();
         return view('branches.index', compact('branches'));
     }
 

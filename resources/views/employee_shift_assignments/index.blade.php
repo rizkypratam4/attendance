@@ -50,66 +50,21 @@
 </div>
 
 {{-- ── SEARCH + FILTER BAR ── --}}
-<div class="card rounded-2xl px-4 py-3 mb-5">
-    <div class="flex flex-wrap items-center gap-3">
-
-        {{-- Search --}}
-        <div class="flex items-center gap-2 px-3 py-2.5 rounded-xl flex-1"
-             style="background:var(--bg-input);border:1px solid var(--border-in);min-width:200px">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-            </svg>
-            <input type="text" id="assignSearch" placeholder="Search by employee name or ID..."
-                   oninput="filterAssign()"
-                   style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13px;width:100%;font-family:inherit">
-        </div>
-
-        {{-- Department --}}
-        <div class="relative flex-shrink-0">
-            <select id="deptFilter" onchange="filterAssign()"
-                    class="px-4 py-2.5 rounded-xl appearance-none pr-8 font-medium"
-                    style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;outline:none;cursor:pointer;font-family:inherit">
-                <option value="">All Departments</option>
-                <option value="Engineering">Engineering</option>
-                <option value="Operations">Operations</option>
-                <option value="Customer Support">Customer Support</option>
-                <option value="Human Resources">Human Resources</option>
-            </select>
-            <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5">
-                <path d="M6 9l6 6 6-6"/>
-            </svg>
-        </div>
-
-        {{-- Shift Group --}}
-        <div class="relative flex-shrink-0">
-            <select id="shiftFilter" onchange="filterAssign()"
-                    class="px-4 py-2.5 rounded-xl appearance-none pr-8 font-medium"
-                    style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;outline:none;cursor:pointer;font-family:inherit">
-                <option value="">All Shift Groups</option>
-                <option value="morning">Morning</option>
-                <option value="afternoon">Afternoon</option>
-                <option value="night">Night</option>
-                <option value="unassigned">Unassigned</option>
-            </select>
-            <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5">
-                <path d="M6 9l6 6 6-6"/>
-            </svg>
-        </div>
-
-        {{-- Reset --}}
-        <button onclick="resetAssignFilters()"
-                class="flex items-center gap-1.5 flex-shrink-0"
-                style="font-size:13px;font-weight:600;color:#a78bfa;background:none;border:none;cursor:pointer">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="1 4 1 10 7 10"/>
-                <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
-            </svg>
-            Reset Filters
-        </button>
-
-    </div>
-</div>
+<x-search-filter 
+    searchId="assignSearch"
+    searchPlaceholder="Search by employee name or ID..."
+    :filters="[
+        [
+            'id' => 'department',
+            'label' => 'All Departments',
+            'options' => $departments->pluck('name', 'id')->toArray()
+        ],
+        [
+            'id' => 'shift_code',
+            'label' => 'All Shift Code',
+            'options' => $shiftCodes->pluck('code', 'id')->toArray()
+        ]
+    ]" />
 
 {{-- ── TABLE ── --}}
 <div class="card rounded-2xl" style="overflow:hidden">

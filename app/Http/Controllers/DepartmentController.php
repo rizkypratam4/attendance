@@ -13,7 +13,16 @@ class DepartmentController extends Controller
     
     public function index()
     {
-        $departments = Department::latest()->paginate(5)->withQueryString();
+        $query = Department::withCount('employees');
+        
+        // Search
+        if (request('search')) {
+            $search = '%' . request('search') . '%';
+            $query->where('name', 'like', $search)
+                  ->orWhere('subtitle', 'like', $search);
+        }
+        
+        $departments = $query->latest()->paginate(10)->withQueryString();
         return view('departments.index', compact('departments'));
     }
 

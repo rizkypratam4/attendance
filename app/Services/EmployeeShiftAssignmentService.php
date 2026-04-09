@@ -16,8 +16,30 @@ class EmployeeShiftAssignmentService
 {
     public function getAll(int $perPage = 20)
     {
-        return EmployeeShiftAssignment::with(['employee', 'shiftCode.shift'])
-            ->paginate($perPage);
+        $query = EmployeeShiftAssignment::with(['employee', 'shiftCode.shift']);
+        
+        // Search
+        if (request('search')) {
+            $search = '%' . request('search') . '%';
+            $query->whereHas('employee', function ($q) use ($search) {
+                $q->where('name', 'like', $search)
+                  ->orWhere('nik', 'like', $search);
+            });
+        }
+        
+        // Filter by department
+        if (request('department')) {
+            $query->whereHas('employee', function ($q) {
+                $q->where('department_id', request('department'));
+            });
+        }
+        
+        // Filter by shift code
+        if (request('shift_code')) {
+            $query->where('shift_code_id', request('shift_code'));
+        }
+        
+        return $query->paginate($perPage);
     }
 
     public function createAssignment(array $data): EmployeeShiftAssignment

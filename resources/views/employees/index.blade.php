@@ -55,26 +55,36 @@
                 </ul>
             </div>
         @endif
-        <div class="px-5 py-4" style="border-bottom:1px solid var(--border)">
-            <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl"
-                style="background:var(--bg-input);border:1px solid var(--border-in);max-width:380px">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)"
-                    stroke-width="2" class="flex-shrink-0">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="M21 21l-4.35-4.35" />
-                </svg>
-                <input type="text" id="empSearch" 
-                    placeholder="Search by name, ID, or department..."
-                    oninput="filterEmployees()"
-                    style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit">
-            </div>
-        </div>
+
+        {{-- ── SEARCH + FILTER ── --}}
+        <x-search-filter 
+            searchId="empSearch"
+            searchPlaceholder="Search by name, NIK, or barcode..."
+            :filters="[
+                [
+                    'id' => 'department',
+                    'label' => 'All Departments',
+                    'options' => $departments->pluck('name', 'id')->toArray()
+                ],
+                [
+                    'id' => 'branch',
+                    'label' => 'All Branches',
+                    'options' => $branches->pluck('name', 'id')->toArray()
+                ],
+                [
+                    'id' => 'status',
+                    'label' => 'Employee Status',
+                    'options' => [
+                        '1' => 'Active',
+                        '0' => 'Inactive'
+                    ]
+                ]
+            ]" />
 
         <div class="overflow-x-auto">
             <x-employees.table :employees="$employees" />
             <x-ui.pagination-footer :paginator="$employees" />
         </div>
-    
 
     </div>
 

@@ -23,7 +23,20 @@
         </button>
     </div>
 
-    <x-filter-bar />
+    {{-- ── SEARCH + FILTER ── --}}
+    <x-search-filter 
+        searchId="branchSearch"
+        searchPlaceholder="Search branches by name, code, or address..."
+        :filters="[
+            [
+                'id' => 'status',
+                'label' => 'All Branch Status',
+                'options' => [
+                    '1' => 'Active',
+                    '0' => 'Inactive'
+                ]
+            ]
+        ]" />
 
     {{-- ── BRANCHES TABLE ── --}}
     <div class="card rounded-2xl mb-5" style="overflow:hidden">
