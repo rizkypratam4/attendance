@@ -1,20 +1,16 @@
 @props(['active' => 'dashboard'])
 
 <aside id="sidebar" class="flex flex-col">
-    <div class="flex items-center justify-between px-5 py-5"
-        style="border-bottom:1px solid var(--border); min-height:72px;">
-        <div class="flex items-center gap-3 min-w-0">
-            <div class="w-10 h-10 flex-shrink-0 purbtn rounded-xl flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                    <rect x="14" y="3" width="7" height="7" rx="1.5" />0
-                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
-                </svg>
+    <div class="flex items-center justify-between px-5"
+        style="border-bottom:1px solid var(--border); height:72px;">
+        <div class="flex items-center gap-2 min-w-0">
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+                <img src="{{ asset('images/logo_cni.png') }}" alt="Logo CNI" class="w-10 h-10 object-contain">
+                <img src="{{ asset('images/logo_csi.png') }}" alt="Logo CSI" class="w-10 h-10 object-contain">
             </div>
-            <div class="logo-txt">
-                <div style="font-size:16px;font-weight:700;color:var(--text-1);line-height:1.2">Attendance</div>
-                <div style="font-size:12px;color:#a78bfa;font-weight:500">Admin Portal</div>
+        
+            <div class="logo-txt min-w-0">
+                <div style="font-size:15px;font-weight:700;color:var(--text-1);line-height:1.1">Attendances</div>
             </div>
         </div>
 

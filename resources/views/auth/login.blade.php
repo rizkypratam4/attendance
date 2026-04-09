@@ -216,14 +216,9 @@
 
     {{-- Logo --}}
     <div class="logo-wrap">
-        <div class="logo-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
+        <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+            <img src="{{ asset('images/logo_cni.png') }}" alt="Logo CNI" style="width: 50px; height: 50px; object-fit: contain;">
+            <img src="{{ asset('images/logo_csi.png') }}" alt="Logo CSI" style="width: 50px; height: 50px; object-fit: contain;">
         </div>
         <span class="logo-name">AttendancePro</span>
         <span class="logo-sub">Manage your attendance and shifts</span>
@@ -274,6 +269,7 @@
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                     <input type="password" id="pwInput" name="password"
+                           placeholder="Enter your password"
                            class="input-field" style="padding-right: 40px;"
                            autocomplete="current-password" required />
                     <button type="button" class="btn-eye" onclick="togglePw()">
