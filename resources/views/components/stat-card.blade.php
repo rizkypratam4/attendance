@@ -11,7 +11,7 @@
             {{ $title }}
         </p>
         <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(124,58,237,.18)">
-            {{ $slot }}
+            {{ $icon ?? $slot }}
         </div>
     </div>
 
