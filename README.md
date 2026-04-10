@@ -359,70 +359,115 @@ Jane Smith    | SA2        | 01/04/2026
 ### Generate Reports
 
 **Export Attendance**:
-```bash
-GET /attendances/export - Export ke Excel
-GET /attendances/pdf    - Generate PDF report
+Di halaman list kehadiran, klik tombol "Export PDF" untuk mengunduh report dalam format PDF.
+
 ```
+File: resources/views/attendances/index.blade.php
+Route: GET /attendances/export-pdf
+```
+
 
 ---
 
-## 🔌 API Endpoints
+## 🌐 Web Routes
 
-### Authentication
+Aplikasi menggunakan **traditional Laravel web routes** (bukan REST API). Semua fitur diakses melalui web interface dengan Blade templates.
+
+### Authentication Routes
 ```
-POST   /login           - Login pengguna
-POST   /logout          - Logout pengguna
-POST   /register        - Register (jika enabled)
+GET    /                    - Login page
+POST   /login               - Process login
+POST   /logout              - Logout user
 ```
 
 ### Dashboard
 ```
-GET    /dashboard       - Dashboard utama
+GET    /dashboard           - Dashboard utama dengan analytics
 ```
 
-### Employees
+### Employee Management
 ```
-GET    /employees                    - List employees
-GET    /employees/{id}               - Get employee detail
-POST   /employees                    - Create employee
-PUT    /employees/{id}               - Update employee
-DELETE /employees/{id}               - Delete employee
-```
-
-### Attendances
-```
-GET    /attendances                  - List attendances
-GET    /attendances/{id}             - Get attendance detail
-POST   /attendances                  - Create attendance
-PUT    /attendances/{id}             - Update attendance
-DELETE /attendances/{id}             - Delete attendance
-GET    /attendances/export           - Export to Excel
+GET    /employees                    - List semua karyawan
+GET    /employees/create             - Form tambah karyawan
+POST   /employees                    - Simpan karyawan baru
+GET    /employees/{id}/edit          - Form edit karyawan
+PUT    /employees/{id}               - Update karyawan
+DELETE /employees/{id}               - Hapus karyawan
+POST   /employees/import             - Import karyawan dari Excel
 ```
 
-### Shifts
+### Attendance Management
 ```
-GET    /shift-codes                  - List shift codes
-GET    /shifts                       - List shifts
-POST   /shifts                       - Create shift
-PUT    /shifts/{id}                  - Update shift
-DELETE /shifts/{id}                  - Delete shift
+GET    /attendances                  - List kehadiran
+GET    /attendances/create           - Form tambah kehadiran
+POST   /attendances                  - Simpan kehadiran
+GET    /attendances/{id}/edit        - Form edit kehadiran
+PUT    /attendances/{id}             - Update kehadiran
+DELETE /attendances/{id}             - Hapus kehadiran
+GET    /attendances/export-pdf       - Export PDF report
 ```
 
-### Shift Assignments
+### Shift Management
 ```
-GET    /employee-shift-assignments         - List assignments
-POST   /employee-shift-assignments         - Create assignment
-POST   /employee-shift-assignments/import  - Import from file
-PUT    /employee-shift-assignments/{id}    - Update assignment
-DELETE /employee-shift-assignments/{id}    - Delete assignment
+GET    /shift_groups                 - List shift groups
+POST   /shift_groups                 - Buat shift group
+GET    /shift_definitions            - List definisi shift
+POST   /shift_definitions            - Buat definisi shift
+GET    /shift_codes                  - List shift codes
+POST   /shift_codes                  - Buat shift code
+```
+
+### Shift Assignment
+```
+GET    /employee_shift_assignments              - List penugasan shift
+GET    /employee_shift_assignments/create       - Form tambah penugasan
+POST   /employee_shift_assignments              - Simpan penugasan
+GET    /employee_shift_assignments/{id}/edit    - Form edit penugasan
+PUT    /employee_shift_assignments/{id}         - Update penugasan
+DELETE /employee_shift_assignments/{id}         - Hapus penugasan
+POST   /employee_shift_assignments/import       - Import penugasan dari Excel
+```
+
+### Process Attendance
+```
+GET    /process_attendances         - List proses kehadiran
+GET    /process_attendances/create  - Form proses manual
+POST   /process_attendances/process - Process kehadiran otomatis
+```
+
+### Fingerprint Integration
+```
+GET    /fingerprint              - View fingerprint logs
+POST   /fingerprint/sync         - Sync dari device fingerprint
 ```
 
 ### Master Data
 ```
-GET    /locations                    - List locations
-GET    /departments                  - List departments
-GET    /branches                     - List branches
-GET    /users                        - List users
+GET    /locations                    - Kelola lokasi kantor
+POST   /locations                    - Tambah lokasi
+PUT    /locations/{id}               - Update lokasi
+DELETE /locations/{id}               - Hapus lokasi
+
+GET    /departments                  - Kelola departemen
+POST   /departments                  - Tambah departemen
+PUT    /departments/{id}             - Update departemen
+DELETE /departments/{id}             - Hapus departemen
+
+GET    /branches                     - Kelola cabang
+POST   /branches                     - Tambah cabang
+PUT    /branches/{id}                - Update cabang
+DELETE /branches/{id}                - Hapus cabang
+
+GET    /users                        - Manajemen user
+POST   /users                        - Buat user baru
+PUT    /users/{id}                   - Update user
+DELETE /users/{id}                   - Hapus user
+```
+
+### User Profile
+```
+PATCH  /profile                      - Update profil user
+PATCH  /password                     - Ubah password user
 ```
 
 ---
@@ -521,41 +566,6 @@ GET    /users                        - List users
 - employee_id (foreign key, nullable)
 - created_at, updated_at
 ```
-
----
-
-## 🧪 Testing
-
-Sistem menggunakan **Pest PHP** untuk testing.
-
-### Menjalankan Tests
-
-```bash
-# Run semua tests
-php artisan test
-
-# Run specific test file
-php artisan test tests/Feature/AttendanceTest.php
-
-# Run with coverage
-php artisan test --coverage
-
-# Run watch mode
-php artisan test --watch
-```
-
-### Contoh Test Structure
-```
-tests/
-├── Feature/
-│   ├── AttendanceTest.php
-│   ├── EmployeeTest.php
-│   └── ...
-└── Unit/
-    ├── ValidatorTest.php
-    └── ...
-```
-
 ---
 
 ## 🔧 Configuration
@@ -651,24 +661,6 @@ composer install && npm install
 
 ---
 
-## 🤝 Contributing
-
-1. Fork repository
-2. Buat branch feature: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Buka Pull Request
-
-### Code Style
-
-Gunakan Laravel/PSR standards dengan:
-```bash
-composer run lint  # Check code style
-composer run format  # Format code
-```
-
----
-
 ## 📝 Changelog
 
 ### v1.0.0 (2026-04-10)
@@ -702,9 +694,7 @@ Project ini dilisensikan di bawah MIT License. Lihat file `LICENSE` untuk detail
 
 | Role | Name |
 |------|------|
-| Project Manager | Rizky Pratama |
-| Lead Developer | - |
-| QA Engineer | - |
+| Project Manager + Web Developer | Rizky Pratama |
 
 ---
 
