@@ -675,15 +675,6 @@ composer install && npm install
 
 ---
 
-## 📧 Support & Contact
-
-Untuk pertanyaan atau laporan bug:
-- Email: support@company.com
-- Telegram: @company_support
-- Slack: #attendance-system
-
----
-
 ## 📄 License
 
 Project ini dilisensikan di bawah MIT License. Lihat file `LICENSE` untuk detail.
