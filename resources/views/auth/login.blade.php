@@ -217,8 +217,8 @@
     {{-- Logo --}}
     <div class="logo-wrap">
         <div style="display: flex; gap: 8px; margin-bottom: 6px;">
-            <img src="{{ asset('images/logo_cni.png') }}" alt="Logo CNI" style="width: 50px; height: 50px; object-fit: contain;">
-            <img src="{{ asset('images/logo_csi.png') }}" alt="Logo CSI" style="width: 50px; height: 50px; object-fit: contain;">
+            <img src="{{ asset('images/logo_cni.png') }}" alt="Logo CNI" style="width: 60px; height: 60px; object-fit: contain;">
+            <img src="{{ asset('images/logo_csi.png') }}" alt="Logo CSI" style="width: 60px; height: 60px; object-fit: contain;">
         </div>
         <span class="logo-name">AttendancePro</span>
         <span class="logo-sub">Manage your attendance and shifts</span>

@@ -1,7 +1,7 @@
 @props(['active' => 'dashboard'])
 
 <aside id="sidebar" class="flex flex-col">
-    <div class="flex items-center justify-between px-5"
+    <div class="flex items-center justify-center px-5"
         style="border-bottom:1px solid var(--border); height:72px;">
         <div class="flex items-center gap-2 min-w-0">
             <div class="flex items-center gap-1.5 flex-shrink-0">
@@ -10,12 +10,12 @@
             </div>
         
             <div class="logo-txt min-w-0">
-                <div style="font-size:15px;font-weight:700;color:var(--text-1);line-height:1.1">Attendances</div>
+                <div style="font-size:15px;font-weight:700;color:var(--text-1);line-height:1.1">Attendance</div>
             </div>
         </div>
 
         <button onclick="toggleDsk()" id="tBtn"
-            class="hidden md:flex ib-bg w-8 h-8 rounded-lg items-center justify-center flex-shrink-0">
+            class="hidden md:flex ib-bg w-8 h-8 rounded-lg items-center justify-center flex-shrink-0 ml-auto">
             <svg id="tIco" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2.5">
                 <path d="M15 6l-6 6 6 6" />

@@ -153,47 +153,6 @@
         </div>
     </div>
 
-    {{-- Shift Assignment Import Status --}}
-    <div class="card rounded-2xl p-4 lg:p-6 mb-4 lg:mb-6">
-        <div class="flex items-start justify-between">
-            <div>
-                <h2 style="font-size:16px;font-weight:700;color:var(--text-1)">Status Import Shift Assignment Terakhir</h2>
-                <p style="font-size:13px;color:var(--text-3);margin-top:4px">Status dan waktu terakhir update</p>
-            </div>
-            <div class="flex items-center gap-3">
-                @if ($lastImportStatus['success'] ?? false)
-                    <span style="font-size:12px;padding:6px 12px;border-radius:6px;color:#fff;background-color:#10b981;font-weight:600">
-                        BERHASIL
-                    </span>
-                @else
-                    <span style="font-size:12px;padding:6px 12px;border-radius:6px;color:#fff;background-color:#ef4444;font-weight:600">
-                        GAGAL
-                    </span>
-                @endif
-            </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div style="padding:12px;background-color:rgba(124,58,237,.1);border-radius:8px">
-                <p style="font-size:12px;color:var(--text-3);margin-bottom:6px">Waktu Terakhir</p>
-                <p style="font-size:14px;font-weight:700;color:var(--text-1)">
-                    {{ $lastImportStatus['last_import_time'] ?? 'Belum ada' }}
-                </p>
-            </div>
-            <div style="padding:12px;background-color:rgba(16,185,129,.1);border-radius:8px">
-                <p style="font-size:12px;color:var(--text-3);margin-bottom:6px">Data Diimport</p>
-                <p style="font-size:14px;font-weight:700;color:var(--text-1)">
-                    {{ $lastImportStatus['records_imported'] ?? 0 }} records
-                </p>
-            </div>
-            <div style="padding:12px;background-color:rgba(245,158,11,.1);border-radius:8px">
-                <p style="font-size:12px;color:var(--text-3);margin-bottom:6px">Pesan</p>
-                <p style="font-size:14px;font-weight:700;color:var(--text-1)">
-                    {{ $lastImportStatus['message'] ?? 'N/A' }}
-                </p>
-            </div>
-        </div>
-    </div>
-
     {{-- ROW 4: QUICK ACCESS SHORTCUTS --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5">
         
