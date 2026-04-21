@@ -18,6 +18,7 @@ class Attendance extends Model
     protected $fillable = [
         'employee_id',
         'shift_code_id',     // ← shift saat absen
+        'new_working_shift_id',
         'attendance_date',
         'clock_in',
         'clock_out',
@@ -45,6 +46,11 @@ class Attendance extends Model
     public function shiftCode(): BelongsTo
     {
         return $this->belongsTo(ShiftCode::class);
+    }
+
+    public function newWorkingShift(): BelongsTo
+    {
+        return $this->belongsTo(ShiftCode::class, 'new_working_shift_id');
     }
 
     // ==========================================

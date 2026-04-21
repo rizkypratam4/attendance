@@ -17,7 +17,7 @@ class AttendanceController extends Controller
         $status  = $request->input('status');
 
         // Build base query with all filters (except status)
-        $baseQuery = Attendance::with(['employee.department', 'shiftCode.shift'])
+        $baseQuery = Attendance::with(['employee.department', 'shiftCode.shift', 'newWorkingShift.shift'])
             ->whereDate('attendance_date', $date);
 
         if ($shiftId) {
@@ -75,7 +75,7 @@ class AttendanceController extends Controller
         $status  = $request->input('status');
 
         // Build base query with all filters (except status) - same as index
-        $baseQuery = Attendance::with(['employee.department', 'shiftCode.shift'])
+        $baseQuery = Attendance::with(['employee.department', 'shiftCode.shift', 'newWorkingShift.shift'])
             ->whereDate('attendance_date', $date);
 
         if ($shiftId) {

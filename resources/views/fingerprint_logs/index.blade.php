@@ -17,7 +17,7 @@
             {{-- Sync Button --}}
             <div class="flex items-center gap-2">
                 {{-- Sync Hari Ini --}}
-                <form method="POST" action="{{ route('fingerprint.sync') }}" id="syncForm" class="mt-4">
+                <form method="POST" action="{{ route('fingerprint.sync') }}" id="syncForm">
                     @csrf
                     <button type="submit" id="syncBtn"
                         class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold"
@@ -157,18 +157,26 @@
                 <div>
                     <label
                         style="font-size:10.5px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Tipe</label>
-                    <div class="relative">
-                        <select name="type" class="w-full px-3 py-2.5 rounded-xl appearance-none"
-                            style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;outline:none;cursor:pointer;font-family:inherit">
-                            <option value="">Semua Tipe</option>
-                            <option value="0" {{ request('type') === '0' ? 'selected' : '' }}>Clock In</option>
-                            <option value="1" {{ request('type') === '1' ? 'selected' : '' }}>Clock Out</option>
-                        </select>
-                        <svg class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="12"
-                            height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)"
-                            stroke-width="2.5">
-                            <path d="M6 9l6 6 6-6" />
-                        </svg>
+                    <div class="custom-select-wrapper" data-name="type">
+                        <input type="hidden" name="type" value="{{ request('type') }}">
+                        <button type="button" class="custom-select-btn w-full px-3 py-2.5 rounded-xl flex items-center justify-between"
+                                style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;cursor:pointer;font-family:inherit">
+                            <span class="custom-select-label">
+                                @if(request('type') === '0')
+                                    Clock In
+                                @elseif(request('type') === '1')
+                                    Clock Out
+                                @else
+                                    Semua Tipe
+                                @endif
+                            </span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="custom-select-dropdown" style="display:none">
+                            <div class="custom-select-option" data-value="">Semua Tipe</div>
+                            <div class="custom-select-option {{ request('type') === '0' ? 'selected' : '' }}" data-value="0">Clock In</div>
+                            <div class="custom-select-option {{ request('type') === '1' ? 'selected' : '' }}" data-value="1">Clock Out</div>
+                        </div>
                     </div>
                 </div>
 
@@ -177,20 +185,26 @@
                     <div class="flex-1">
                         <label
                             style="font-size:10.5px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Status</label>
-                        <div class="relative">
-                            <select name="processed" class="w-full px-3 py-2.5 rounded-xl appearance-none"
-                                style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;outline:none;cursor:pointer;font-family:inherit">
-                                <option value="">Semua</option>
-                                <option value="0" {{ request('processed') === '0' ? 'selected' : '' }}>Pending
-                                </option>
-                                <option value="1" {{ request('processed') === '1' ? 'selected' : '' }}>Diproses
-                                </option>
-                            </select>
-                            <svg class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="12"
-                                height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)"
-                                stroke-width="2.5">
-                                <path d="M6 9l6 6 6-6" />
-                            </svg>
+                        <div class="custom-select-wrapper" data-name="processed">
+                            <input type="hidden" name="processed" value="{{ request('processed') }}">
+                            <button type="button" class="custom-select-btn w-full px-3 py-2.5 rounded-xl flex items-center justify-between"
+                                    style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;cursor:pointer;font-family:inherit">
+                                <span class="custom-select-label">
+                                    @if(request('processed') === '0')
+                                        Pending
+                                    @elseif(request('processed') === '1')
+                                        Diproses
+                                    @else
+                                        Semua
+                                    @endif
+                                </span>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                            </button>
+                            <div class="custom-select-dropdown" style="display:none">
+                                <div class="custom-select-option" data-value="">Semua</div>
+                                <div class="custom-select-option {{ request('processed') === '0' ? 'selected' : '' }}" data-value="0">Pending</div>
+                                <div class="custom-select-option {{ request('processed') === '1' ? 'selected' : '' }}" data-value="1">Diproses</div>
+                            </div>
                         </div>
                     </div>
                     <div style="padding-top:24px">
@@ -551,6 +565,53 @@
             background: rgba(239, 68, 68, .12) !important;
         }
 
+        /* Custom Select Styling */
+        .custom-select-wrapper {
+            position: relative;
+        }
+
+        .custom-select-btn {
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .custom-select-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            z-index: 999;
+            background: #1a1625;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 5px;
+            box-shadow: 0 10px 40px rgba(0,0,0,.5);
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .custom-select-option {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: background .12s;
+            font-family: inherit;
+        }
+
+        .custom-select-option:hover {
+            background: rgba(124,58,237,.2);
+            color: #e2e8f0;
+        }
+
+        .custom-select-option.selected {
+            background: rgba(124,58,237,.25);
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -676,5 +737,41 @@
         function closeLogDD() {
             document.getElementById('logActDD')?.classList.remove('show');
         }
+
+        // Custom Select Functionality
+        document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+            const btn = wrapper.querySelector('.custom-select-btn');
+            const dropdown = wrapper.querySelector('.custom-select-dropdown');
+            const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.custom-select-dropdown').forEach(d => {
+                    if (d !== dropdown) d.style.display = 'none';
+                });
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            });
+
+            wrapper.querySelectorAll('.custom-select-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const value = opt.dataset.value;
+                    const label = opt.textContent.trim();
+                    
+                    wrapper.querySelectorAll('.custom-select-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    
+                    btn.querySelector('.custom-select-label').textContent = label;
+                    hiddenInput.value = value;
+                    dropdown.style.display = 'none';
+                });
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                if (!wrapper.contains(e.target)) {
+                    wrapper.querySelector('.custom-select-dropdown').style.display = 'none';
+                }
+            });
+        });
     </script>
 @endpush

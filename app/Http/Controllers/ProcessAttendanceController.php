@@ -57,4 +57,21 @@ class ProcessAttendanceController extends Controller
 
         return back()->with('process_result', $result);
     }
+
+    public function updateAttendance(Request $request)
+    {
+        $request->validate([
+            'start_date'    => ['required', 'date'],
+            'end_date'      => ['required', 'date', 'gte:start_date'],
+            'department_id' => ['nullable', 'exists:departments,id'],
+        ]);
+
+        $result = $this->service->updateIncomplete(
+            $request->start_date,
+            $request->end_date,
+            $request->department_id
+        );
+
+        return back()->with('update_result', $result);
+    }
 }

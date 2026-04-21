@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::post('/process_attendances/process', [ProcessAttendanceController::class, 'process'])->name('process_attendances.process');
+    Route::post('/process_attendances/reprocess', [ProcessAttendanceController::class, 'updateAttendance'])->name('process_attendances.reprocess');
 
     Route::resource('shift_codes', ShiftCodeController::class)->except(['show','edit']);
 
@@ -55,6 +56,10 @@ Route::middleware('auth')->group(function () {
     // assignment import
     Route::post('/employee_shift_assignments/import', [EmployeeShiftAssignmentController::class, 'import'])
         ->name('employee_shift_assignments.import');
+    
+    // bulk assign
+    Route::post('/employee_shift_assignments/bulk-assign', [EmployeeShiftAssignmentController::class, 'bulkAssign'])
+        ->name('employee_shift_assignments.bulk_assign');
 
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::patch('/password', [UserController::class, 'changePassword'])->name('password.change');

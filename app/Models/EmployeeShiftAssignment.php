@@ -10,6 +10,7 @@ class EmployeeShiftAssignment extends Model
     protected $fillable = [
         'employee_id',
         'shift_code_id',
+        'new_working_shift_id',
         'date',
         'created_by',
     ];
@@ -26,6 +27,11 @@ class EmployeeShiftAssignment extends Model
     public function shiftCode(): BelongsTo
     {
         return $this->belongsTo(ShiftCode::class);
+    }
+
+    public function newWorkingShift(): BelongsTo
+    {
+        return $this->belongsTo(ShiftCode::class, 'new_working_shift_id');
     }
 
     public function createdBy(): BelongsTo

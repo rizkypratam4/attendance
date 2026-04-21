@@ -26,15 +26,12 @@
             background: #ffffff;
         }
 
-        /* ================================================
-           KOP SURAT
-        ================================================ */
         table.kop {
             width: 100%;
             border-collapse: collapse;
-            border-bottom: 2px solid #111111;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
+            border-bottom: 2.5px solid #111111;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
         }
 
         table.kop td {
@@ -45,12 +42,12 @@
 
         /* Sel logo 1 */
         td.logo1-cell {
-            width: 48px;
+            width: 75px;
         }
 
         table.logo1-box {
-            width: 44px;
-            height: 44px;
+            width: 70px;
+            height: 50px;
             border-collapse: collapse;
             background-color: #111111;
         }
@@ -58,54 +55,39 @@
         table.logo1-box td {
             text-align: center;
             vertical-align: middle;
-            padding: 0;
+            padding: 4px;
         }
-
-        /* Grid 2x2 putih di logo1 */
-        table.logo1-grid {
-            width: 28px;
-            height: 28px;
-            border-collapse: collapse;
-            margin: 0 auto;
-        }
-
-        table.logo1-grid td {
-            width: 12px;
-            height: 12px;
-            padding: 0;
-        }
-
-        .sq-white { background: #ffffff; }
-        .sq-gray  { background: #888888; }
 
         /* Pemisah vertikal */
         td.logo-divider {
-            width: 14px;
+            width: 20px;
             text-align: center;
             vertical-align: middle;
+            padding: 0 4px;
         }
 
         table.divider-line {
             width: 1px;
-            height: 32px;
+            height: 40px;
             border-collapse: collapse;
             margin: 0 auto;
-            background: #aaaaaa;
+            background: #cccccc;
         }
 
         table.divider-line td {
             padding: 0;
-            background: #aaaaaa;
+            background: #cccccc;
+            width: 1px;
         }
 
         /* Sel logo 2 */
         td.logo2-cell {
-            width: 48px;
+            width: 75px;
         }
 
         table.logo2-box {
-            width: 44px;
-            height: 44px;
+            width: 70px;
+            height: 50px;
             border-collapse: collapse;
             border: 1.5px solid #111111;
         }
@@ -116,62 +98,68 @@
             padding: 0;
         }
 
-        /* Lingkaran simulasi di logo2 - pakai border */
         .circle-icon {
-            width: 22px;
-            height: 22px;
-            border: 2px solid #111111;
-            border-radius: 11px;
+            width: 28px;
+            height: 28px;
+            border: 2.5px solid #111111;
+            border-radius: 50%;
             margin: 0 auto;
         }
 
         /* Sel info perusahaan */
         td.company-info {
-            padding-left: 12px !important;
+            padding-left: 16px !important;
             vertical-align: middle;
         }
 
         .co-name {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: bold;
-            color: #111111;
+            color: #1b71dd;
             line-height: 1.2;
+            margin-bottom: 3px;
         }
 
         .co-division {
             font-size: 7.5px;
-            color: #666666;
-            letter-spacing: 1px;
+            color: #888888;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            margin-top: 2px;
+            margin-bottom: 5px;
         }
 
         .co-address {
             font-size: 8.5px;
             color: #777777;
-            margin-bottom: 15px;
             line-height: 1.6;
         }
 
         /* Sel judul dokumen */
         td.doc-title-cell {
-            width: 175px;
+            width: 185px;
             text-align: right;
-            vertical-align: bottom;
+            vertical-align: middle;
+            padding-left: 12px;
         }
 
         .doc-title {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
             color: #111111;
+            margin-bottom: 5px;
         }
 
         .doc-meta {
             font-size: 8px;
-            color: #777777;
-            margin-top: 4px;
-            line-height: 1.7;
+            color: #888888;
+            line-height: 1.8;
         }
+
+        .doc-meta span {
+            color: #444444;
+            font-weight: 600;
+        }
+
 
         /* ================================================
            FILTER BAR
@@ -330,38 +318,36 @@
 </head>
 <body>
 
-{{-- ================================================
-     KOP SURAT
-================================================ --}}
 <table class="kop">
     <tr>
 
         {{-- Logo 1 --}}
         <td class="logo1-cell">
-            {{-- Jika sudah ada file gambar, ganti seluruh <table class="logo1-box"> dengan:
-                 <img src="{{ public_path('images/logo1.png') }}" width="44" height="44">
-            --}}
-            <table class="logo1-box">
-                <tr>
-                    <td>
-                        <table class="logo1-grid">
-                            <tr>
-                                <td class="sq-white"></td>
-                                <td style="width:2px;background:#111111;"></td>
-                                <td class="sq-white"></td>
-                            </tr>
-                            <tr>
-                                <td style="height:2px;background:#111111;" colspan="3"></td>
-                            </tr>
-                            <tr>
-                                <td class="sq-white"></td>
-                                <td style="width:2px;background:#111111;"></td>
-                                <td class="sq-gray"></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+            @if(file_exists(public_path('images/logo_cni.png')))
+                <img src="{{ public_path('images/logo_cni.png') }}" width="70" height="50" style="border:none;margin:0;padding:0;">
+            @else
+                <table class="logo1-box">
+                    <tr>
+                        <td>
+                            <table class="logo1-grid">
+                                <tr>
+                                    <td class="sq-white"></td>
+                                    <td style="width:2px;background:#111111;"></td>
+                                    <td class="sq-white"></td>
+                                </tr>
+                                <tr>
+                                    <td style="height:2px;background:#111111;" colspan="3"></td>
+                                </tr>
+                                <tr>
+                                    <td class="sq-white"></td>
+                                    <td style="width:2px;background:#111111;"></td>
+                                    <td class="sq-gray"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            @endif
         </td>
 
         {{-- Pemisah --}}
@@ -371,38 +357,41 @@
 
         {{-- Logo 2 --}}
         <td class="logo2-cell">
-            {{-- Jika sudah ada file gambar, ganti seluruh <table class="logo2-box"> dengan:
-                 <img src="{{ public_path('images/logo2.png') }}" width="44" height="44">
-            --}}
-            <table class="logo2-box">
-                <tr>
-                    <td>
-                        <div class="circle-icon"></div>
-                    </td>
-                </tr>
-            </table>
+            @if(file_exists(public_path('images/logo_csi.png')))
+                <img src="{{ public_path('images/logo_csi.png') }}" width="70" height="50" style="border:none;margin:0;padding:0;">
+            @else
+                <table class="logo2-box">
+                    <tr>
+                        <td>
+                            <div class="circle-icon"></div>
+                        </td>
+                    </tr>
+                </table>
+            @endif
         </td>
 
         {{-- Info Perusahaan --}}
         <td class="company-info">
-            <div class="co-name">{{ config('app.company_name', 'PT. Nama Perusahaan') }}</div>
-            <div class="co-division">Human Resources Division</div>
+                <div class="co-name" style="color: #1b71dd;">
+                    {{ config('app.company_name', 'PT. Cipta Saksama Indonesia') }}
+                </div>
             <div class="co-address">
-                {{ config('app.company_address', 'Jl. Alamat Perusahaan, Kota') }}<br>
-                Telp: {{ config('app.company_phone', '(021) 000-0000') }}
+                {{ config('app.company_address', 'Jl. Raya Bekasi No.km 23, Cakung Bar., Kec. Cakung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13920') }}<br>
+                Telp: {{ config('app.company_phone', '(021) 4600942') }}
                 &nbsp;|&nbsp;
-                {{ config('app.company_email', 'hrd@perusahaan.co.id') }}
+                {{ config('app.company_email', 'hrd@ciptasaksama.co.id') }}
             </div>
         </td>
 
         {{-- Judul Dokumen --}}
-        <td class="doc-title-cell">
-            <div class="doc-title">Laporan Kehadiran</div>
-            <div class="doc-meta">
-                Tanggal: {{ \Carbon\Carbon::parse($date)->translatedFormat('l, d F Y') }}<br>
-                Dicetak: {{ now()->translatedFormat('d F Y, H:i:s') }}
-            </div>
-        </td>
+        {{-- Judul Dokumen --}}
+<td class="doc-title-cell">
+    <div class="doc-title">Laporan Kehadiran</div>
+    <div class="doc-meta">
+        Tanggal: <span>{{ \Carbon\Carbon::parse($date)->translatedFormat('l, d F Y') }}</span><br>
+        Dicetak: <span>{{ now()->translatedFormat('d F Y, H:i:s') }}</span>
+    </div>
+</td>
 
     </tr>
 </table>
@@ -464,6 +453,9 @@
                 @php
                     $emp = $att->employee;
 
+                    // Gunakan new_working_shift jika tersedia, jika tidak gunakan shift_code
+                    $displayShift = $att->newWorkingShift ?? $att->shiftCode;
+
                     $statusLabel = match($att->status) {
                         'present' => 'Hadir',
                         'late'    => 'Terlambat ' . ($att->late_minutes ?? 0) . 'm',
@@ -488,7 +480,7 @@
                         <div class="emp-name">{{ $emp->name }}</div>
                         <div class="emp-dept">{{ $emp->department?->name ?? 'N/A' }}</div>
                     </td>
-                    <td>{{ $att->shiftCode?->code ?? '-' }}</td>
+                    <td>{{ $displayShift?->code ?? '-' }}</td>
                     <td>{{ $att->clock_in  ? $att->clock_in->format('H:i:s')  : '-' }}</td>
                     <td>{{ $att->clock_out ? $att->clock_out->format('H:i:s') : '-' }}</td>
                     <td>

@@ -25,62 +25,91 @@
     </div>
 @endif
 
+@if(session('update_result'))
+    @php $res = session('update_result'); @endphp
+    <div class="mb-5 px-4 py-3 rounded-xl flex items-center gap-3"
+         style="background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.25);color:#fb923c;font-size:13px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+        </svg>
+        Update selesai! <strong>{{ $res['updated'] }}</strong> diupdate,
+        <strong>{{ $res['skipped'] }}</strong> dilewati,
+        <strong style="color:{{ $res['failed'] > 0 ? '#f87171' : '#fb923c' }}">{{ $res['failed'] }}</strong> gagal.
+    </div>
+@endif
+
 {{-- ── FORM PROCESS ── --}}
 <div class="card rounded-2xl p-5 mb-6">
-    <form method="POST" action="{{ route('process_attendances.process') }}" id="processForm">
-        @csrf
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
 
-            {{-- Start Date --}}
-            <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Start Date</label>
-                <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl"
-                     style="background:var(--bg-input);border:1px solid var(--border-in)">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
-                        <rect x="3" y="4" width="18" height="18" rx="2"/>
-                        <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                    </svg>
-                    <input type="date" name="start_date"
-                           value="{{ old('start_date', today()->toDateString()) }}"
-                           style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit;cursor:pointer">
-                </div>
-                @error('start_date')
-                    <p style="font-size:11px;color:#f87171;margin-top:4px">{{ $message }}</p>
-                @enderror
+        {{-- Start Date (shared) --}}
+        <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Start Date</label>
+            <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl"
+                 style="background:var(--bg-input);border:1px solid var(--border-in)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <input type="date" id="sharedStartDate"
+                       value="{{ old('start_date', today()->toDateString()) }}"
+                       style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit;cursor:pointer">
             </div>
+        </div>
 
-            {{-- End Date --}}
-            <div>
-                <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">End Date</label>
-                <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl"
-                     style="background:var(--bg-input);border:1px solid var(--border-in)">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
-                        <rect x="3" y="4" width="18" height="18" rx="2"/>
-                        <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                    </svg>
-                    <input type="date" name="end_date"
-                           value="{{ old('end_date', today()->toDateString()) }}"
-                           style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit;cursor:pointer">
-                </div>
-                @error('end_date')
-                    <p style="font-size:11px;color:#f87171;margin-top:4px">{{ $message }}</p>
-                @enderror
+        {{-- End Date (shared) --}}
+        <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">End Date</label>
+            <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl"
+                 style="background:var(--bg-input);border:1px solid var(--border-in)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <input type="date" id="sharedEndDate"
+                       value="{{ old('end_date', today()->toDateString()) }}"
+                       style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit;cursor:pointer">
             </div>
+        </div>
 
-            {{-- Submit --}}
-            <div>
+        {{-- Buttons --}}
+        <div class="flex gap-2">
+            {{-- Process --}}
+            <form method="POST" action="{{ route('process_attendances.process') }}" id="processForm" class="flex-1">
+                @csrf
+                <input type="hidden" name="start_date" id="processStartDate">
+                <input type="hidden" name="end_date"   id="processEndDate">
                 <button type="submit" id="processBtn"
                         class="w-full purbtn flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold"
-                        style="font-size:14px">
-                    <svg id="processIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        style="font-size:13.5px">
+                    <svg id="processIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="5 3 19 12 5 21 5 3"/>
                     </svg>
                     <span id="processLabel">Process</span>
                 </button>
-            </div>
+            </form>
 
+            {{-- Update Attendance --}}
+            <form method="POST" action="{{ route('process_attendances.reprocess') }}" id="updateForm" class="flex-1">
+                @csrf
+                <input type="hidden" name="start_date" id="updateStartDate">
+                <input type="hidden" name="end_date"   id="updateEndDate">
+                <button type="submit" id="updateBtn"
+                        class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold"
+                        style="font-size:13.5px;background:rgba(251,146,60,.2);color:#fb923c;border:1px solid rgba(251,146,60,.35);cursor:pointer;transition:background .15s"
+                        onmouseover="this.style.background='rgba(251,146,60,.35)'"
+                        onmouseout="this.style.background='rgba(251,146,60,.2)'">
+                    <svg id="updateIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                    </svg>
+                    <span id="updateLabel">Update</span>
+                </button>
+            </form>
         </div>
-    </form>
+
+    </div>
 </div>
 
 {{-- ── STATS + ENGINE ── --}}
@@ -109,36 +138,59 @@
             </div>
         </div>
 
-        <div>
-            <p style="font-size:11.5px;font-weight:600;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px">Action Log</p>
-            <div class="space-y-3" id="actionLog">
-                @if(session('process_result'))
-                    @php $res = session('process_result'); @endphp
-                    <div class="flex items-start gap-2.5">
-                        <svg class="flex-shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5">
-                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-                        </svg>
-                        <div>
-                            <p style="font-size:13px;color:var(--text-2)">Proses selesai — {{ $res['processed'] }} records berhasil diproses.</p>
-                            <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">{{ now()->format('H:i:s') }}</p>
+            <div>
+                <p style="font-size:11.5px;font-weight:600;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px">Action Log</p>
+                <div class="space-y-3" id="actionLog">
+                    @if(session('process_result'))
+                        @php $res = session('process_result'); @endphp
+                        <div class="flex items-start gap-2.5">
+                            <svg class="flex-shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                            <div>
+                                <p style="font-size:13px;color:var(--text-2)">Process selesai — <strong>{{ $res['processed'] }}</strong> records berhasil diproses.</p>
+                                <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">{{ now()->format('H:i:s') }}</p>
+                            </div>
                         </div>
-                    </div>
-                    @if($res['failed'] > 0)
-                    <div class="flex items-start gap-2.5">
-                        <svg class="flex-shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5">
-                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                        </svg>
-                        <div>
-                            <p style="font-size:13px;color:var(--text-2)">{{ $res['failed'] }} records gagal diproses. Cek log untuk detail.</p>
-                            <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">{{ now()->format('H:i:s') }}</p>
+                        @if($res['failed'] > 0)
+                        <div class="flex items-start gap-2.5">
+                            <svg class="flex-shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <div>
+                                <p style="font-size:13px;color:var(--text-2)">{{ $res['failed'] }} records gagal diproses. Cek log untuk detail.</p>
+                                <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">{{ now()->format('H:i:s') }}</p>
+                            </div>
                         </div>
-                    </div>
+                        @endif
+                    @elseif(session('update_result'))
+                        @php $res = session('update_result'); @endphp
+                        <div class="flex items-start gap-2.5">
+                            <svg class="flex-shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2.5">
+                                <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                            </svg>
+                            <div>
+                                <p style="font-size:13px;color:var(--text-2)">Update selesai — <strong>{{ $res['updated'] }}</strong> records diupdate, <strong>{{ $res['skipped'] }}</strong> dilewati.</p>
+                                <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">{{ now()->format('H:i:s') }}</p>
+                            </div>
+                        </div>
+                        @if($res['failed'] > 0)
+                        <div class="flex items-start gap-2.5">
+                            <svg class="flex-shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            <div>
+                                <p style="font-size:13px;color:var(--text-2)">{{ $res['failed'] }} records gagal diupdate. Cek log untuk detail.</p>
+                                <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">{{ now()->format('H:i:s') }}</p>
+                            </div>
+                        </div>
+                        @endif
+                    @else
+                        <p style="font-size:13px;color:var(--text-3)">Belum ada proses yang dijalankan. Pilih tanggal dan klik Process.</p>
                     @endif
-                @else
-                    <p style="font-size:13px;color:var(--text-3)">Belum ada proses yang dijalankan. Pilih tanggal dan klik Process.</p>
-                @endif
+                </div>
             </div>
-        </div>
     </div>
 
     {{-- Stats Cards --}}
@@ -287,7 +339,22 @@
 
 @push('scripts')
 <script>
+// Sync tanggal dari input shared ke kedua form
+function syncDates() {
+    const start = document.getElementById('sharedStartDate').value;
+    const end   = document.getElementById('sharedEndDate').value;
+    document.getElementById('processStartDate').value = start;
+    document.getElementById('processEndDate').value   = end;
+    document.getElementById('updateStartDate').value  = start;
+    document.getElementById('updateEndDate').value    = end;
+}
+
+document.getElementById('sharedStartDate').addEventListener('change', syncDates);
+document.getElementById('sharedEndDate').addEventListener('change', syncDates);
+syncDates(); // init
+
 document.getElementById('processForm').addEventListener('submit', function () {
+    syncDates();
     const btn   = document.getElementById('processBtn');
     const icon  = document.getElementById('processIcon');
     const label = document.getElementById('processLabel');
@@ -301,7 +368,6 @@ document.getElementById('processForm').addEventListener('submit', function () {
     status.textContent = 'Processing...';
     status.style.color = '#fb923c';
 
-    // Simulasi progress bar
     let progress = 0;
     const interval = setInterval(() => {
         progress += Math.random() * 15;
@@ -311,8 +377,32 @@ document.getElementById('processForm').addEventListener('submit', function () {
     }, 400);
 });
 
+document.getElementById('updateForm').addEventListener('submit', function () {
+    syncDates();
+    const btn   = document.getElementById('updateBtn');
+    const icon  = document.getElementById('updateIcon');
+    const label = document.getElementById('updateLabel');
+    const bar   = document.getElementById('progressBar');
+    const pct   = document.getElementById('progressPct');
+    const status = document.getElementById('engineStatus');
+
+    btn.disabled = true;
+    icon.classList.add('spin');
+    label.textContent = 'Updating...';
+    status.textContent = 'Updating...';
+    status.style.color = '#fb923c';
+
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 20;
+        if (progress >= 95) { progress = 95; clearInterval(interval); }
+        bar.style.width = progress.toFixed(0) + '%';
+        pct.textContent = progress.toFixed(0) + '%';
+    }, 300);
+});
+
 // Jika ada result, tampilkan progress 100%
-@if(session('process_result'))
+@if(session('process_result') || session('update_result'))
     document.getElementById('progressBar').style.width = '100%';
     document.getElementById('progressPct').textContent = '100%';
     document.getElementById('engineStatus').textContent = 'Completed';

@@ -79,6 +79,7 @@ class AttendanceProcessService
             if (!$clockInLog && $logs->isNotEmpty()) {
                 $clockInLog = $logs->first();
             }
+            
             if (!$clockOutLog || $clockOutLog->id === $clockInLog?->id) {
                 $clockOutLog = $logs->count() > 1 ? $logs->last() : null;
             }
@@ -111,13 +112,19 @@ class AttendanceProcessService
 
             $status = $this->determineStatus($assignment, $clockInTime, $lateMinutes);
 
+            // Tentukan shift_code_id yang akan disimpan
+            // Jika new_working_shift tersedia, gunakan itu; jika tidak, gunakan shift_code
+            $finalShiftCodeId = $assignment?->new_working_shift_id ?? $assignment?->shift_code_id;
+            $newWorkingShiftId = $assignment?->new_working_shift_id;
+
             Attendance::updateOrCreate(
                 [
                     'employee_id'     => $employee->id,
                     'attendance_date' => $date,
                 ],
                 [
-                    'shift_code_id'         => $assignment?->shift_code_id,
+                    'shift_code_id'         => $finalShiftCodeId,
+                    'new_working_shift_id'  => $newWorkingShiftId,
                     'clock_in'              => $clockInTime,
                     'clock_out'             => $clockOutTime,
                     'late_minutes'          => $lateMinutes,
@@ -162,9 +169,15 @@ class AttendanceProcessService
                 ? Attendance::STATUS_DAY_OFF
                 : Attendance::STATUS_ABSENT;
 
+            // Tentukan shift_code_id yang akan disimpan
+            // Jika new_working_shift tersedia, gunakan itu; jika tidak, gunakan shift_code
+            $finalShiftCodeId = $assignment->new_working_shift_id ?? $assignment->shift_code_id;
+            $newWorkingShiftId = $assignment->new_working_shift_id;
+
             Attendance::create([
                 'employee_id'           => $employee->id,
-                'shift_code_id'         => $assignment->shift_code_id,
+                'shift_code_id'         => $finalShiftCodeId,
+                'new_working_shift_id'  => $newWorkingShiftId,
                 'attendance_date'       => $date,
                 'status'                => $status,
                 'late_minutes'          => 0,
@@ -181,7 +194,7 @@ class AttendanceProcessService
     {
         return EmployeeShiftAssignment::where('employee_id', $employeeId)
             ->where('date', $date)
-            ->with('shiftCode')
+            ->with(['shiftCode', 'newWorkingShift'])
             ->first();
     }
 
@@ -198,9 +211,7 @@ class AttendanceProcessService
             return Attendance::STATUS_ABSENT;
         }
 
-        // Jika ada keterlambatan
         if ($lateMinutes > 0) {
-            // Untuk shift 1AA dan 1AB, batasi sampai jam 10:00
             if (in_array($assignment?->shiftCode?->code, ['1AA', '1AB'])) {
                 $cutoffTime = Carbon::parse($clockIn->toDateString() . ' 10:00:00');
                 if ($clockIn->gt($cutoffTime)) {
@@ -226,5 +237,143 @@ class AttendanceProcessService
                 'is_processed' => true,
                 'processed_at' => now(),
             ]);
+    }
+
+    /**
+     * Update attendance records yang incomplete (shift/status kosong)
+     * berdasarkan shift assignment yang sudah ada.
+     * Idempotent — aman dijalankan berulang kali.
+     */
+    public function updateIncomplete(string $startDate, string $endDate, ?int $departmentId = null): array
+    {
+        $result = ['updated' => 0, 'skipped' => 0, 'failed' => 0];
+
+        // Ambil attendance yang memiliki kolom kosong/null ATAU perlu update karena shift assignment berubah
+        $query = Attendance::with(['employee'])
+            ->whereBetween('attendance_date', [$startDate, $endDate])
+            ->where(function ($q) {
+                $q->whereNull('shift_code_id')      // shift kosong
+                  ->orWhereNull('status')            // status kosong
+                  ->orWhere(function ($q2) {
+                      // status absent tapi ada clock_in (data tidak konsisten)
+                      $q2->where('status', Attendance::STATUS_ABSENT)
+                         ->whereNotNull('clock_in');
+                  })
+                  ->orWhere(function ($q3) {
+                      // ada clock_in & clock_out tapi work_duration = 0 (belum dihitung)
+                      $q3->whereNotNull('clock_in')
+                         ->whereNotNull('clock_out')
+                         ->where('work_duration_minutes', 0);
+                  })
+                  ->orWhere(function ($q4) {
+                      // shift assignment punya new_working_shift tapi attendance belum mencerminkannya
+                      $q4->whereExists(function ($sub) {
+                          $sub->select(DB::raw(1))
+                              ->from('employee_shift_assignments')
+                              ->whereColumn('employee_shift_assignments.employee_id', 'attendances.employee_id')
+                              ->whereColumn('employee_shift_assignments.date', 'attendances.attendance_date')
+                              ->whereNotNull('employee_shift_assignments.new_working_shift_id')
+                              ->whereColumn('employee_shift_assignments.new_working_shift_id', '!=', 'attendances.shift_code_id');
+                      });
+                  });
+            });
+
+        if ($departmentId) {
+            $query->whereHas('employee', fn($q) => $q->where('department_id', $departmentId));
+        }
+
+        $attendances = $query->get();
+
+        foreach ($attendances as $attendance) {
+            try {
+                DB::beginTransaction();
+
+                $employee   = $attendance->employee;
+                $date       = $attendance->attendance_date->toDateString();
+                $assignment = $this->getAssignment($employee->id, $date);
+
+                // Tidak ada assignment — skip
+                if (!$assignment) {
+                    $result['skipped']++;
+                    DB::commit();
+                    continue;
+                }
+
+                // Ambil ulang fingerprint logs untuk hitung clock in/out
+                $logs = FingerprintLog::where('barcode', $employee->machine_barcode)
+                    ->whereDate('attendance_date', $date)
+                    ->orderBy('attendance_time')
+                    ->get();
+
+                $clockInLog  = $logs->where('attendance_type', FingerprintLog::TYPE_CLOCK_IN)->first();
+                $clockOutLog = $logs->where('attendance_type', FingerprintLog::TYPE_CLOCK_OUT)->last();
+
+                if (!$clockInLog && $logs->isNotEmpty()) {
+                    $clockInLog = $logs->first();
+                }
+                if (!$clockOutLog || $clockOutLog->id === $clockInLog?->id) {
+                    $clockOutLog = $logs->count() > 1 ? $logs->last() : null;
+                }
+
+                $clockInTime = $clockInLog
+                    ? Carbon::parse($date . ' ' . $clockInLog->attendance_time)
+                    : null;
+
+                $clockOutTime = null;
+                if ($clockOutLog) {
+                    $clockOutDate = $date;
+                    if ($clockInTime && Carbon::parse($date . ' ' . $clockOutLog->attendance_time)->lt($clockInTime)) {
+                        $clockOutDate = Carbon::parse($date)->addDay()->toDateString();
+                    }
+                    $clockOutTime = Carbon::parse($clockOutDate . ' ' . $clockOutLog->attendance_time);
+                }
+
+                // Gunakan shiftCode dari assignment untuk hitung keterlambatan
+                $shiftCodeForCalc = $assignment->shiftCode;
+                $lateMinutes = 0;
+                if ($shiftCodeForCalc?->on_time && $clockInTime) {
+                    $scheduledIn = Carbon::parse($date . ' ' . $shiftCodeForCalc->on_time);
+                    if ($clockInTime->gt($scheduledIn)) {
+                        $lateMinutes = (int) $scheduledIn->diffInMinutes($clockInTime);
+                    }
+                }
+
+                $workDuration = 0;
+                if ($clockInTime && $clockOutTime) {
+                    $workDuration = (int) $clockInTime->diffInMinutes($clockOutTime);
+                }
+
+                $status = $this->determineStatus($assignment, $clockInTime, $lateMinutes);
+
+                // Gunakan new_working_shift jika ada, fallback ke shift_code
+                $finalShiftCodeId  = $assignment->new_working_shift_id ?? $assignment->shift_code_id;
+                $newWorkingShiftId = $assignment->new_working_shift_id;
+
+                $attendance->update([
+                    'shift_code_id'         => $finalShiftCodeId,
+                    'new_working_shift_id'  => $newWorkingShiftId,
+                    'clock_in'              => $clockInTime  ?? $attendance->clock_in,
+                    'clock_out'             => $clockOutTime ?? $attendance->clock_out,
+                    'late_minutes'          => $lateMinutes,
+                    'work_duration_minutes' => $workDuration,
+                    'status'                => $status,
+                ]);
+
+                $result['updated']++;
+                DB::commit();
+
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                $result['failed']++;
+                Log::error('UpdateIncomplete: gagal update attendance', [
+                    'attendance_id' => $attendance->id,
+                    'employee'      => $employee->name ?? 'unknown',
+                    'date'          => $date ?? 'unknown',
+                    'error'         => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return $result;
     }
 }

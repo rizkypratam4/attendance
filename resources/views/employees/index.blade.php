@@ -23,10 +23,14 @@
             </button>
 
             <button onclick="openM('mImportEmployee')"
-                class="purbtn flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold flex-shrink-0" style="font-size:14px">
+                class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold flex-shrink-0" 
+                style="font-size:14px;background:rgba(20,184,166,.2);color:#14b8a6;border:1px solid rgba(20,184,166,.3);cursor:pointer;transition:all 0.2s"
+                onmouseover="this.style.background='rgba(20,184,166,.3)';this.style.borderColor='rgba(20,184,166,.5)';this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.background='rgba(20,184,166,.2)';this.style.borderColor='rgba(20,184,166,.3)';this.style.transform='translateY(0)'">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
                 </svg>
                 Import
             </button>

@@ -1,5 +1,5 @@
 <div class="mbk" id="mEditAssignment" onclick="closeOut(event,'mEditAssignment')">
-    <div class="mbox" style="max-width:500px">
+    <div class="mbox" style="max-width:520px">
         <div class="mhdr">
             <span class="mtitle">Edit Assignment</span>
             <button class="mclose" onclick="closeM('mEditAssignment')">
@@ -9,23 +9,35 @@
             </button>
         </div>
         <div class="mbdy">
-            <form id="editAssignForm" method="post">
+            <form id="editAssignForm" method="POST">
                 @csrf
-                @method('patch')
+                @method('PATCH')
+                <input type="hidden" name="employee_id" id="editAssignEmployeeId">
                 <div class="space-y-4">
 
                     {{-- Employee (readonly) --}}
                     <div>
                         <label class="mlabel">Employee</label>
-                        <input type="text" id="editAssignName" class="minput" readonly
-                               style="opacity:.7;cursor:not-allowed">
+                        <input type="text" id="editAssignName" class="minput" readonly style="opacity:.6;cursor:not-allowed">
                     </div>
 
-                    {{-- Shift Code --}}
+                    {{-- Tanggal --}}
                     <div>
-                        <label class="mlabel">Shift Code</label>
-                        <select id="editAssignShift" name="shift_code_id" class="minput" style="cursor:pointer" required>
-                            <option value="">-- Select Shift --</option>
+                        <label class="mlabel">Tanggal</label>
+                        <input type="date" name="date" id="editAssignDate" class="minput" required>
+                    </div>
+
+                    {{-- Shift Code Default (readonly, tidak bisa diubah) --}}
+                    <div>
+                        <label class="mlabel">Shift Code <span style="font-weight:400;color:var(--text-3)">(default — tidak bisa diubah)</span></label>
+                        <input type="text" id="editAssignShiftDisplay" class="minput" readonly style="opacity:.6;cursor:not-allowed">
+                    </div>
+
+                    {{-- New Working Shift --}}
+                    <div>
+                        <label class="mlabel">New Working Shift <span style="font-weight:400;color:var(--text-3)">(opsional)</span></label>
+                        <select id="editAssignNewShift" name="new_working_shift_id" class="minput" style="cursor:pointer">
+                            <option value="">— Tidak Ada —</option>
                             @foreach($shiftCodes as $sc)
                                 <option value="{{ $sc->id }}">
                                     {{ $sc->code }}
@@ -37,12 +49,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>
-
-                    {{-- Tanggal --}}
-                    <div>
-                        <label class="mlabel">Tanggal</label>
-                        <input type="date" name="date" id="editAssignDate" class="minput" required>
+                        <p style="font-size:11px;color:var(--text-3);margin-top:4px">Shift ini yang digunakan untuk proses attendance.</p>
                     </div>
 
                 </div>
@@ -53,8 +60,7 @@
                             style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">
                         Cancel
                     </button>
-                    <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold"
-                            style="font-size:14px">
+                    <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">
                         Save Changes
                     </button>
                 </div>

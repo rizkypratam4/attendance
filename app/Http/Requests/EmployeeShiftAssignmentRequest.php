@@ -8,16 +8,16 @@ class EmployeeShiftAssignmentRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; // add auth logic if needed
+        return true;
     }
 
     public function rules()
     {
         return [
-            'employee_id'    => ['required','exists:employees,id'],
-            'shift_code_id'  => ['required','exists:shift_codes,id'],
-            'effective_date' => ['required','date'],
-            'end_date'       => ['nullable','date','after_or_equal:effective_date'],
+            'employee_id'          => ['required', 'exists:employees,id'],
+            'shift_code_id'        => ['nullable', 'exists:shift_codes,id'],
+            'new_working_shift_id' => ['nullable', 'exists:shift_codes,id'],
+            'date'                 => ['required', 'date'],
         ];
     }
 }

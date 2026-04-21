@@ -281,7 +281,8 @@
                         $emp        = $att->employee;
                         $lateMin    = $att->late_minutes ?? 0;
 
-                        $shiftCode  = $att->shiftCode;
+                        // Gunakan new_working_shift jika tersedia, jika tidak gunakan shift_code
+                        $shiftCode  = $att->newWorkingShift ?? $att->shiftCode;
 
                         $assignment = $emp->shiftAssignments->first();
 

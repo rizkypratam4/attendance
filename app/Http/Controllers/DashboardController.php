@@ -86,14 +86,32 @@ class DashboardController extends Controller
             });
 
         // ROW 3: TOP 5 LATE DEPARTMENTS
-        $topLateDepartments = Department::select('departments.id', 'departments.name')
-            ->selectRaw('COUNT(CASE WHEN attendances.status = "late" THEN 1 END) as late_count')
-            ->selectRaw('COUNT(attendances.id) as total_attendance')
-            ->selectRaw('ROUND(COUNT(CASE WHEN attendances.status = "late" THEN 1 END) * 100.0 / COUNT(attendances.id), 2) as late_percentage')
+        // Calculate: percentage of working days where at least one person from the department was late
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        
+        // Count total working days in the month (exclude day_off and holiday)
+        $totalWorkingDays = DB::table('attendances')
+            ->whereMonth('attendance_date', $currentMonth)
+            ->whereYear('attendance_date', $currentYear)
+            ->whereNotIn('status', ['day_off', 'holiday'])
+            ->distinct('attendance_date')
+            ->count('attendance_date');
+        
+        if ($totalWorkingDays == 0) $totalWorkingDays = 1; // Prevent division by zero
+        
+        $topLateDepartments = DB::table('departments')
+            ->select('departments.id', 'departments.name')
+            ->selectRaw('COUNT(DISTINCT attendances.attendance_date) as days_with_late')
+            ->selectRaw('ROUND(COUNT(DISTINCT attendances.attendance_date) * 100.0 / ?, 2) as late_percentage', [$totalWorkingDays])
             ->leftJoin('employees', 'departments.id', '=', 'employees.department_id')
-            ->leftJoin('attendances', 'employees.id', '=', 'attendances.employee_id')
-            ->whereMonth('attendances.attendance_date', now()->month)
-            ->whereYear('attendances.attendance_date', now()->year)
+            ->leftJoin('attendances', function($join) use ($currentMonth, $currentYear) {
+                $join->on('employees.id', '=', 'attendances.employee_id')
+                    ->whereMonth('attendances.attendance_date', $currentMonth)
+                    ->whereYear('attendances.attendance_date', $currentYear)
+                    ->where('attendances.status', 'late');
+            })
+            ->where('employees.is_active', true)
             ->groupBy('departments.id', 'departments.name')
             ->orderByDesc('late_percentage')
             ->limit(5)
