@@ -17,18 +17,33 @@ class AttendanceProcessService
         $date   = $date ?? now()->toDateString();
         $result = ['processed' => 0, 'skipped' => 0, 'failed' => 0, 'absent' => 0];
 
-        $query = FingerprintLog::where('is_processed', false)
-            ->whereDate('attendance_date', $date);
+        // Hanya proses employee yang memiliki shift assignment di tanggal ini
+        $employeeIdsWithShift = EmployeeShiftAssignment::where('date', $date)
+            ->pluck('employee_id')
+            ->unique();
 
-        // Filter department jika ada
-        if ($departmentId) {
-            $query->whereIn('barcode', function ($q) use ($departmentId) {
-                $q->select('machine_barcode')
-                ->from('employees')
-                ->where('department_id', $departmentId)
-                ->whereNotNull('machine_barcode');
-            });
+        if ($employeeIdsWithShift->isEmpty()) {
+            return $result; // Tidak ada shift assignment untuk tanggal ini
         }
+
+        // Ambil barcode dari employee yang memiliki shift assignment
+        $employeesQuery = Employee::whereIn('id', $employeeIdsWithShift)
+            ->whereNotNull('machine_barcode');
+
+        if ($departmentId) {
+            $employeesQuery->where('department_id', $departmentId);
+        }
+
+        $validBarcodes = $employeesQuery->pluck('machine_barcode');
+
+        if ($validBarcodes->isEmpty()) {
+            return $result;
+        }
+
+        // Ambil fingerprint logs yang belum diproses untuk barcode yang valid
+        $query = FingerprintLog::where('is_processed', false)
+            ->whereDate('attendance_date', $date)
+            ->whereIn('barcode', $validBarcodes);
 
         $barcodes = $query->distinct()->pluck('barcode');
 
@@ -79,7 +94,7 @@ class AttendanceProcessService
             if (!$clockInLog && $logs->isNotEmpty()) {
                 $clockInLog = $logs->first();
             }
-            
+
             if (!$clockOutLog || $clockOutLog->id === $clockInLog?->id) {
                 $clockOutLog = $logs->count() > 1 ? $logs->last() : null;
             }
@@ -98,8 +113,10 @@ class AttendanceProcessService
             }
 
             $lateMinutes = 0;
-            if ($assignment && $assignment->shiftCode?->on_time && $clockInTime) {
-                $scheduledIn = Carbon::parse($date . ' ' . $assignment->shiftCode->on_time);
+            // Gunakan new_working_shift jika ada, karena itu adalah jadwal aktif karyawan
+            $activeShiftCode = $assignment?->newWorkingShift ?? $assignment?->shiftCode;
+            if ($activeShiftCode?->on_time && $clockInTime) {
+                $scheduledIn = Carbon::parse($date . ' ' . $activeShiftCode->on_time);
                 if ($clockInTime->gt($scheduledIn)) {
                     $lateMinutes = (int) $scheduledIn->diffInMinutes($clockInTime);
                 }
@@ -146,7 +163,17 @@ class AttendanceProcessService
     {
         $count = 0;
 
-        $query = Employee::where('is_active', true)
+        // Hanya ambil employee yang memiliki shift assignment di tanggal ini
+        $employeeIdsWithShift = EmployeeShiftAssignment::where('date', $date)
+            ->pluck('employee_id')
+            ->unique();
+
+        if ($employeeIdsWithShift->isEmpty()) {
+            return 0; // Tidak ada shift assignment untuk tanggal ini
+        }
+
+        $query = Employee::whereIn('id', $employeeIdsWithShift)
+            ->where('is_active', true)
             ->whereNotNull('machine_barcode');
 
         if ($departmentId) {
@@ -212,7 +239,9 @@ class AttendanceProcessService
         }
 
         if ($lateMinutes > 0) {
-            if (in_array($assignment?->shiftCode?->code, ['1AA', '1AB'])) {
+            // Gunakan shift aktif (new_working_shift jika ada, fallback ke shiftCode)
+            $activeShiftCode = $assignment?->newWorkingShift ?? $assignment?->shiftCode;
+            if (in_array($activeShiftCode?->code, ['1AA', '1AB'])) {
                 $cutoffTime = Carbon::parse($clockIn->toDateString() . ' 10:00:00');
                 if ($clockIn->gt($cutoffTime)) {
                     return Attendance::STATUS_ABSENT;
@@ -226,7 +255,9 @@ class AttendanceProcessService
 
     private function isDayOff(?EmployeeShiftAssignment $assignment): bool
     {
-        return $assignment?->shiftCode?->is_day_off === true;
+        // Cek shift aktif: new_working_shift jika ada, fallback ke shiftCode
+        $activeShiftCode = $assignment?->newWorkingShift ?? $assignment?->shiftCode;
+        return $activeShiftCode?->is_day_off === true;
     }
 
     private function markLogsProcessed(string $barcode, string $date): void
@@ -328,8 +359,8 @@ class AttendanceProcessService
                     $clockOutTime = Carbon::parse($clockOutDate . ' ' . $clockOutLog->attendance_time);
                 }
 
-                // Gunakan shiftCode dari assignment untuk hitung keterlambatan
-                $shiftCodeForCalc = $assignment->shiftCode;
+                // Gunakan shift aktif (new_working_shift jika ada, fallback ke shiftCode) untuk hitung keterlambatan
+                $shiftCodeForCalc = $assignment->newWorkingShift ?? $assignment->shiftCode;
                 $lateMinutes = 0;
                 if ($shiftCodeForCalc?->on_time && $clockInTime) {
                     $scheduledIn = Carbon::parse($date . ' ' . $shiftCodeForCalc->on_time);

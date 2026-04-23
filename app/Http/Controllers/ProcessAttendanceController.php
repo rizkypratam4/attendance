@@ -28,7 +28,10 @@ class ProcessAttendanceController extends Controller
             ->limit(10)
             ->get();
 
-        return view('process_attendances.index', compact('stats', 'departments', 'preview'));
+        $weekStart = \Carbon\Carbon::now()->startOfWeek(\Carbon\Carbon::MONDAY)->toDateString();
+        $weekEnd   = \Carbon\Carbon::now()->toDateString();
+
+        return view('process_attendances.index', compact('stats', 'departments', 'preview', 'weekStart', 'weekEnd'));
     }
 
 
@@ -53,6 +56,11 @@ class ProcessAttendanceController extends Controller
             $result['skipped']   += $daily['skipped'];
             $result['failed']    += $daily['failed'];
             $current->addDay();
+        }
+
+        // Jika tidak ada yang diproses sama sekali, beri peringatan
+        if ($result['processed'] === 0 && $result['failed'] === 0) {
+            return back()->with('warning', 'Tidak ada data yang diproses. Pastikan jadwal shift sudah diupload untuk tanggal yang dipilih.');
         }
 
         return back()->with('process_result', $result);

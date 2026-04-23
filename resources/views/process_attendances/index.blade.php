@@ -8,7 +8,7 @@
 
 <div class="mb-6">
     <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Process Attendance</h1>
-    <p style="font-size:13px;color:var(--text-3);margin-top:5px">Transform raw fingerprint logs into verified attendance records.</p>
+    <p style="font-size:13px;color:var(--text-3);margin-top:5px">Transform raw fingerprint logs into verified attendance records. Hanya memproses karyawan yang memiliki jadwal shift di tanggal yang dipilih.</p>
 </div>
 
 {{-- ── RESULT FLASH ── --}}
@@ -39,6 +39,36 @@
     </div>
 @endif
 
+@if(session('warning'))
+    <div class="mb-5 px-4 py-3 rounded-xl flex items-center gap-3"
+         style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;font-size:13px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="flex-shrink-0">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        {{ session('warning') }}
+    </div>
+@endif
+
+{{-- ── WARNING: JADWAL HARUS DIUPLOAD DULU ── --}}
+<div class="mb-5 px-4 py-3.5 rounded-xl flex items-start gap-3"
+     style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:#fbbf24;font-size:13px">
+    <svg class="flex-shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <div>
+        <p style="font-weight:700;margin-bottom:3px">Jadwal shift harus diupload terlebih dahulu</p>
+        <p style="color:rgba(251,191,36,.8)">
+            Sistem hanya memproses karyawan yang memiliki jadwal shift di tanggal yang dipilih.
+            Pastikan jadwal sudah diupload melalui halaman
+            <a href="{{ route('employee_shift_assignments.index') }}"
+               style="color:#fbbf24;font-weight:700;text-decoration:underline">Employee Shift Assignment</a>
+            sebelum menjalankan proses ini.
+        </p>
+    </div>
+</div>
+
 {{-- ── FORM PROCESS ── --}}
 <div class="card rounded-2xl p-5 mb-6">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
@@ -53,7 +83,7 @@
                     <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
                 <input type="date" id="sharedStartDate"
-                       value="{{ old('start_date', today()->toDateString()) }}"
+                       value="{{ old('start_date', $weekStart) }}"
                        style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit;cursor:pointer">
             </div>
         </div>
@@ -68,7 +98,7 @@
                     <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
                 <input type="date" id="sharedEndDate"
-                       value="{{ old('end_date', today()->toDateString()) }}"
+                       value="{{ old('end_date', $weekEnd) }}"
                        style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit;cursor:pointer">
             </div>
         </div>
@@ -91,7 +121,7 @@
             </form>
 
             {{-- Update Attendance --}}
-            <form method="POST" action="{{ route('process_attendances.reprocess') }}" id="updateForm" class="flex-1">
+            {{-- <form method="POST" action="{{ route('process_attendances.reprocess') }}" id="updateForm" class="flex-1">
                 @csrf
                 <input type="hidden" name="start_date" id="updateStartDate">
                 <input type="hidden" name="end_date"   id="updateEndDate">
@@ -106,10 +136,11 @@
                     </svg>
                     <span id="updateLabel">Update</span>
                 </button>
-            </form>
+            </form> --}}
         </div>
 
     </div>
+
 </div>
 
 {{-- ── STATS + ENGINE ── --}}
@@ -187,7 +218,7 @@
                         </div>
                         @endif
                     @else
-                        <p style="font-size:13px;color:var(--text-3)">Belum ada proses yang dijalankan. Pilih tanggal dan klik Process.</p>
+                        <p style="font-size:13px;color:var(--text-3)">Belum ada proses yang dijalankan. Sistem akan memproses attendance hanya untuk karyawan yang memiliki jadwal shift di tanggal yang dipilih.</p>
                     @endif
                 </div>
             </div>

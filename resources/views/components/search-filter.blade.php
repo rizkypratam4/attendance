@@ -152,9 +152,7 @@
                 btn.querySelector('.custom-select-label').textContent = label;
                 hiddenInput.value = value;
                 dropdown.style.display = 'none';
-
-                // Auto-submit form
-                filterForm.submit();
+                // Tidak auto-submit, user klik tombol Filter
             });
         });
     });
