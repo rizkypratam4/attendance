@@ -1,8 +1,17 @@
-let dark = true;
+let dark = localStorage.getItem('theme') !== 'light';
+
+// Terapkan theme saat halaman load
+(function () {
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    dark = saved === 'dark';
+})();
 
 function toggleTheme() {
     dark = !dark;
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    const theme = dark ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
     const pill = document.getElementById('tpill');
     if (pill) pill.classList.toggle('light', !dark);
     document.dispatchEvent(new Event('themeChange'));
@@ -381,6 +390,9 @@ function openDeleteUser(name, id) {
 document.addEventListener('DOMContentLoaded', () => {
     initUserDropdown();
     bindTriggers();
+    // Sync pill button state dengan theme yang tersimpan
+    const pill = document.getElementById('tpill');
+    if (pill) pill.classList.toggle('light', !dark);
 });
 
 function toggleFilterPanel() {

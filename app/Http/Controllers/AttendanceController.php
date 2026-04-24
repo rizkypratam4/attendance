@@ -15,6 +15,7 @@ class AttendanceController extends Controller
         $shiftId = $request->input('shift_code');
         $deptId  = $request->input('department');
         $status  = $request->input('status');
+        $search  = $request->input('search');
 
         // Build base query with all filters (except status)
         $baseQuery = Attendance::with(['employee.department', 'shiftCode.shift', 'newWorkingShift.shift'])
@@ -26,6 +27,11 @@ class AttendanceController extends Controller
 
         if ($deptId) {
             $baseQuery->whereHas('employee', fn($q) => $q->where('department_id', $deptId));
+        }
+
+        if ($search) {
+            $like = '%' . $search . '%';
+            $baseQuery->whereHas('employee', fn($q) => $q->where('name', 'like', $like)->orWhere('nik', 'like', $like));
         }
 
         // Apply status filter only to the display query

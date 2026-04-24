@@ -41,7 +41,10 @@ class EmployeeShiftAssignmentService
 
         // Filter by shift code
         if (request('shift_code')) {
-            $query->where('shift_code_id', request('shift_code'));
+            $query->where(function ($q) {
+                $q->where('shift_code_id', request('shift_code'))
+                  ->orWhere('new_working_shift_id', request('shift_code'));
+            });
         }
 
         $query->join('employees', 'employees.id', '=', 'employee_shift_assignments.employee_id')

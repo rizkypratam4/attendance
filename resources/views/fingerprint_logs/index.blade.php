@@ -129,6 +129,7 @@
                             <line x1="3" y1="10" x2="21" y2="10" />
                         </svg>
                         <input type="date" name="date" value="{{ request('date', today()->toDateString()) }}"
+                            onclick="this.showPicker()"
                             style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13px;width:100%;font-family:inherit;cursor:pointer">
                     </div>
                 </div>
@@ -463,11 +464,13 @@
                     <div>
                         <label class="mlabel">Tanggal Mulai</label>
                         <input type="date" name="from" class="minput"
+                               onclick="this.showPicker()"
                                value="{{ today()->toDateString() }}" required>
                     </div>
                     <div>
                         <label class="mlabel">Tanggal Selesai</label>
                         <input type="date" name="to" class="minput"
+                               onclick="this.showPicker()"
                                value="{{ today()->toDateString() }}" required>
                     </div>
                     <div class="px-3 py-2.5 rounded-xl"

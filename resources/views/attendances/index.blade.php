@@ -34,6 +34,10 @@
 {{-- ── FILTER BAR ── --}}
 <div class="card rounded-2xl p-4 mb-5">
     <form method="GET" action="{{ route('attendances.index') }}">
+        {{-- Pertahankan search param saat filter lain diubah --}}
+        @if(request('search'))
+            <input type="hidden" name="search" value="{{ request('search') }}">
+        @endif
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
 
         {{-- Tanggal --}}
@@ -145,6 +149,17 @@
             <a href="{{ route('attendances.index') }}" style="font-size:12px;font-weight:600;color:#a78bfa;text-decoration:none">
                 ↺ Reset Filter
             </a>
+        </div>
+        @endif
+
+        @if(request('search'))
+        <div class="mt-3 flex items-center gap-2">
+            <span style="font-size:12px;color:var(--text-3)">Menampilkan hasil untuk:</span>
+            <span style="font-size:12px;font-weight:700;color:#a78bfa;background:rgba(124,58,237,.15);padding:2px 10px;border-radius:20px">
+                "{{ request('search') }}"
+            </span>
+            <a href="{{ route('attendances.index', request()->except('search')) }}"
+               style="font-size:12px;color:#f87171;text-decoration:none">✕ Hapus</a>
         </div>
         @endif
     </form>

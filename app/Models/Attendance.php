@@ -17,7 +17,7 @@ class Attendance extends Model
 
     protected $fillable = [
         'employee_id',
-        'shift_code_id',     // ← shift saat absen
+        'shift_code_id', 
         'new_working_shift_id',
         'attendance_date',
         'clock_in',
@@ -34,9 +34,6 @@ class Attendance extends Model
         'clock_out'       => 'datetime',
     ];
 
-    // ==========================================
-    // RELASI
-    // ==========================================
 
     public function employee(): BelongsTo
     {
@@ -52,10 +49,6 @@ class Attendance extends Model
     {
         return $this->belongsTo(ShiftCode::class, 'new_working_shift_id');
     }
-
-    // ==========================================
-    // SCOPES
-    // ==========================================
 
     public function scopeOnDate($query, string $date)
     {
@@ -92,10 +85,6 @@ class Attendance extends Model
     {
         return $query->where('status', self::STATUS_LATE);
     }
-
-    // ==========================================
-    // HELPERS
-    // ==========================================
 
     public function isPresent(): bool
     {

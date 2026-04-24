@@ -1,25 +1,26 @@
-<div class="flex flex-col items-center mb-6">
-    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-pink-500
-                flex items-center justify-center font-bold text-white mb-3 overflow-hidden">
-        @if(auth()->user()->image)
-            <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="Profile Picture"
-                 class="w-full h-full object-cover">
-        @else
-            {{ strtoupper(substr(auth()->user()->name ?? 'AT', 0, 2)) }}
-        @endif
-    </div>
-    <label for="profileImageInput" class="cursor-pointer">
-        <span style="font-size:13px;color:#a78bfa;font-weight:600;">Change Photo</span>
-        <input type="file" id="profileImageInput" name="image" accept="image/*" class="hidden">
-    </label>
-    @error('image')
-        <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
-    @enderror
-</div>
-
 <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
     @csrf
     @method('PATCH')
+
+    <div class="flex flex-col items-center mb-6">
+        <div class="w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-pink-500
+                    flex items-center justify-center font-bold text-white mb-3 overflow-hidden">
+            @if(auth()->user()->image)
+                <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="Profile Picture"
+                     class="w-full h-full object-cover">
+            @else
+                {{ strtoupper(substr(auth()->user()->name ?? 'AT', 0, 2)) }}
+            @endif
+        </div>
+        <label for="profileImageInput" class="cursor-pointer">
+            <span style="font-size:13px;color:#a78bfa;font-weight:600;">Change Photo</span>
+            <input type="file" id="profileImageInput" name="image" accept="image/*" class="hidden">
+        </label>
+        @error('image')
+            <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+        @enderror
+    </div>
+
     <div class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
             <div>

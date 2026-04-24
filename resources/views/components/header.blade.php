@@ -16,19 +16,28 @@
         </button>
 
         {{-- Search --}}
-        <div class="hdr-search s-wrap hidden sm:flex items-center gap-3 rounded-xl px-4 py-2.5"
+        <div class="hdr-search s-wrap hidden sm:flex items-center gap-3 rounded-xl px-4 py-2.5 relative"
              style="width:320px;max-width:100%;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                 stroke="var(--text-3)" stroke-width="2">
+                 stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
                 <circle cx="11" cy="11" r="8" />
                 <path d="M21 21l-4.35-4.35" />
             </svg>
-            <input type="text" placeholder="Search employees, reports, or logs...">
+            <input type="text" id="globalSearchInput"
+                   placeholder="Search employees, reports, or logs..."
+                   autocomplete="off"
+                   style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13px;width:100%;font-family:inherit">
+            {{-- Dropdown results --}}
+            <div id="globalSearchDropdown"
+                 style="display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:9999;
+                        background:var(--bg-card, #1a1625);border:1px solid var(--border);border-radius:14px;
+                        box-shadow:0 16px 48px rgba(0,0,0,.5);overflow:hidden;max-height:420px;overflow-y:auto">
+            </div>
         </div>
     </div>
 
     <div class="flex items-center gap-3 lg:gap-4">
-        {{-- Notification Bell --}}
+        <!-- {{-- Notification Bell --}}
         <button class="ib-bg relative w-10 h-10 flex items-center justify-center rounded-xl">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2">
@@ -36,7 +45,7 @@
             </svg>
             <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-purple-500 rounded-full"
                   style="border:2px solid var(--bg-header)"></span>
-        </button>
+        </button> -->
 
         {{-- Theme Toggle --}}
         <div class="hidden sm:flex items-center gap-2">
@@ -101,7 +110,7 @@
                         </div>
                         <div>
                             <div style="font-size:15px;font-weight:600;color:var(--text-1)">
-                                {{ auth()->user()->first_name ." ".auth()->user()->last_name ?? 'Alex Thompson' }}
+                                {{ auth()->user()->first_name ." ".auth()->user()->last_name ?? 'Admin' }}
                             </div>
                             <div style="font-size:12px;color:#a78bfa">
                                 {{ ucfirst(auth()->user()->role ?? 'Super Admin') }}

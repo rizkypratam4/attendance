@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::patch('/password', [UserController::class, 'changePassword'])->name('password.change');
 
+    Route::get('/search', \App\Http\Controllers\GlobalSearchController::class)->name('search.global');
+
     Route::prefix('fingerprint')->name('fingerprint.')->group(function () {
         Route::get('/',      [FingerprintLogController::class, 'index'])->name('index');
         Route::post('/sync', [FingerprintLogController::class, 'sync'])->name('sync');

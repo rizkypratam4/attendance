@@ -84,6 +84,7 @@
                 </svg>
                 <input type="date" id="sharedStartDate"
                        value="{{ old('start_date', $weekStart) }}"
+                       onclick="this.showPicker()"
                        style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit;cursor:pointer">
             </div>
         </div>
@@ -99,6 +100,7 @@
                 </svg>
                 <input type="date" id="sharedEndDate"
                        value="{{ old('end_date', $weekEnd) }}"
+                       onclick="this.showPicker()"
                        style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13.5px;width:100%;font-family:inherit;cursor:pointer">
             </div>
         </div>
@@ -121,7 +123,7 @@
             </form>
 
             {{-- Update Attendance --}}
-            {{-- <form method="POST" action="{{ route('process_attendances.reprocess') }}" id="updateForm" class="flex-1">
+            <form method="POST" action="{{ route('process_attendances.reprocess') }}" id="updateForm" class="flex-1">
                 @csrf
                 <input type="hidden" name="start_date" id="updateStartDate">
                 <input type="hidden" name="end_date"   id="updateEndDate">
@@ -136,7 +138,7 @@
                     </svg>
                     <span id="updateLabel">Update</span>
                 </button>
-            </form> --}}
+            </form>
         </div>
 
     </div>
