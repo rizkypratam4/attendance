@@ -113,7 +113,7 @@
     {{-- ── FILTER BAR ── --}}
     <div class="card rounded-2xl p-4 mb-5">
         <form method="GET" action="{{ route('fingerprint.index') }}">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
 
                 {{-- Tanggal --}}
                 <div>
@@ -131,6 +131,20 @@
                         <input type="date" name="date" value="{{ request('date', today()->toDateString()) }}"
                             onclick="this.showPicker()"
                             style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13px;width:100%;font-family:inherit;cursor:pointer">
+                    </div>
+                </div>
+
+                {{-- Search Karyawan --}}
+                <div>
+                    <label style="font-size:10.5px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Karyawan</label>
+                    <div class="flex items-center gap-2 px-3 py-2.5 rounded-xl"
+                         style="background:var(--bg-input);border:1px solid var(--border-in)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
+                            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                        </svg>
+                        <input type="text" name="search" placeholder="Nama / NIK..."
+                               value="{{ request('search') }}"
+                               style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13px;width:100%;font-family:inherit">
                     </div>
                 </div>
 

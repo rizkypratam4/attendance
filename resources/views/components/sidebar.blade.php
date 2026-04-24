@@ -81,6 +81,47 @@
             </div>
         </div>
 
+           <div class="menu-group">
+            <button type="button" onclick="toggleSubmenu(this)"
+                class="nav-a w-full text-left">
+                <svg class="flex-shrink-0" width="19" height="19" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+                    <path d="M7 8L5 4M17 8l2-4" />
+
+                    <path d="M5 10a7 7 0 0 1 14 0v5a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z" />
+
+                    <circle cx="9" cy="13" r="1" />
+                    <circle cx="15" cy="13" r="1" />
+
+                    <path d="M12 16v1" />
+                </svg>
+
+                <span class="sl flex-1">Shift Management</span>
+
+                <span class="caret flex-shrink-0">
+                    <svg class="caretIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" style="transition:transform .3s">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </span>
+            </button>
+
+            <div class="submenu"
+                style="max-height:{{ in_array($active, ['shift-groups', 'shift-definition', 'shift-codes', 'shift-schedules', 'shift-rules']) ? '200px' : '0' }};
+                    overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
+                <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
+                    <a href="{{ route('shift_groups.index') }}" class="sub-a {{ $active === 'shift-groups' ? 'sub-act' : '' }}">
+                        <span class="sl">Master Shift</span>
+                    </a>
+
+                    <a href="{{ route('shift_codes.index') }}" class="sub-a {{ $active === 'shift-codes' ? 'sub-act' : '' }}">
+                        <span class="sl">Kode Shift</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class="menu-group">
             <button type="button" onclick="toggleSubmenu(this)"
                     class="nav-a w-full text-left">
@@ -122,46 +163,7 @@
             </div>
         </div>
 
-        <div class="menu-group">
-            <button type="button" onclick="toggleSubmenu(this)"
-                class="nav-a w-full text-left">
-                <svg class="flex-shrink-0" width="19" height="19" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
-                    <path d="M7 8L5 4M17 8l2-4" />
-
-                    <path d="M5 10a7 7 0 0 1 14 0v5a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z" />
-
-                    <circle cx="9" cy="13" r="1" />
-                    <circle cx="15" cy="13" r="1" />
-
-                    <path d="M12 16v1" />
-                </svg>
-
-                <span class="sl flex-1">Shift Management</span>
-
-                <span class="caret flex-shrink-0">
-                    <svg class="caretIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.5" style="transition:transform .3s">
-                        <path d="M6 9l6 6 6-6" />
-                    </svg>
-                </span>
-            </button>
-
-            <div class="submenu"
-                style="max-height:{{ in_array($active, ['shift-groups', 'shift-definition', 'shift-codes', 'shift-schedules', 'shift-rules']) ? '200px' : '0' }};
-                    overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
-                <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
-                    <a href="{{ route('shift_groups.index') }}" class="sub-a {{ $active === 'shift-groups' ? 'sub-act' : '' }}">
-                        <span class="sl">Master Shift</span>
-                    </a>
-
-                    <a href="{{ route('shift_codes.index') }}" class="sub-a {{ $active === 'shift-codes' ? 'sub-act' : '' }}">
-                        <span class="sl">Kode Shift</span>
-                    </a>
-                </div>
-            </div>
-        </div>
+     
 
         <div class="menu-group">
             <button type="button" onclick="toggleSubmenu(this)" class="nav-a w-full text-left">

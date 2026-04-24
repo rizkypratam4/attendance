@@ -34,11 +34,21 @@
 {{-- ── FILTER BAR ── --}}
 <div class="card rounded-2xl p-4 mb-5">
     <form method="GET" action="{{ route('attendances.index') }}">
-        {{-- Pertahankan search param saat filter lain diubah --}}
-        @if(request('search'))
-            <input type="hidden" name="search" value="{{ request('search') }}">
-        @endif
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+
+        {{-- Search Karyawan --}}
+        <div>
+            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:8px">Karyawan</label>
+            <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl"
+                 style="background:var(--bg-input);border:1px solid var(--border-in)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
+                    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input type="text" name="search" placeholder="Nama / NIK..."
+                       value="{{ request('search') }}"
+                       style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13px;width:100%;font-family:inherit">
+            </div>
+        </div>
 
         {{-- Tanggal --}}
         <div>
@@ -124,6 +134,7 @@
                                 'present' => 'Hadir',
                                 'late'    => 'Terlambat',
                                 'absent'  => 'Tidak Hadir',
+                                'idt'     => 'IDT',
                                 default   => 'All Statuses'
                             } }}
                         </span>
@@ -134,6 +145,7 @@
                         <div class="custom-select-option {{ request('status') === 'present' ? 'selected' : '' }}" data-value="present">Hadir</div>
                         <div class="custom-select-option {{ request('status') === 'late'    ? 'selected' : '' }}" data-value="late">Terlambat</div>
                         <div class="custom-select-option {{ request('status') === 'absent'  ? 'selected' : '' }}" data-value="absent">Tidak Hadir</div>
+                        <div class="custom-select-option {{ request('status') === 'idt'     ? 'selected' : '' }}" data-value="idt">IDT</div>
                     </div>
                 </div>
                 <button type="submit" class="purbtn px-4 py-2.5 rounded-xl font-semibold flex-shrink-0" style="font-size:13px">
@@ -144,22 +156,11 @@
 
         </div>
 
-        @if(request()->hasAny(['shift_code', 'department', 'status']) || request('date') !== today()->toDateString())
+        @if(request()->hasAny(['shift_code', 'department', 'status', 'search']) || request('date') !== today()->toDateString())
         <div class="mt-3">
             <a href="{{ route('attendances.index') }}" style="font-size:12px;font-weight:600;color:#a78bfa;text-decoration:none">
                 ↺ Reset Filter
             </a>
-        </div>
-        @endif
-
-        @if(request('search'))
-        <div class="mt-3 flex items-center gap-2">
-            <span style="font-size:12px;color:var(--text-3)">Menampilkan hasil untuk:</span>
-            <span style="font-size:12px;font-weight:700;color:#a78bfa;background:rgba(124,58,237,.15);padding:2px 10px;border-radius:20px">
-                "{{ request('search') }}"
-            </span>
-            <a href="{{ route('attendances.index', request()->except('search')) }}"
-               style="font-size:12px;color:#f87171;text-decoration:none">✕ Hapus</a>
         </div>
         @endif
     </form>

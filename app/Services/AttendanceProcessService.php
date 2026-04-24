@@ -129,17 +129,8 @@ class AttendanceProcessService
 
             $status = $this->determineStatus($assignment, $clockInTime, $lateMinutes);
 
-            // Cek has_idt dari shift code aktif
-            $hasIdt = (bool) ($activeShiftCode?->has_idt ?? false);
-
-            // Jika has_idt true dan status late → ubah ke present
-            if ($hasIdt && $status === Attendance::STATUS_LATE) {
-                $status = Attendance::STATUS_PRESENT;
-            }
-
             // Tentukan shift_code_id yang akan disimpan
-            // Jika new_working_shift tersedia, gunakan itu; jika tidak, gunakan shift_code
-            $finalShiftCodeId = $assignment?->new_working_shift_id ?? $assignment?->shift_code_id;
+            $finalShiftCodeId  = $assignment?->new_working_shift_id ?? $assignment?->shift_code_id;
             $newWorkingShiftId = $assignment?->new_working_shift_id;
 
             Attendance::updateOrCreate(
@@ -152,10 +143,10 @@ class AttendanceProcessService
                     'new_working_shift_id'  => $newWorkingShiftId,
                     'clock_in'              => $clockInTime,
                     'clock_out'             => $clockOutTime,
-                    'late_minutes'          => $hasIdt ? 0 : $lateMinutes,
+                    'late_minutes'          => $lateMinutes,
                     'work_duration_minutes' => $workDuration,
                     'status'                => $status,
-                    'has_idt'               => $hasIdt,
+                    'has_idt'               => false,
                 ]
             );
 

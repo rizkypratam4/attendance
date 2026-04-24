@@ -22,6 +22,11 @@ class FingerprintLogController extends Controller
             $query->where('barcode', 'like', '%' . $request->barcode . '%');
         }
 
+        if ($request->filled('search')) {
+            $like = '%' . $request->search . '%';
+            $query->whereHas('employee', fn($q) => $q->where('name', 'like', $like)->orWhere('nik', 'like', $like));
+        }
+
         if ($request->filled('type')) {
             $query->where('attendance_type', $request->type);
         }

@@ -38,9 +38,10 @@ class AttendanceController extends Controller
         $query = clone $baseQuery;
         
         if ($status) {
-            // Jika filter status = 'present', tampilkan karyawan yang hadir dan terlambat
             if ($status === 'present') {
                 $query->whereIn('status', ['present', 'late']);
+            } elseif ($status === 'idt') {
+                $query->where('has_idt', true);
             } else {
                 $query->where('status', $status);
             }
