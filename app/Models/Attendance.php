@@ -17,7 +17,7 @@ class Attendance extends Model
 
     protected $fillable = [
         'employee_id',
-        'shift_code_id', 
+        'shift_code_id',
         'new_working_shift_id',
         'attendance_date',
         'clock_in',
@@ -25,6 +25,7 @@ class Attendance extends Model
         'late_minutes',
         'work_duration_minutes',
         'status',
+        'has_idt',
         'notes',
     ];
 
@@ -32,6 +33,7 @@ class Attendance extends Model
         'attendance_date' => 'date',
         'clock_in'        => 'datetime',
         'clock_out'       => 'datetime',
+        'has_idt'         => 'boolean',
     ];
 
 

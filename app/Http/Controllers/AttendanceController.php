@@ -70,9 +70,35 @@ class AttendanceController extends Controller
         ));
     }
 
-    /**
-     * Export attendance data to PDF with applied filters
-     */
+    public function update(Request $request, \App\Models\Attendance $attendance)
+    {
+        $hasIdt = (bool) $request->input('has_idt', false);
+
+        $data = ['has_idt' => $hasIdt];
+
+        // Jika has_idt diaktifkan dan status late → ubah ke present
+        if ($hasIdt && $attendance->status === \App\Models\Attendance::STATUS_LATE) {
+            $data['status']       = \App\Models\Attendance::STATUS_PRESENT;
+            $data['late_minutes'] = 0;
+        }
+
+        // Jika has_idt dinonaktifkan dan sebelumnya late → hitung ulang late_minutes
+        if (!$hasIdt && $attendance->status === \App\Models\Attendance::STATUS_PRESENT && $attendance->clock_in) {
+            $activeShift = $attendance->newWorkingShift ?? $attendance->shiftCode;
+            if ($activeShift?->on_time) {
+                $scheduledIn = \Carbon\Carbon::parse($attendance->attendance_date->toDateString() . ' ' . $activeShift->on_time);
+                if ($attendance->clock_in->gt($scheduledIn)) {
+                    $data['late_minutes'] = (int) $scheduledIn->diffInMinutes($attendance->clock_in);
+                    $data['status']       = \App\Models\Attendance::STATUS_LATE;
+                }
+            }
+        }
+
+        $attendance->update($data);
+
+        return back()->with('success', 'Attendance berhasil diupdate.');
+    }
+
     public function exportPdf(Request $request)
     {
         $date    = $request->input('date', today()->toDateString());

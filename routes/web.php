@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     // Attendance routes - define before resources
     Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
     Route::get('/attendances/export-pdf', [AttendanceController::class, 'exportPdf'])->name('attendances.export-pdf');
+    Route::patch('/attendances/{attendance}', [AttendanceController::class, 'update'])->name('attendances.update');
 
     Route::resources([
         'locations' => LocationController::class,

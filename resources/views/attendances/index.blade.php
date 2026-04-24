@@ -287,6 +287,7 @@
                     <th class="text-left px-4 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Clock In</th>
                     <th class="text-left px-4 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Clock Out</th>
                     <th class="text-left px-4 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Status</th>
+                    <th class="text-center px-4 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">IDT</th>
                     <th class="text-right px-5 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Action</th>
                 </tr>
             </thead>
@@ -311,7 +312,7 @@
                             default   => ['rgba(100,116,139,.18)', '#94a3b8', strtoupper($att->status)],
                         };
                     @endphp
-                    <tr class="att-row" style="border-bottom:1px solid var(--border)">
+                    <tr class="att-row" style="border-bottom:1px solid var(--border);{{ $att->has_idt ? 'background:rgba(96,165,250,.07);' : '' }}">
 
                         {{-- Karyawan --}}
                         <td class="px-5 py-3.5">
@@ -387,13 +388,29 @@
                             </span>
                         </td>
 
+                        {{-- IDT --}}
+                        <td class="px-4 py-3.5 text-center">
+                            @if($att->has_idt)
+                                <span class="px-2 py-0.5 rounded-full font-bold"
+                                      style="font-size:10px;background:rgba(96,165,250,.15);color:#60a5fa;border:1px solid rgba(96,165,250,.3)">
+                                    IDT
+                                </span>
+                            @else
+                                <span style="color:var(--text-3);font-size:12px">—</span>
+                            @endif
+                        </td>
+
                         {{-- Action --}}
                         <td class="px-5 py-3.5 text-right">
-                            <button class="att-trigger w-8 h-8 rounded-lg flex items-center justify-center ml-auto ib-bg"
+                            <button class="att-edit-btn w-8 h-8 rounded-lg flex items-center justify-center ml-auto ib-bg"
                                     data-id="{{ $att->id }}"
-                                    data-name="{{ $emp->name }}">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+                                    data-name="{{ $emp->name }}"
+                                    data-has-idt="{{ $att->has_idt ? '1' : '0' }}"
+                                    data-status="{{ $att->status }}"
+                                    title="Edit">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                 </svg>
                             </button>
                         </td>
@@ -401,7 +418,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-5 py-16 text-center">
+                        <td colspan="8" class="px-5 py-16 text-center">
                             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
                                  style="margin:0 auto 12px;opacity:.2;color:var(--text-3)">
                                 <rect x="3" y="4" width="18" height="18" rx="2"/>
@@ -456,6 +473,50 @@
     </div>
     @endif
 </div>
+
+{{-- ── EDIT ATTENDANCE MODAL ── --}}
+<x-ui.modal id="mEditAttendance" title="Edit Attendance">
+    <form id="editAttendanceForm" method="POST">
+        @csrf
+        @method('PATCH')
+        <div class="space-y-4">
+            <div>
+                <label class="mlabel">Karyawan</label>
+                <input type="text" id="editAttName" class="minput" readonly
+                       style="opacity:.6;cursor:not-allowed">
+            </div>
+            <div>
+                <label class="mlabel">Status Saat Ini</label>
+                <input type="text" id="editAttStatus" class="minput" readonly
+                       style="opacity:.6;cursor:not-allowed">
+            </div>
+            <div class="flex items-center justify-between px-4 py-3 rounded-xl"
+                 style="background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2)">
+                <div>
+                    <p style="font-size:13.5px;font-weight:600;color:var(--text-1)">IDT (Izin Datang Terlambat)</p>
+                    <p style="font-size:12px;color:var(--text-3);margin-top:2px">Jika aktif, karyawan tidak dinyatakan terlambat</p>
+                </div>
+                <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0">
+                    <input type="checkbox" name="has_idt" id="editAttHasIdt" value="1"
+                           style="opacity:0;width:0;height:0">
+                    <span id="idtToggleTrack" style="position:absolute;cursor:pointer;inset:0;border-radius:24px;transition:.3s;background:#334155"></span>
+                    <span id="idtToggleThumb" style="position:absolute;content:'';height:18px;width:18px;left:3px;bottom:3px;border-radius:50%;transition:.3s;background:white"></span>
+                </label>
+            </div>
+        </div>
+        <div class="flex gap-3 mt-6">
+            <button type="button" onclick="closeM('mEditAttendance')"
+                    class="flex-1 py-2.5 rounded-xl font-medium"
+                    style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2)">
+                Cancel
+            </button>
+            <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold"
+                    style="font-size:14px">
+                Save
+            </button>
+        </div>
+    </form>
+</x-ui.modal>
 
 @endsection
 
@@ -553,6 +614,52 @@ document.addEventListener('click', () => {
     document.querySelectorAll('.custom-select-dropdown').forEach(d => {
         d.style.display = 'none';
     });
+});
+
+// ── Edit Attendance Modal ──────────────────────────────────
+document.querySelectorAll('.att-edit-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const id      = this.dataset.id;
+        const name    = this.dataset.name;
+        const hasIdt  = this.dataset.hasIdt === '1';
+        const status  = this.dataset.status;
+
+        const statusMap = {
+            present: 'Hadir', late: 'Terlambat', absent: 'Tidak Hadir',
+            day_off: 'Day Off', permit: 'Izin', sick: 'Sakit'
+        };
+
+        document.getElementById('editAttendanceForm').action = `/attendances/${id}`;
+        document.getElementById('editAttName').value         = name;
+        document.getElementById('editAttStatus').value       = statusMap[status] ?? status;
+
+        const checkbox = document.getElementById('editAttHasIdt');
+        const track    = document.getElementById('idtToggleTrack');
+        const thumb    = document.getElementById('idtToggleThumb');
+
+        checkbox.checked = hasIdt;
+        updateToggleUI(hasIdt, track, thumb);
+
+        openM('mEditAttendance');
+    });
+});
+
+function updateToggleUI(checked, track, thumb) {
+    track.style.background = checked ? '#60a5fa' : '#334155';
+    thumb.style.transform  = checked ? 'translateX(20px)' : 'translateX(0)';
+}
+
+document.getElementById('editAttHasIdt')?.addEventListener('change', function () {
+    const track = document.getElementById('idtToggleTrack');
+    const thumb = document.getElementById('idtToggleThumb');
+    updateToggleUI(this.checked, track, thumb);
+});
+
+// Klik track toggle
+document.getElementById('idtToggleTrack')?.addEventListener('click', function () {
+    const cb = document.getElementById('editAttHasIdt');
+    cb.checked = !cb.checked;
+    updateToggleUI(cb.checked, this, document.getElementById('idtToggleThumb'));
 });
 </script>
 @endpush
