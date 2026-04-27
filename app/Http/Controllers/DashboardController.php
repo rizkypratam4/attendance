@@ -24,9 +24,7 @@ class DashboardController extends Controller
                         ->where('status', 'late')
                         ->count();
         
-        $absentToday = Attendance::where('attendance_date', $today)
-                         ->where('status', 'absent')
-                         ->count();
+        $absentToday = \App\Helpers\AbsentCountHelper::count($today);
 
         // ROW 2: LINE CHART - 7 DAYS ATTENDANCE
         $sevenDaysAgo = now()->subDays(6)->toDateString();

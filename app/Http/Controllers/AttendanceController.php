@@ -50,6 +50,23 @@ class AttendanceController extends Controller
         // Sort berdasarkan clock_in terbaru (descending)
         $attendances = $query->orderBy('clock_in', 'desc')->paginate(10)->withQueryString();
 
+        // Untuk hari ini: filter absent yang shift-nya belum mulai dari hasil query
+        if ($date === today()->toDateString()) {
+            $now = \Carbon\Carbon::now();
+            $attendances->getCollection()->transform(function ($att) use ($now, $date) {
+                return $att; // tetap tampilkan semua, filter di bawah
+            });
+            // Filter: sembunyikan absent yang shift belum mulai
+            $filtered = $attendances->getCollection()->reject(function ($att) use ($now, $date) {
+                if ($att->status !== 'absent') return false;
+                $activeShift = $att->newWorkingShift ?? $att->shiftCode;
+                if (!$activeShift?->on_time) return false;
+                $scheduledIn = \Carbon\Carbon::parse($date . ' ' . $activeShift->on_time);
+                return $now->lt($scheduledIn); // reject jika belum waktunya
+            });
+            $attendances->setCollection($filtered);
+        }
+
         // Calculate stats based on filtered query (with date, shift, department filters)
         $presentCount = (clone $baseQuery)->where('status', 'present')->count();
         $lateCount    = (clone $baseQuery)->where('status', 'late')->count();
@@ -58,7 +75,9 @@ class AttendanceController extends Controller
             'present' => $presentCount,
             'late'    => $lateCount,
             'present_including_late' => $presentCount + $lateCount,
-            'absent'  => (clone $baseQuery)->where('status', 'absent')->count(),
+            'absent'  => $date === today()->toDateString()
+                ? \App\Helpers\AbsentCountHelper::count($date, $deptId ?: null)
+                : (clone $baseQuery)->where('status', 'absent')->count(),
             'day_off' => (clone $baseQuery)->where('status', 'day_off')->count(),
             'total'   => (clone $baseQuery)->count(),
         ];

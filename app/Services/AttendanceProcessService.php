@@ -192,6 +192,17 @@ class AttendanceProcessService
             $assignment = $this->getAssignment($employee->id, $date);
             if (!$assignment) continue;
 
+            // Jika hari ini, skip karyawan yang shift-nya belum mulai
+            if ($date === now()->toDateString() && !$this->isDayOff($assignment)) {
+                $activeShift = $assignment->newWorkingShift ?? $assignment->shiftCode;
+                if ($activeShift?->on_time) {
+                    $scheduledIn = Carbon::parse($date . ' ' . $activeShift->on_time);
+                    if (now()->lt($scheduledIn)) {
+                        continue; // Belum waktunya masuk, skip
+                    }
+                }
+            }
+
             $status = $this->isDayOff($assignment)
                 ? Attendance::STATUS_DAY_OFF
                 : Attendance::STATUS_ABSENT;
