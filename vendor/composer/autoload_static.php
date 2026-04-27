@@ -796,6 +796,7 @@ class ComposerStaticInitc514d8f7b9fc5970bdd94287905ef584
         'App\\Http\\Controllers\\EmployeeScheduleController' => __DIR__ . '/../..' . '/app/Http/Controllers/EmployeeScheduleController.php',
         'App\\Http\\Controllers\\EmployeeShiftAssignmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/EmployeeShiftAssignmentController.php',
         'App\\Http\\Controllers\\FingerprintLogController' => __DIR__ . '/../..' . '/app/Http/Controllers/FingerprintLogController.php',
+        'App\\Http\\Controllers\\GlobalSearchController' => __DIR__ . '/../..' . '/app/Http/Controllers/GlobalSearchController.php',
         'App\\Http\\Controllers\\LocationController' => __DIR__ . '/../..' . '/app/Http/Controllers/LocationController.php',
         'App\\Http\\Controllers\\ProcessAttendanceController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProcessAttendanceController.php',
         'App\\Http\\Controllers\\ShiftCodeController' => __DIR__ . '/../..' . '/app/Http/Controllers/ShiftCodeController.php',

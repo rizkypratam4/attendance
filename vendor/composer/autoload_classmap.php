@@ -18,6 +18,7 @@ return array(
     'App\\Http\\Controllers\\EmployeeScheduleController' => $baseDir . '/app/Http/Controllers/EmployeeScheduleController.php',
     'App\\Http\\Controllers\\EmployeeShiftAssignmentController' => $baseDir . '/app/Http/Controllers/EmployeeShiftAssignmentController.php',
     'App\\Http\\Controllers\\FingerprintLogController' => $baseDir . '/app/Http/Controllers/FingerprintLogController.php',
+    'App\\Http\\Controllers\\GlobalSearchController' => $baseDir . '/app/Http/Controllers/GlobalSearchController.php',
     'App\\Http\\Controllers\\LocationController' => $baseDir . '/app/Http/Controllers/LocationController.php',
     'App\\Http\\Controllers\\ProcessAttendanceController' => $baseDir . '/app/Http/Controllers/ProcessAttendanceController.php',
     'App\\Http\\Controllers\\ShiftCodeController' => $baseDir . '/app/Http/Controllers/ShiftCodeController.php',

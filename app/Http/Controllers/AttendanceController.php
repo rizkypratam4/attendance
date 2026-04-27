@@ -36,7 +36,7 @@ class AttendanceController extends Controller
 
         // Apply status filter only to the display query
         $query = clone $baseQuery;
-        
+
         if ($status) {
             if ($status === 'present') {
                 $query->whereIn('status', ['present', 'late']);
@@ -67,7 +67,12 @@ class AttendanceController extends Controller
         $shiftCodes  = ShiftCode::orderBy('code')->get();
 
         return view('attendances.index', compact(
-            'attendances', 'stats', 'departments', 'shiftCodes', 'date', 'status'
+            'attendances',
+            'stats',
+            'departments',
+            'shiftCodes',
+            'date',
+            'status'
         ));
     }
 
@@ -121,7 +126,7 @@ class AttendanceController extends Controller
 
         // Apply status filter only if provided
         $query = clone $baseQuery;
-        
+
         if ($status) {
             if ($status === 'present') {
                 $query->whereIn('status', ['present', 'late']);
@@ -164,7 +169,7 @@ class AttendanceController extends Controller
         // Generate PDF using Dompdf
         $pdf = \PDF::loadView('attendances.pdf', $data);
         $filename = 'attendance_' . $date . '.pdf';
-        
+
         return $pdf->download($filename);
     }
 }

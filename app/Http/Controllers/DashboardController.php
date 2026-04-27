@@ -35,7 +35,7 @@ class DashboardController extends Controller
             ->selectRaw('COUNT(CASE WHEN status = "absent" THEN 1 END) as absent_count')
             ->whereBetween('attendance_date', [$sevenDaysAgo, $today])
             ->groupBy(DB::raw('DATE(attendance_date)'))
-            ->orderBy('attendance_date')
+            ->orderBy(DB::raw('DATE(attendance_date)'))
             ->get();
 
         $attendanceChartLabels = [];

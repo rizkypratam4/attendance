@@ -152,7 +152,6 @@ class AttendanceProcessService
 
             $this->markLogsProcessed($barcode, $date);
             DB::commit();
-
         } catch (\Throwable $e) {
             DB::rollBack();
             throw $e;
@@ -284,29 +283,29 @@ class AttendanceProcessService
             ->whereBetween('attendance_date', [$startDate, $endDate])
             ->where(function ($q) {
                 $q->whereNull('shift_code_id')      // shift kosong
-                  ->orWhereNull('status')            // status kosong
-                  ->orWhere(function ($q2) {
-                      // status absent tapi ada clock_in (data tidak konsisten)
-                      $q2->where('status', Attendance::STATUS_ABSENT)
-                         ->whereNotNull('clock_in');
-                  })
-                  ->orWhere(function ($q3) {
-                      // ada clock_in & clock_out tapi work_duration = 0 (belum dihitung)
-                      $q3->whereNotNull('clock_in')
-                         ->whereNotNull('clock_out')
-                         ->where('work_duration_minutes', 0);
-                  })
-                  ->orWhere(function ($q4) {
-                      // shift assignment punya new_working_shift tapi attendance belum mencerminkannya
-                      $q4->whereExists(function ($sub) {
-                          $sub->select(DB::raw(1))
-                              ->from('employee_shift_assignments')
-                              ->whereColumn('employee_shift_assignments.employee_id', 'attendances.employee_id')
-                              ->whereColumn('employee_shift_assignments.date', 'attendances.attendance_date')
-                              ->whereNotNull('employee_shift_assignments.new_working_shift_id')
-                              ->whereColumn('employee_shift_assignments.new_working_shift_id', '!=', 'attendances.shift_code_id');
-                      });
-                  });
+                    ->orWhereNull('status')            // status kosong
+                    ->orWhere(function ($q2) {
+                        // status absent tapi ada clock_in (data tidak konsisten)
+                        $q2->where('status', Attendance::STATUS_ABSENT)
+                            ->whereNotNull('clock_in');
+                    })
+                    ->orWhere(function ($q3) {
+                        // ada clock_in & clock_out tapi work_duration = 0 (belum dihitung)
+                        $q3->whereNotNull('clock_in')
+                            ->whereNotNull('clock_out')
+                            ->where('work_duration_minutes', 0);
+                    })
+                    ->orWhere(function ($q4) {
+                        // shift assignment punya new_working_shift tapi attendance belum mencerminkannya
+                        $q4->whereExists(function ($sub) {
+                            $sub->select(DB::raw(1))
+                                ->from('employee_shift_assignments')
+                                ->whereColumn('employee_shift_assignments.employee_id', 'attendances.employee_id')
+                                ->whereColumn('employee_shift_assignments.date', 'attendances.attendance_date')
+                                ->whereNotNull('employee_shift_assignments.new_working_shift_id')
+                                ->whereColumn('employee_shift_assignments.new_working_shift_id', '!=', 'attendances.shift_code_id');
+                        });
+                    });
             });
 
         if ($departmentId) {
@@ -392,7 +391,6 @@ class AttendanceProcessService
 
                 $result['updated']++;
                 DB::commit();
-
             } catch (\Throwable $e) {
                 DB::rollBack();
                 $result['failed']++;
