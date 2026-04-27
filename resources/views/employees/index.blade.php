@@ -34,6 +34,19 @@
                 </svg>
                 Import
             </button>
+
+            <a href="{{ route('employees.template') }}"
+                class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold flex-shrink-0"
+                style="font-size:14px;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);text-decoration:none;transition:all 0.2s"
+                onmouseover="this.style.background='rgba(251,191,36,.25)';this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.background='rgba(251,191,36,.15)';this.style.transform='translateY(0)'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Template
+            </a>
         </div>    </div>
 
     <div class="card rounded-2xl" style="overflow:hidden">

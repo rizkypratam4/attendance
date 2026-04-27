@@ -65,6 +65,15 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             Import
         </button>
+
+        <a href="{{ route('employee_shift_assignments.template') }}"
+                class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold"
+                style="font-size:13.5px;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);text-decoration:none;transition:all .2s"
+                onmouseover="this.style.background='rgba(251,191,36,.25)';this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.background='rgba(251,191,36,.15)';this.style.transform='translateY(0)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Template
+        </a>
     </div>
 </div>
 

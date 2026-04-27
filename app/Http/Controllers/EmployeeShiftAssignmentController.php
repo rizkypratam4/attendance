@@ -34,6 +34,45 @@ class EmployeeShiftAssignmentController extends Controller
         ));
     }
 
+    public function downloadTemplate()
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headers = ['No', 'Employee Name', 'Shift Code', 'Date', 'New Working Shift'];
+        $examples = [
+            ['1', 'Rizky Pratama', '1AA',     '13/04/2026', '1AA'],
+            ['2', 'Rizky Pratama', '1AA',     '14/04/2026', '1AA'],
+            ['3', 'Rizky Pratama', '1AA',     '15/04/2026', '1AA'],
+            ['4', 'Rizky Pratama', '1AA',     '16/04/2026', '1AA'],
+            ['5', 'Rizky Pratama', '1AB',     '17/04/2026', '1AB'],
+            ['6', 'Rizky Pratama', 'Day Off', '18/04/2026', 'Day Off'],
+            ['7', 'Rizky Pratama', 'Day Off', '19/04/2026', 'Day Off'],
+        ];
+
+        foreach ($headers as $i => $header) {
+            $col = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($i + 1);
+            $sheet->setCellValue($col . '1', $header);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        foreach ($examples as $row => $example) {
+            foreach ($example as $i => $val) {
+                $col = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($i + 1);
+                $sheet->setCellValue($col . ($row + 2), $val);
+            }
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, 'template_shift_assignment.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
     public function import(EmployeeShiftAssignmentImportRequest $request)
     {
         $result = $this->service->import($request->file('file'));

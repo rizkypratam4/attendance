@@ -1,5 +1,6 @@
 @props([
-    'departments' => [],
+    'departments'    => [],
+    'totalEmployees' => 0,
 ])
 
 <table class="w-full" style="border-collapse:collapse;min-width:520px">
@@ -91,4 +92,19 @@
         @endforelse
     </tbody>
 </table>
+
+{{-- ── TOTAL FOOTER ── --}}
+<div class="flex items-center justify-between px-6 py-4" style="border-top:1px solid var(--border);background:rgba(124,58,237,.04)">
+    <div class="flex items-center gap-2">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        <span style="font-size:13px;color:var(--text-3)">Total karyawan terdaftar di departemen</span>
+    </div>
+    <span style="font-size:15px;font-weight:800;color:#a78bfa">
+        {{ $totalEmployees }} <span style="font-size:12px;font-weight:500;color:var(--text-3)">karyawan</span>
+    </span>
+</div>
 

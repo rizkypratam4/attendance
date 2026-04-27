@@ -7,7 +7,7 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
-            <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Master Data</h1>
+            <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Department</h1>
             <p style="font-size:13px;color:var(--text-3);margin-top:5px">Configure and manage organizational departments.</p>
         </div>
         <button onclick="openM('mAddDepartment')"
@@ -28,7 +28,7 @@
             :filters="[]" />
         
         <div class="overflow-x-auto">
-            <x-departments.table :departments="$departments" />
+            <x-departments.table :departments="$departments" :totalEmployees="$totalEmployees" />
         </div>
             <x-ui.pagination-footer :paginator="$departments" />
     </div>
