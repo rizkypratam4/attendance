@@ -22,7 +22,6 @@ class GlobalSearchController extends Controller
         $like    = "%{$q}%";
         $results = [];
 
-        // ── Employees ──────────────────────────────────────────
         Employee::where('name', 'like', $like)
             ->orWhere('nik', 'like', $like)
             ->orWhere('position', 'like', $like)
@@ -38,7 +37,6 @@ class GlobalSearchController extends Controller
                 ];
             });
 
-        // ── Departments ────────────────────────────────────────
         Department::where('name', 'like', $like)
             ->limit(3)
             ->get()
@@ -52,7 +50,6 @@ class GlobalSearchController extends Controller
                 ];
             });
 
-        // ── Shift Codes ────────────────────────────────────────
         ShiftCode::where('code', 'like', $like)
             ->limit(3)
             ->get()
@@ -66,7 +63,6 @@ class GlobalSearchController extends Controller
                 ];
             });
 
-        // ── Attendance (by employee name/NIK) ──────────────────
         Attendance::with('employee')
             ->whereHas('employee', fn($q2) => $q2->where('name', 'like', $like)->orWhere('nik', 'like', $like))
             ->latest('attendance_date')
@@ -85,7 +81,6 @@ class GlobalSearchController extends Controller
                 ];
             });
 
-        // ── Users ──────────────────────────────────────────────
         User::whereRaw("CONCAT(first_name,' ',last_name) LIKE ?", [$like])
             ->orWhere('email', 'like', $like)
             ->limit(3)
