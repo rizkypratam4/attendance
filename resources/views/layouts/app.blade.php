@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Attendance Admin Portal') – AttendancePro</title>
+    <title>@yield('title', 'Attendance Admin Portal') – Timo</title>
     {{-- Apply saved theme immediately to prevent flash --}}
     <script>
         (function () {
@@ -32,11 +32,11 @@
         </main>
     </div>
 
-    <x-ui.modal id="mProfile" title="Setting Profile">
+    <x-ui.modal id="mProfile" title="Pengaturan Profil">
         @include('components.modals.profile')
     </x-ui.modal>
 
-    <x-ui.modal id="mPassword" title="Change Password">
+    <x-ui.modal id="mPassword" title="Ubah Kata Sandi">
         @include('components.modals.password')
     </x-ui.modal>
 

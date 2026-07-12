@@ -4,10 +4,10 @@
     <div class="space-y-4">
 
         <div>
-            <label class="mlabel">Current Password</label>
+            <label class="mlabel">Kata Sandi Saat Ini</label>
             <div class="relative">
                 <input type="password" id="p1" name="current_password"
-                       placeholder="Enter current password" class="minput" style="padding-right:44px">
+                       placeholder="Masukkan kata sandi saat ini" class="minput" style="padding-right:44px">
                 <button type="button" onclick="togPwd('p1',this)"
                         class="ib absolute right-3 top-1/2 -translate-y-1/2" style="opacity:.5">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
@@ -23,10 +23,10 @@
         </div>
 
         <div>
-            <label class="mlabel">New Password</label>
+            <label class="mlabel">Kata Sandi Baru</label>
             <div class="relative">
                 <input type="password" id="p2" name="password"
-                       placeholder="Enter new password" class="minput" style="padding-right:44px">
+                       placeholder="Masukkan kata sandi baru" class="minput" style="padding-right:44px">
                 <button type="button" onclick="togPwd('p2',this)"
                         class="ib absolute right-3 top-1/2 -translate-y-1/2" style="opacity:.5">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
@@ -42,10 +42,10 @@
         </div>
 
         <div>
-            <label class="mlabel">Confirm New Password</label>
+            <label class="mlabel">Konfirmasi Kata Sandi Baru</label>
             <div class="relative">
                 <input type="password" id="p3" name="password_confirmation"
-                       placeholder="Confirm new password" class="minput" style="padding-right:44px">
+                       placeholder="Konfirmasi kata sandi baru" class="minput" style="padding-right:44px">
                 <button type="button" onclick="togPwd('p3',this)"
                         class="ib absolute right-3 top-1/2 -translate-y-1/2" style="opacity:.5">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
@@ -63,19 +63,19 @@
         <div class="rounded-xl p-4 space-y-2"
              style="background:var(--bg-ghost);border:1px solid var(--border)">
             <p style="font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:8px">
-                Password requirements:
+                Persyaratan kata sandi:
             </p>
             <div class="flex items-center gap-2.5" style="font-size:13px;color:var(--text-3)">
                 <span class="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0"
-                      style="background:var(--text-3)"></span>At least 8 characters
+                      style="background:var(--text-3)"></span>Minimal 8 karakter
             </div>
             <div class="flex items-center gap-2.5" style="font-size:13px;color:var(--text-3)">
                 <span class="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0"
-                      style="background:var(--text-3)"></span>One uppercase letter
+                      style="background:var(--text-3)"></span>Satu huruf kapital
             </div>
             <div class="flex items-center gap-2.5" style="font-size:13px;color:var(--text-3)">
                 <span class="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0"
-                      style="background:var(--text-3)"></span>One number or special character
+                      style="background:var(--text-3)"></span>Satu angka atau karakter khusus
             </div>
         </div>
 
@@ -84,11 +84,11 @@
         <button type="button" onclick="closeM('mPassword')"
                 class="flex-1 py-2.5 rounded-xl font-medium"
                 style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2)">
-            Cancel
+            Batal
         </button>
         <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold"
                 style="font-size:14px">
-            Update Password
+            Perbarui Kata Sandi
         </button>
     </div>
 </form>

@@ -42,80 +42,31 @@
 
         /* Sel logo 1 */
         td.logo1-cell {
-            width: 75px;
+            width: 60px;
         }
 
-        table.logo1-box {
-            width: 70px;
-            height: 50px;
-            border-collapse: collapse;
-            background-color: #111111;
-        }
-
-        table.logo1-box td {
+        .logo-icon-box {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            vertical-align: middle;
-            padding: 4px;
-        }
-
-        /* Pemisah vertikal */
-        td.logo-divider {
-            width: 20px;
-            text-align: center;
-            vertical-align: middle;
-            padding: 0 4px;
-        }
-
-        table.divider-line {
-            width: 1px;
-            height: 40px;
-            border-collapse: collapse;
-            margin: 0 auto;
-            background: #cccccc;
-        }
-
-        table.divider-line td {
-            padding: 0;
-            background: #cccccc;
-            width: 1px;
-        }
-
-        /* Sel logo 2 */
-        td.logo2-cell {
-            width: 75px;
-        }
-
-        table.logo2-box {
-            width: 70px;
-            height: 50px;
-            border-collapse: collapse;
-            border: 1.5px solid #111111;
-        }
-
-        table.logo2-box td {
-            text-align: center;
-            vertical-align: middle;
-            padding: 0;
-        }
-
-        .circle-icon {
-            width: 28px;
-            height: 28px;
-            border: 2.5px solid #111111;
-            border-radius: 50%;
-            margin: 0 auto;
+            padding: 10px;
         }
 
         /* Sel info perusahaan */
         td.company-info {
-            padding-left: 16px !important;
+            padding-left: 14px !important;
             vertical-align: middle;
         }
 
         .co-name {
             font-size: 17px;
             font-weight: bold;
-            color: #1b71dd;
+            color: #0284c7;
             line-height: 1.2;
             margin-bottom: 3px;
         }
@@ -321,65 +272,29 @@
 <table class="kop">
     <tr>
 
-        {{-- Logo 1 --}}
+        {{-- Logo --}}
         <td class="logo1-cell">
-            @if(file_exists(public_path('images/logo_cni.png')))
-                <img src="{{ public_path('images/logo_cni.png') }}" width="70" height="50" style="border:none;margin:0;padding:0;">
-            @else
-                <table class="logo1-box">
-                    <tr>
-                        <td>
-                            <table class="logo1-grid">
-                                <tr>
-                                    <td class="sq-white"></td>
-                                    <td style="width:2px;background:#111111;"></td>
-                                    <td class="sq-white"></td>
-                                </tr>
-                                <tr>
-                                    <td style="height:2px;background:#111111;" colspan="3"></td>
-                                </tr>
-                                <tr>
-                                    <td class="sq-white"></td>
-                                    <td style="width:2px;background:#111111;"></td>
-                                    <td class="sq-gray"></td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            @endif
-        </td>
-
-        {{-- Pemisah --}}
-        <td class="logo-divider">
-            <table class="divider-line"><tr><td>&nbsp;</td></tr></table>
-        </td>
-
-        {{-- Logo 2 --}}
-        <td class="logo2-cell">
-            @if(file_exists(public_path('images/logo_csi.png')))
-                <img src="{{ public_path('images/logo_csi.png') }}" width="70" height="50" style="border:none;margin:0;padding:0;">
-            @else
-                <table class="logo2-box">
-                    <tr>
-                        <td>
-                            <div class="circle-icon"></div>
-                        </td>
-                    </tr>
-                </table>
-            @endif
+            <table style="width:52px;height:52px;border-collapse:collapse;background:linear-gradient(135deg,#0ea5e9,#0284c7);border-radius:12px;">
+                <tr>
+                    <td style="text-align:center;vertical-align:middle;padding:10px;">
+                        {{-- T logo Timo --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none">
+                            <rect x="4" y="4" width="16" height="2.5" rx="1.25" fill="white"/>
+                            <rect x="10.75" y="4" width="2.5" height="13" rx="1.25" fill="white"/>
+                            <circle cx="12" cy="20" r="1.5" fill="rgba(255,255,255,0.6)"/>
+                        </svg>
+                    </td>
+                </tr>
+            </table>
         </td>
 
         {{-- Info Perusahaan --}}
         <td class="company-info">
-                <div class="co-name" style="color: #1b71dd;">
-                    {{ config('app.company_name', 'PT. Cipta Saksama Indonesia') }}
-                </div>
+            <div class="co-name">Timo</div>
+            <div class="co-division">Time In, Manage Out</div>
             <div class="co-address">
-                {{ config('app.company_address', 'Jl. Raya Bekasi No.km 23, Cakung Bar., Kec. Cakung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13920') }}<br>
-                Telp: {{ config('app.company_phone', '(021) 4600942') }}
-                &nbsp;|&nbsp;
-                {{ config('app.company_email', 'hrd@ciptasaksama.co.id') }}
+                Jl. Sudirman No. 1, Jakarta Pusat, DKI Jakarta 10220<br>
+                Telp: (021) 000-0000 &nbsp;|&nbsp; info@timo.app
             </div>
         </td>
 
@@ -516,7 +431,7 @@
             <div class="sign-spacer"></div>
             <table class="sign-line-tbl"><tr><td></td></tr></table>
             <div class="sign-name">Manager HRD</div>
-            <div class="sign-title">{{ config('app.company_name', 'PT. Nama Perusahaan') }}</div>
+            <div class="sign-title">Timo</div>
         </td>
     </tr>
 </table>

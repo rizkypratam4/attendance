@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\ShiftCode;
+use App\Models\Shift;
 use Illuminate\Database\Seeder;
 
 class UpdateShiftCodeTimesSeeder extends Seeder
@@ -10,9 +11,9 @@ class UpdateShiftCodeTimesSeeder extends Seeder
     public function run(): void
     {
         // Ambil shift_id yang sudah ada
-        $shift1Id = \App\Models\Shift::where('name', 'Shift1')->value('id');
-        $shift2Id = \App\Models\Shift::where('name', 'Shift2')->value('id');
-        $shift3Id = \App\Models\Shift::where('name', 'Shift3')->value('id');
+        $shift1Id = Shift::where('name', 'Shift1')->value('id');
+        $shift2Id = Shift::where('name', 'Shift2')->value('id');
+        $shift3Id = Shift::where('name', 'Shift3')->value('id');
 
         $data = [
             // Senin - Kamis

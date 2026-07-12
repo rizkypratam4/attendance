@@ -67,7 +67,7 @@ body {
 #sidebar {
     background: var(--bg-sidebar);
     border-right: 1px solid var(--border);
-    width: 280px;
+    width: 270px;
     min-height: 100vh;
     transition:
         width 0.32s cubic-bezier(0.4, 0, 0.2, 1),

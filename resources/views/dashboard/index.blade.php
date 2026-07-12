@@ -2,13 +2,54 @@
 
 @section('title', 'Dashboard')
 
-@php $active = 'dashboard'; $pageTitle = 'Dashboard'; @endphp
+@php
+    $active = 'dashboard';
+    $pageTitle = 'Dashboard';
+@endphp
 
 @section('content')
 
+    {{-- ROW GREETINGS --}}
+    @php
+        $hour = now()->hour;
+        $greeting = 'Selamat Pagi';
+        if ($hour >= 11 && $hour < 15) {
+            $greeting = 'Selamat Siang';
+        } elseif ($hour >= 15 && $hour < 18) {
+            $greeting = 'Selamat Sore';
+        } elseif ($hour >= 18 || $hour < 5) {
+            $greeting = 'Selamat Malam';
+        }
+    @endphp
+
+    <div class="card rounded-2xl p-6 mb-4 lg:mb-6 relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+            <div>
+                <h1 style="font-size: 22px; font-weight: 800; color: var(--text-1); line-height: 1.2;">
+                    {{ $greeting }}, {{ auth()->user()->first_name ?? 'Admin' }}! 👋
+                </h1>
+                <p style="font-size: 14px; color: var(--text-2); margin-top: 6px;">
+                    Berikut adalah ikhtisar aktivitas dan kehadiran karyawan hari ini.
+                </p>
+            </div>
+            <div class="flex items-center gap-3 bg-white/5 dark:bg-black/20 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10"
+                style="align-self: flex-start; sm:align-self: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span style="font-size: 13px; font-weight: 600; color: var(--text-1)">
+                    {{ now()->translatedFormat('l, d F Y') }}
+                </span>
+            </div>
+        </div>
+    </div>
+
     {{-- ROW 1: STATISTICS CARDS --}}
     <div class="stat-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-5 mb-4 lg:mb-6">
-        
+
         {{-- Total Active Employees --}}
         <x-stat-card title="Total Karyawan Aktif" :value="$totalActiveEmployees ?? 129" meta="">
             <x-slot:icon>
@@ -21,7 +62,8 @@
         </x-stat-card>
 
         {{-- Present Today --}}
-        <x-stat-card title="Hadir Hari Ini" :value="$presentToday ?? 112" meta="+8" style="background-color: rgba(16, 185, 129, .1)">
+        <x-stat-card title="Hadir Hari Ini" :value="$presentToday ?? 112" meta="+8"
+            style="background-color: rgba(16, 185, 129, .1)">
             <x-slot:icon>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
                     <path d="M9 12l2 2 4-4m7-1a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -30,7 +72,8 @@
         </x-stat-card>
 
         {{-- Late Today --}}
-        <x-stat-card title="Terlambat Hari Ini" :value="$lateToday ?? 12" meta="+2" style="background-color: rgba(245, 158, 11, .1)">
+        <x-stat-card title="Terlambat Hari Ini" :value="$lateToday ?? 12" meta="+2"
+            style="background-color: rgba(245, 158, 11, .1)">
             <x-slot:icon>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
                     <circle cx="12" cy="12" r="10" />
@@ -40,7 +83,8 @@
         </x-stat-card>
 
         {{-- Absent Today --}}
-        <x-stat-card title="Tidak Hadir Hari Ini" :value="$absentToday ?? 5" meta="+1" style="background-color: rgba(239, 68, 68, .1)">
+        <x-stat-card title="Tidak Hadir Hari Ini" :value="$absentToday ?? 5" meta="+1"
+            style="background-color: rgba(239, 68, 68, .1)">
             <x-slot:icon>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
                     <circle cx="12" cy="12" r="10" />
@@ -53,7 +97,7 @@
 
     {{-- ROW 2: VISUALIZATION DATA --}}
     <div class="chart-grid grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-5 mb-4 lg:mb-6">
-        
+
         {{-- Line Chart: 7 Days Attendance --}}
         <div class="card rounded-2xl p-4 lg:p-6 xl:col-span-2">
             <div class="flex items-start justify-between mb-4 lg:mb-5">
@@ -95,7 +139,7 @@
 
     {{-- ROW 3: INSIGHTS & MONITORING --}}
     <div class="insights-grid grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-5 mb-4 lg:mb-6">
-        
+
         {{-- Top 5 Late Employees --}}
         <div class="card rounded-2xl p-4 lg:p-6">
             <div class="mb-5">
@@ -106,7 +150,8 @@
                 @forelse ($topLateEmployees ?? [] as $index => $employee)
                     <div class="flex items-center justify-between py-2">
                         <div class="flex items-center gap-3 flex-1">
-                            <span style="font-size:12px;font-weight:700;color:#a78bfa;min-width:20px">{{ $index + 1 }}</span>
+                            <span
+                                style="font-size:12px;font-weight:700;color:#a78bfa;min-width:20px">{{ $index + 1 }}</span>
                             <div>
                                 <p style="font-size:13px;font-weight:600;color:var(--text-1)">
                                     {{ $employee->employee->name ?? 'N/A' }}
@@ -119,7 +164,8 @@
                         <span style="font-size:13px;font-weight:700;color:#f59e0b">{{ $employee->late_count ?? 0 }}x</span>
                     </div>
                 @empty
-                    <p style="font-size:13px;color:var(--text-3);text-align:center;padding:30px 0">Tidak ada data keterlambatan</p>
+                    <p style="font-size:13px;color:var(--text-3);text-align:center;padding:30px 0">Tidak ada data
+                        keterlambatan</p>
                 @endforelse
             </div>
         </div>
@@ -127,27 +173,32 @@
         {{-- Top 5 Late Departments --}}
         <div class="card rounded-2xl p-4 lg:p-6">
             <div class="mb-5">
-                <h2 style="font-size:16px;font-weight:700;color:var(--text-1)">5 Departemen Tingkat Keterlambatan Tertinggi</h2>
+                <h2 style="font-size:16px;font-weight:700;color:var(--text-1)">5 Departemen Tingkat Keterlambatan Tertinggi
+                </h2>
                 <p style="font-size:13px;color:var(--text-3);margin-top:4px">Berdasarkan persentase</p>
             </div>
             <div class="space-y-3">
                 @forelse ($topLateDepartments ?? [] as $index => $dept)
                     <div class="flex items-center justify-between py-2">
                         <div class="flex items-center gap-3 flex-1">
-                            <span style="font-size:12px;font-weight:700;color:#a78bfa;min-width:20px">{{ $index + 1 }}</span>
+                            <span
+                                style="font-size:12px;font-weight:700;color:#a78bfa;min-width:20px">{{ $index + 1 }}</span>
                             <div class="flex-1">
                                 <p style="font-size:13px;font-weight:600;color:var(--text-1)">
                                     {{ $dept->name ?? 'N/A' }}
                                 </p>
                                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-1.5">
-                                    <div class="bg-orange-400 h-1.5 rounded-full" style="width:{{ $dept->late_percentage ?? 0 }}%"></div>
+                                    <div class="bg-orange-400 h-1.5 rounded-full"
+                                        style="width:{{ $dept->late_percentage ?? 0 }}%"></div>
                                 </div>
                             </div>
                         </div>
-                        <span style="font-size:13px;font-weight:700;color:#f59e0b;min-width:45px;text-align:right">{{ $dept->late_percentage ?? 0 }}%</span>
+                        <span
+                            style="font-size:13px;font-weight:700;color:#f59e0b;min-width:45px;text-align:right">{{ $dept->late_percentage ?? 0 }}%</span>
                     </div>
                 @empty
-                    <p style="font-size:13px;color:var(--text-3);text-align:center;padding:30px 0">Tidak ada data departemen</p>
+                    <p style="font-size:13px;color:var(--text-3);text-align:center;padding:30px 0">Tidak ada data
+                        departemen</p>
                 @endforelse
             </div>
         </div>
@@ -155,12 +206,15 @@
 
     {{-- ROW 4: QUICK ACCESS SHORTCUTS --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5">
-        
+
         {{-- Process Attendance --}}
-        <a href="{{ route('process_attendances.index') ?? '#' }}" class="card rounded-2xl p-6 hover:shadow-lg transition-all text-center" style="text-decoration:none">
+        <a href="{{ route('process_attendances.index') ?? '#' }}"
+            class="card rounded-2xl p-6 hover:shadow-lg transition-all text-center" style="text-decoration:none">
             <div class="flex items-center justify-center mb-4">
-                <div style="width:48px;height:48px;border-radius:12px;background-color:rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2">
+                <div
+                    style="width:48px;height:48px;border-radius:12px;background-color:rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed"
+                        stroke-width="2">
                         <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" />
                         <polyline points="13 2 13 9 20 9" />
                     </svg>
@@ -171,10 +225,13 @@
         </a>
 
         {{-- Fingerprint Logs --}}
-        <a href="{{ route('fingerprint.index') ?? '#' }}" class="card rounded-2xl p-6 hover:shadow-lg transition-all text-center" style="text-decoration:none">
+        <a href="{{ route('fingerprint.index') ?? '#' }}"
+            class="card rounded-2xl p-6 hover:shadow-lg transition-all text-center" style="text-decoration:none">
             <div class="flex items-center justify-center mb-4">
-                <div style="width:48px;height:48px;border-radius:12px;background-color:rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                <div
+                    style="width:48px;height:48px;border-radius:12px;background-color:rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981"
+                        stroke-width="2">
                         <path d="M12 1v6m0 6v6M4.22 4.22a8 8 0 0111.56 0m0 11.56a8 8 0 01-11.56 0" />
                     </svg>
                 </div>
@@ -184,11 +241,15 @@
         </a>
 
         {{-- Attendance List --}}
-        <a href="{{ route('attendances.index') ?? '#' }}" class="card rounded-2xl p-6 hover:shadow-lg transition-all text-center" style="text-decoration:none">
+        <a href="{{ route('attendances.index') ?? '#' }}"
+            class="card rounded-2xl p-6 hover:shadow-lg transition-all text-center" style="text-decoration:none">
             <div class="flex items-center justify-center mb-4">
-                <div style="width:48px;height:48px;border-radius:12px;background-color:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
-                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <div
+                    style="width:48px;height:48px;border-radius:12px;background-color:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b"
+                        stroke-width="2">
+                        <path
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                 </div>
             </div>
@@ -200,132 +261,182 @@
 @endsection
 
 @push('scripts')
-<script>
-    let attendanceChart = null;
-    let statusChart = null;
+    <script>
+        let attendanceChart = null;
+        let statusChart = null;
 
-    function buildCharts() {
-        const d  = document.documentElement.getAttribute('data-theme') === 'dark';
-        const gc = d ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.07)';
-        const tc = d ? '#6b7280' : '#9ca3af';
-        const tbg  = d ? '#1c1c26' : '#ffffff';
-        const ttt  = d ? '#ffffff' : '#111827';
-        const tbd2 = d ? '#9ca3af' : '#6b7280';
-        const tbrd = d ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)';
+        function buildCharts() {
+            const d = document.documentElement.getAttribute('data-theme') === 'dark';
+            const gc = d ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.07)';
+            const tc = d ? '#6b7280' : '#9ca3af';
+            const tbg = d ? '#1c1c26' : '#ffffff';
+            const ttt = d ? '#ffffff' : '#111827';
+            const tbd2 = d ? '#9ca3af' : '#6b7280';
+            const tbrd = d ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)';
 
-        // Data dari Controller
-        const attendanceLabels = {!! json_encode($attendanceChartLabels ?? []) !!};
-        const attendancePresentData = {!! json_encode($attendanceChartPresent ?? []) !!};
-        const attendanceAbsentData = {!! json_encode($attendanceChartAbsent ?? []) !!};
-        const statusChartData = {!! json_encode($statusChartData ?? [0, 0, 0, 0]) !!};
+            // Data dari Controller
+            const attendanceLabels = {!! json_encode($attendanceChartLabels ?? []) !!};
+            const attendancePresentData = {!! json_encode($attendanceChartPresent ?? []) !!};
+            const attendanceAbsentData = {!! json_encode($attendanceChartAbsent ?? []) !!};
+            const statusChartData = {!! json_encode($statusChartData ?? [0, 0, 0, 0]) !!};
 
-        if (attendanceChart) attendanceChart.destroy();
-        
-        const ctxAttendance = document.getElementById('attendanceChart').getContext('2d');
-        attendanceChart = new Chart(ctxAttendance, {
-            type: 'line',
-            data: {
-                labels: attendanceLabels,
-                datasets: [
-                    {
-                        label: 'Hadir',
-                        data: attendancePresentData,
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16,185,129,.15)',
-                        fill: true, tension: .4,
-                        pointBackgroundColor: '#10b981',
-                        pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5,
-                    },
-                    {
-                        label: 'Tidak Hadir',
-                        data: attendanceAbsentData,
-                        borderColor: '#ef4444',
-                        backgroundColor: 'rgba(239,68,68,.10)',
-                        fill: true, tension: .4,
-                        pointBackgroundColor: '#ef4444',
-                        pointRadius: 5, pointHoverRadius: 7, borderWidth: 2.5,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { 
-                        display: true,
-                        labels: { color: tc, font: { size: 13 } }
-                    },
-                    tooltip: {
-                        mode: 'index', intersect: false,
-                        backgroundColor: tbg, titleColor: ttt,
-                        bodyColor: tbd2, borderColor: tbrd,
-                        borderWidth: 1, padding: 12,
-                        titleFont: { size: 13, weight: '600' },
-                        bodyFont:  { size: 13 },
-                    }
+            if (attendanceChart) attendanceChart.destroy();
+
+            const ctxAttendance = document.getElementById('attendanceChart').getContext('2d');
+            attendanceChart = new Chart(ctxAttendance, {
+                type: 'line',
+                data: {
+                    labels: attendanceLabels,
+                    datasets: [{
+                            label: 'Hadir',
+                            data: attendancePresentData,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16,185,129,.15)',
+                            fill: true,
+                            tension: .4,
+                            pointBackgroundColor: '#10b981',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 2.5,
+                        },
+                        {
+                            label: 'Tidak Hadir',
+                            data: attendanceAbsentData,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239,68,68,.10)',
+                            fill: true,
+                            tension: .4,
+                            pointBackgroundColor: '#ef4444',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 2.5,
+                        }
+                    ]
                 },
-                scales: {
-                    x: { grid: { color: gc }, ticks: { color: tc, font: { size: 13 } } },
-                    y: {
-                        grid: { color: gc },
-                        ticks: { color: tc, font: { size: 13 } },
-                        beginAtZero: true
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: tc,
+                                font: {
+                                    size: 13
+                                }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: tbg,
+                            titleColor: ttt,
+                            bodyColor: tbd2,
+                            borderColor: tbrd,
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: {
+                                size: 13,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: gc
+                            },
+                            ticks: {
+                                color: tc,
+                                font: {
+                                    size: 13
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: gc
+                            },
+                            ticks: {
+                                color: tc,
+                                font: {
+                                    size: 13
+                                }
+                            },
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // Build Status Pie Chart
-        if (statusChart) statusChart.destroy();
+            // Build Status Pie Chart
+            if (statusChart) statusChart.destroy();
 
-        const ctxStatus = document.getElementById('statusChart').getContext('2d');
-        statusChart = new Chart(ctxStatus, {
-            type: 'doughnut',
-            data: {
-                labels: ['Hadir', 'Terlambat', 'Tidak Hadir', 'Day Off'],
-                datasets: [{
-                    data: statusChartData,
-                    backgroundColor: [
-                        '#10b981',
-                        '#f59e0b',
-                        '#ef4444',
-                        '#6b7280'
-                    ],
-                    borderColor: [
-                        d ? '#1c1c26' : '#ffffff',
-                        d ? '#1c1c26' : '#ffffff',
-                        d ? '#1c1c26' : '#ffffff',
-                        d ? '#1c1c26' : '#ffffff'
-                    ],
-                    borderWidth: 2,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: tc, font: { size: 12 }, padding: 15 }
-                    },
-                    tooltip: {
-                        backgroundColor: tbg, titleColor: ttt,
-                        bodyColor: tbd2, borderColor: tbrd,
-                        borderWidth: 1, padding: 12,
-                        titleFont: { size: 13, weight: '600' },
-                        bodyFont: { size: 13 },
-                        callbacks: {
-                            label: function(context) {
-                                return context.label + ': ' + context.parsed + ' orang';
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hadir', 'Terlambat', 'Tidak Hadir', 'Day Off'],
+                    datasets: [{
+                        data: statusChartData,
+                        backgroundColor: [
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#6b7280'
+                        ],
+                        borderColor: [
+                            d ? '#1c1c26' : '#ffffff',
+                            d ? '#1c1c26' : '#ffffff',
+                            d ? '#1c1c26' : '#ffffff',
+                            d ? '#1c1c26' : '#ffffff'
+                        ],
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: tc,
+                                font: {
+                                    size: 12
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: tbg,
+                            titleColor: ttt,
+                            bodyColor: tbd2,
+                            borderColor: tbrd,
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: {
+                                size: 13,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + ' orang';
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    buildCharts();
-    document.addEventListener('themeChange', buildCharts);
-</script>
+        buildCharts();
+        document.addEventListener('themeChange', buildCharts);
+    </script>
 @endpush

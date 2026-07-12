@@ -246,7 +246,7 @@
                         <th class="text-left px-4 py-3 font-semibold"
                             style="font-size:10.5px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
                             Barcode</th>
-                        <th class="text-left px-4 py-3 font-semibold"
+                        <th class="text-left px-4 py-3 font-semibold whitespace-nowrap"
                             style="font-size:10.5px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
                             Karyawan</th>
                         <th class="text-left px-4 py-3 font-semibold"
@@ -286,7 +286,7 @@
                             </td>
 
                             {{-- Karyawan --}}
-                            <td class="px-4 py-3.5">
+                            <td class="px-4 py-3.5 whitespace-nowrap">
                                 @if ($log->employee)
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0"
@@ -317,7 +317,7 @@
                             </td>
 
                             {{-- Tanggal --}}
-                            <td class="px-4 py-3.5" style="font-size:13px;color:var(--text-2)">
+                            <td class="px-4 py-3.5 whitespace-nowrap" style="font-size:13px;color:var(--text-2)">
                                 {{ \Carbon\Carbon::parse($log->attendance_date)->format('d M Y') }}
                             </td>
 
@@ -329,7 +329,7 @@
                             </td>
 
                             {{-- Tipe --}}
-                            <td class="px-4 py-3.5">
+                            <td class="px-4 py-3.5 whitespace-nowrap">
                                 @if ($log->attendance_type == 0)
                                     <span class="px-2.5 py-1 rounded-lg font-bold"
                                         style="font-size:10.5px;background:rgba(34,197,94,.2);color:#22c55e;letter-spacing:.04em">
@@ -344,7 +344,7 @@
                             </td>
 
                             {{-- Status --}}
-                            <td class="px-4 py-3.5">
+                            <td class="px-4 py-3.5 whitespace-nowrap">
                                 @if ($log->is_processed)
                                     <span class="px-2.5 py-1 rounded-lg font-bold"
                                         style="font-size:10.5px;background:rgba(34,197,94,.1);color:#22c55e;letter-spacing:.04em;border:1px solid rgba(34,197,94,.2)">

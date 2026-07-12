@@ -49,6 +49,35 @@ class EmployeeController extends Controller
         return view('employees.index', compact('employees', 'branches', 'departments', 'locations'));
     }
 
+    public function downloadTemplate()
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $headers = ['No', 'name', 'nik', 'machine_barcode', 'branch', 'department', 'position', 'location', 'employee_status'];
+        $example = ['1', 'Rizky Pratama', '2019161', '3386', 'CSI', 'MIS', 'MIS Staff', 'CKG', 'Contract'];
+
+        foreach ($headers as $i => $header) {
+            $col = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($i + 1);
+            $sheet->setCellValue($col . '1', $header);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        foreach ($example as $i => $val) {
+            $col = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($i + 1);
+            $sheet->setCellValue($col . '2', $val);
+        }
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, 'template_employees.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
     public function import(Request $request, EmployeeImportService $importService)
     {
         $request->validate([

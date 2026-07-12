@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AbsentCountHelper;
 use App\Models\Attendance;
 use App\Models\Employee;
-use App\Models\Department;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +12,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // ROW 1: STATISTICS
         $totalActiveEmployees = Employee::where('is_active', true)->count();
         
         $today = today()->toDateString();
@@ -24,11 +23,9 @@ class DashboardController extends Controller
                         ->where('status', 'late')
                         ->count();
         
-        $absentToday = Attendance::where('attendance_date', $today)
-                         ->where('status', 'absent')
-                         ->count();
+        $absentToday = AbsentCountHelper::count($today);
 
-        // ROW 2: LINE CHART - 7 DAYS ATTENDANCE
+
         $sevenDaysAgo = now()->subDays(6)->toDateString();
         $sevenDaysData = Attendance::selectRaw('DATE(attendance_date) as date')
             ->selectRaw('COUNT(CASE WHEN status IN ("present", "late") THEN 1 END) as present_count')
@@ -52,7 +49,7 @@ class DashboardController extends Controller
             $attendanceChartAbsent[] = $data ? $data->absent_count : 0;
         }
 
-        // ROW 2: PIE CHART - TODAY STATUS
+        // pie chart status absensi hari ini
         $todayStatus = Attendance::where('attendance_date', $today)
             ->selectRaw('COUNT(CASE WHEN status = "present" THEN 1 END) as present')
             ->selectRaw('COUNT(CASE WHEN status = "late" THEN 1 END) as late')
@@ -67,7 +64,7 @@ class DashboardController extends Controller
             $todayStatus->day_off ?? 0,
         ];
 
-        // ROW 3: TOP 5 LATE EMPLOYEES THIS MONTH
+        // list top 5 karyawan paling banyak terlambat
         $topLateEmployees = Attendance::select('employee_id', DB::raw('COUNT(*) as late_count'))
             ->where('status', 'late')
             ->whereMonth('attendance_date', now()->month)
@@ -85,12 +82,10 @@ class DashboardController extends Controller
                 ];
             });
 
-        // ROW 3: TOP 5 LATE DEPARTMENTS
-        // Calculate: percentage of working days where at least one person from the department was late
+        // top 5 department paling banyak terlambat
         $currentMonth = now()->month;
         $currentYear = now()->year;
         
-        // Count total working days in the month (exclude day_off and holiday)
         $totalWorkingDays = DB::table('attendances')
             ->whereMonth('attendance_date', $currentMonth)
             ->whereYear('attendance_date', $currentYear)
@@ -98,7 +93,7 @@ class DashboardController extends Controller
             ->distinct('attendance_date')
             ->count('attendance_date');
         
-        if ($totalWorkingDays == 0) $totalWorkingDays = 1; // Prevent division by zero
+        if ($totalWorkingDays == 0) $totalWorkingDays = 1;
         
         $topLateDepartments = DB::table('departments')
             ->select('departments.id', 'departments.name')
@@ -123,7 +118,6 @@ class DashboardController extends Controller
                 ];
             });
 
-        // ROW 3: LAST IMPORT STATUS (mock data - dapat disesuaikan dengan implementasi actual)
         $lastImportStatus = [
             'success' => true,
             'last_import_time' => now()->subHours(2)->format('d M Y, H:i'),

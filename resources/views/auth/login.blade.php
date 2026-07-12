@@ -199,7 +199,7 @@
         gap: 20px;
         margin-top: 22px;
     }
-    .footer-links a {
+    .footer-links span {
         color: #4b5563;
         font-size: 11px;
         text-decoration: none;
@@ -216,18 +216,21 @@
 
     {{-- Logo --}}
     <div class="logo-wrap">
-        <div style="display: flex; gap: 8px; margin-bottom: 6px;">
-            <img src="{{ asset('images/logo_cni.png') }}" alt="Logo CNI" style="width: 60px; height: 60px; object-fit: contain;">
-            <img src="{{ asset('images/logo_csi.png') }}" alt="Logo CSI" style="width: 60px; height: 60px; object-fit: contain;">
-        </div>
-        <span class="logo-name">AttendancePro</span>
-        <span class="logo-sub">Manage your attendance and shifts</span>
-    </div>
-
+    <div style="width:56px;height:56px;background:#7c3aed;border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ikon absensi -->
+        <rect x="4" y="5" width="16" height="15" rx="2" stroke="white" stroke-width="2"/>
+        <path d="M8 3V7M16 3V7M4 10H20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M8 15L10 17L16 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+</div>
+    <span class="logo-name">Sistem Absensi Karyawan</span>
+    <span class="logo-sub">Manajemen Kehadiran dan Jadwal Kerja Terintegrasi</span>
+</div>
     {{-- Card --}}
     <div class="login-card">
-        <h2>Welcome Back</h2>
-        <p class="card-sub">Please enter your details to access your account.</p>
+       <h2>Selamat Datang Kembali</h2>
+        <p class="card-sub">Silakan masukkan data Anda untuk mengakses akun.</p>
 
         @if ($errors->any())
             <div class="error-box">{{ $errors->first() }}</div>
@@ -282,17 +285,9 @@
                 </div>
             </div>
 
-            {{-- Remember --}}
-            <div class="remember-row">
-                <label class="remember-label">
-                    <input type="checkbox" name="remember" />
-                    <span>Remember me</span>
-                </label>
-            </div>
-
             {{-- Submit --}}
             <button type="submit" class="btn-signin">
-                Sign In
+                Masuk
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
                      stroke="white" stroke-width="2.5">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -301,17 +296,15 @@
         </form>
 
         <p class="contact-text">
-            Don't have an account yet?
-            <a href="mailto:admin@company.com">Contact HR</a>
+            Belum memiliki akun?
+            <a href="mailto:admin@company.com">Hubungi HR</a>
         </p>
     </div>
 
     {{-- Footer --}}
-    <div class="footer-links">
-        <a href="#">Terms</a>
-        <a href="#">Privacy</a>
-        <a href="#">Support</a>
-    </div>
+<div class="footer-links">
+    <span>© {{ date('Y') }} Rizky Pratama. All Rights Reserved.</span>
+</div>
 
 </div>
 @endsection

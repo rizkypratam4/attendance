@@ -17,8 +17,8 @@ class UserSeeder extends Seeder
         User::create([
             'first_name' => 'Rizky',
             'last_name' => 'Pratama',
-            'email' => 'rizky.pratama@ciptasaksama.co.id',
-            'role' => 'MIS',
+            'email' => 'rizkypratama@gmail.com',
+            'role' => 'IT',
             'password' => Hash::make('logic301'),
             'status' => true,
             "last_login" => null,

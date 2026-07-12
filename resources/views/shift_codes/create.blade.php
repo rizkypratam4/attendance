@@ -1,19 +1,19 @@
-<x-ui.modal id="mCreateShiftCode" title="Create New Shift Code" maxWidth="480px">
+<x-ui.modal id="mCreateShiftCode" title="Tambah Kode Shift Baru" maxWidth="480px">
     <form action="{{ route('shift_codes.store') }}" method="POST">
         @csrf
         <div class="space-y-4">
             <div>
-                <label class="mlabel">Shift Code</label>
-                <input name="code" type="text" placeholder="e.g. M-01" class="minput">
+                <label class="mlabel">Kode Shift</label>
+                <input name="code" type="text" placeholder="mis. M-01" class="minput">
                 @error('code')
                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
             <div>
-                <label class="mlabel">Shift Name</label>
+                <label class="mlabel">Nama Shift</label>
                 <select name="shift_id" class="minput" style="cursor:pointer">
-                    <option value="">Select Shift</option>
+                    <option value="">Pilih Shift</option>
                     @foreach($shifts as $shift)
                         <option value="{{ $shift->id }}">{{ $shift->name }}</option>
                     @endforeach
@@ -38,8 +38,8 @@
 
         <div class="flex gap-3 mt-6">
             <button onclick="closeM('mCreateShiftCode')" class="flex-1 py-2.5 rounded-xl font-medium"
-                    style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">Cancel</button>
-            <button class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">Save Shift Code</button>
+                    style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">Batal</button>
+            <button class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">Simpan Kode Shift</button>
         </div>
     </form>
 </x-ui.modal>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Shift Definition')
+@section('title', 'Definisi Shift')
 
 @php $active = 'shift-definition'; @endphp
 
@@ -8,27 +8,27 @@
 
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
     <div class="card rounded-2xl p-5">
-        <p style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Total Active Shifts</p>
+        <p style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Total Shift Aktif</p>
         <div class="flex items-baseline gap-2">
             <p style="font-size:34px;font-weight:800;color:var(--text-1);line-height:1">12</p>
-            <span style="font-size:12px;font-weight:600;color:#22c55e">+2 this month</span>
+            <span style="font-size:12px;font-weight:600;color:#22c55e">+2 bulan ini</span>
         </div>
     </div>
 
     <div class="card rounded-2xl p-5">
-        <p style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Avg. Shift Length</p>
+        <p style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Rata-rata Durasi Shift</p>
         <div class="flex items-baseline gap-2">
             <p style="font-size:34px;font-weight:800;color:var(--text-1);line-height:1">8.5</p>
-            <span style="font-size:14px;font-weight:500;color:var(--text-3)">hrs</span>
-            <span style="font-size:12px;font-weight:600;color:#a78bfa;margin-left:4px">Optimized</span>
+            <span style="font-size:14px;font-weight:500;color:var(--text-3)">jam</span>
+            <span style="font-size:12px;font-weight:600;color:#a78bfa;margin-left:4px">Dioptimalkan</span>
         </div>
     </div>
 
     <div class="card rounded-2xl p-5">
-        <p style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Next Shift Start</p>
+        <p style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Mulai Shift Berikutnya</p>
         <div class="flex items-baseline gap-3">
             <p style="font-size:34px;font-weight:800;color:var(--text-1);line-height:1">08:00</p>
-            <span style="font-size:13px;color:var(--text-3)">Morning Shift</span>
+            <span style="font-size:13px;color:var(--text-3)">Shift Pagi</span>
         </div>
     </div>
 
@@ -38,15 +38,15 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4"
          style="border-bottom:1px solid var(--border)">
         <div>
-            <h2 style="font-size:16px;font-weight:700;color:var(--text-1)">Configured Shifts</h2>
-            <p style="font-size:13px;color:var(--text-3);margin-top:3px">Standard operational hours for your workforce</p>
+            <h2 style="font-size:16px;font-weight:700;color:var(--text-1)">Shift yang Dikonfigurasi</h2>
+            <p style="font-size:13px;color:var(--text-3);margin-top:3px">Jam operasional standar untuk tenaga kerja Anda</p>
         </div>
 
         <div class="flex items-center gap-2 px-4 py-2 rounded-xl" style="background:var(--bg-input);border:1px solid var(--border-in);min-width:200px">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
                 <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
             </svg>
-            <input type="text" placeholder="Search shifts..."
+            <input type="text" placeholder="Cari shift..."
                    style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13px;width:100%;font-family:inherit">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
@@ -55,28 +55,28 @@
     </div>
 
     <div class="grid px-5 py-3" style="grid-template-columns:1.8fr 2fr 1.2fr 1.2fr 1.5fr 0.8fr;border-bottom:1px solid var(--border)">
-        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Shift Name</span>
-        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Time Window</span>
-        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Break Duration</span>
-        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Total Hours</span>
-        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Staff Assigned</span>
-        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase;text-align:right">Actions</span>
+        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Nama Shift</span>
+        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Jendela Waktu</span>
+        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Durasi Istirahat</span>
+        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Total Jam</span>
+        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase">Staf Ditugaskan</span>
+        <span style="font-size:11px;font-weight:600;color:#7c3aed;letter-spacing:.07em;text-transform:uppercase;text-align:right">Aksi</span>
     </div>
 
     <div class="grid px-5 py-4 shift-def-row" style="grid-template-columns:1.8fr 2fr 1.2fr 1.2fr 1.5fr 0.8fr;align-items:center;border-bottom:1px solid var(--border)">
         <div>
-            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Morning Shift</p>
-            <p style="font-size:12px;color:var(--text-3)">Regular · Weekdays</p>
+            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Shift Pagi</p>
+            <p style="font-size:12px;color:var(--text-3)">Reguler · Hari Kerja</p>
         </div>
         <div class="flex items-center gap-2">
             <span class="px-2.5 py-1 rounded-lg font-bold" style="font-size:12px;background:rgba(34,197,94,.18);color:#22c55e">08:00</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             <span class="px-2.5 py-1 rounded-lg font-bold" style="font-size:12px;background:rgba(239,68,68,.15);color:#f87171">16:00</span>
         </div>
-        <div style="font-size:13.5px;color:var(--text-2)">45 mins</div>
+        <div style="font-size:13.5px;color:var(--text-2)">45 menit</div>
         <div class="flex items-center gap-2">
             <div class="h-1.5 rounded-full" style="width:48px;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
-            <span style="font-size:13px;font-weight:600;color:var(--text-2)">8.0 hrs</span>
+            <span style="font-size:13px;font-weight:600;color:var(--text-2)">8.0 jam</span>
         </div>
         <div class="flex items-center">
             <img src="https://i.pravatar.cc/28?img=1" class="w-7 h-7 rounded-full object-cover border-2" style="border-color:var(--bg-card)">
@@ -97,21 +97,21 @@
 
     <div class="grid px-5 py-4 shift-def-row" style="grid-template-columns:1.8fr 2fr 1.2fr 1.2fr 1.5fr 0.8fr;align-items:center;border-bottom:1px solid var(--border)">
         <div>
-            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Night Shift 🌙</p>
-            <p style="font-size:12px;color:var(--text-3)">24/7 Operations</p>
+            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Shift Malam 🌙</p>
+            <p style="font-size:12px;color:var(--text-3)">Operasi 24/7</p>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
             <span class="px-2.5 py-1 rounded-lg font-bold" style="font-size:12px;background:rgba(124,58,237,.2);color:#a78bfa">22:00</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             <div>
                 <span class="px-2.5 py-1 rounded-lg font-bold" style="font-size:12px;background:rgba(124,58,237,.2);color:#a78bfa">06:00</span>
-                <span style="font-size:10px;color:#a78bfa;font-weight:600;margin-left:3px">+1Day</span>
+                <span style="font-size:10px;color:#a78bfa;font-weight:600;margin-left:3px">+1Hari</span>
             </div>
         </div>
-        <div style="font-size:13.5px;color:var(--text-2)">60 mins</div>
+        <div style="font-size:13.5px;color:var(--text-2)">60 menit</div>
         <div class="flex items-center gap-2">
             <div class="h-1.5 rounded-full" style="width:48px;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
-            <span style="font-size:13px;font-weight:600;color:var(--text-2)">8.0 hrs</span>
+            <span style="font-size:13px;font-weight:600;color:var(--text-2)">8.0 jam</span>
         </div>
         <div class="flex items-center">
             <img src="https://i.pravatar.cc/28?img=7" class="w-7 h-7 rounded-full object-cover border-2" style="border-color:var(--bg-card)">
@@ -131,18 +131,18 @@
     {{-- Afternoon Shift --}}
     <div class="grid px-5 py-4 shift-def-row" style="grid-template-columns:1.8fr 2fr 1.2fr 1.2fr 1.5fr 0.8fr;align-items:center">
         <div>
-            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Afternoon Shift</p>
-            <p style="font-size:12px;color:var(--text-3)">Late Operations</p>
+            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Shift Sore</p>
+            <p style="font-size:12px;color:var(--text-3)">Operasi Larut</p>
         </div>
         <div class="flex items-center gap-2">
             <span class="px-2.5 py-1 rounded-lg font-bold" style="font-size:12px;background:rgba(251,146,60,.18);color:#fb923c">14:00</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             <span class="px-2.5 py-1 rounded-lg font-bold" style="font-size:12px;background:rgba(251,146,60,.18);color:#fb923c">22:00</span>
         </div>
-        <div style="font-size:13.5px;color:var(--text-2)">45 mins</div>
+        <div style="font-size:13.5px;color:var(--text-2)">45 menit</div>
         <div class="flex items-center gap-2">
             <div class="h-1.5 rounded-full" style="width:48px;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
-            <span style="font-size:13px;font-weight:600;color:var(--text-2)">8.0 hrs</span>
+            <span style="font-size:13px;font-weight:600;color:var(--text-2)">8.0 jam</span>
         </div>
         <div class="flex items-center">
             <img src="https://i.pravatar.cc/28?img=9" class="w-7 h-7 rounded-full object-cover border-2" style="border-color:var(--bg-card)">
@@ -163,10 +163,10 @@
     {{-- Table Footer --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-3.5"
          style="border-top:1px solid var(--border)">
-        <p style="font-size:13px;color:var(--text-3)">Showing 3 of 12 shifts</p>
+        <p style="font-size:13px;color:var(--text-3)">Menampilkan 3 dari 12 shift</p>
         <div class="flex items-center gap-2">
-            <button class="px-3 h-8 rounded-lg ib-bg font-medium" style="font-size:13px;color:var(--text-3)">Previous</button>
-            <button class="px-3 h-8 rounded-lg ib-bg font-medium" style="font-size:13px;color:var(--text-2)">Next</button>
+            <button class="px-3 h-8 rounded-lg ib-bg font-medium" style="font-size:13px;color:var(--text-3)">Sebelumnya</button>
+            <button class="px-3 h-8 rounded-lg ib-bg font-medium" style="font-size:13px;color:var(--text-2)">Selanjutnya</button>
         </div>
     </div>
 </div>
@@ -176,9 +176,9 @@
 
     {{-- Left: Info panel --}}
     <div class="lg:col-span-2">
-        <h2 style="font-size:18px;font-weight:800;color:var(--text-1);margin-bottom:6px">Create New Shift</h2>
+        <h2 style="font-size:18px;font-weight:800;color:var(--text-1);margin-bottom:6px">Buat Shift Baru</h2>
         <p style="font-size:13px;color:var(--text-3);line-height:1.6;margin-bottom:16px">
-            Define the specific hours and break policy for a new shift category. Once saved, these can be assigned to staff members in the Roster section.
+            Tentukan jam khusus dan kebijakan istirahat untuk kategori shift baru. Setelah disimpan, ini dapat ditugaskan ke anggota staf di bagian Jadwal.
         </p>
         {{-- Info box --}}
         <div class="rounded-xl p-4 flex items-start gap-3"
@@ -186,7 +186,7 @@
             <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
                  style="background:#7c3aed;font-size:11px;font-weight:700;color:#fff">i</div>
             <p style="font-size:12.5px;color:var(--text-2);line-height:1.6">
-                Shifts that cross midnight will be automatically marked as "Next Day" for rostering purposes.
+                Shift yang melewati tengah malam akan secara otomatis ditandai sebagai "Hari Berikutnya" untuk tujuan penjadwalan.
             </p>
         </div>
     </div>
@@ -197,14 +197,14 @@
 
             {{-- Shift Name --}}
             <div>
-                <label class="mlabel">Shift Name</label>
-                <input type="text" placeholder="e.g. Weekend Late Night" class="minput">
+                <label class="mlabel">Nama Shift</label>
+                <input type="text" placeholder="mis. Akhir Pekan Larut Malam" class="minput">
             </div>
 
             {{-- Start + End Time --}}
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="mlabel">Start Time</label>
+                    <label class="mlabel">Waktu Mulai</label>
                     <div class="relative">
                         <input type="text" value="09:00 AM" class="minput" style="padding-right:40px">
                         <svg class="absolute right-3 top-1/2 -translate-y-1/2" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2">
@@ -213,7 +213,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="mlabel">End Time</label>
+                    <label class="mlabel">Waktu Selesai</label>
                     <div class="relative">
                         <input type="text" value="05:00 PM" class="minput" style="padding-right:40px">
                         <svg class="absolute right-3 top-1/2 -translate-y-1/2" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2">
@@ -226,12 +226,12 @@
             {{-- Break Duration + Color Tag --}}
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="mlabel">Break Duration (Minutes)</label>
+                    <label class="mlabel">Durasi Istirahat (Menit)</label>
                     <div class="relative">
                         <select class="minput" style="cursor:pointer;padding-right:36px;appearance:none">
-                            <option>45 mins</option>
-                            <option>30 mins</option>
-                            <option>60 mins</option>
+                            <option>45 menit</option>
+                            <option>30 menit</option>
+                            <option>60 menit</option>
                         </select>
                         <svg class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2">
                             <path d="M6 9l6 6 6-6"/>
@@ -239,7 +239,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="mlabel">Color Tag</label>
+                    <label class="mlabel">Label Warna</label>
                     <div class="flex items-center gap-2.5 mt-1">
                         <button onclick="selectColor(this,'#7c3aed')" class="color-dot w-7 h-7 rounded-full border-2 border-transparent" style="background:#7c3aed" title="Purple"></button>
                         <button onclick="selectColor(this,'#22c55e')" class="color-dot w-7 h-7 rounded-full border-2 border-transparent" style="background:#22c55e" title="Green"></button>
@@ -256,10 +256,10 @@
         <div class="flex justify-end gap-3 mt-6">
             <button class="px-5 py-2.5 rounded-xl font-medium"
                     style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">
-                Discard
+                Buang
             </button>
             <button class="purbtn px-5 py-2.5 rounded-xl font-semibold" style="font-size:14px">
-                Save Shift Definition
+                Simpan Definisi Shift
             </button>
         </div>
     </div>

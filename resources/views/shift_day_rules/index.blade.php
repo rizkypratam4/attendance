@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Shift Day Rules')
+@section('title', 'Aturan Hari Shift')
 
 @php $active = 'shift-rules'; @endphp
 
@@ -8,8 +8,8 @@
 
 {{-- ── PAGE HEADER ── --}}
 <div class="mb-6">
-    <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Shift Day Rules</h1>
-    <p style="font-size:13px;color:var(--text-3);margin-top:5px">Configure attendance thresholds, grace periods, and overtime calculations for various shift types.</p>
+    <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Aturan Hari Shift</h1>
+    <p style="font-size:13px;color:var(--text-3);margin-top:5px">Konfigurasi ambang batas kehadiran, masa tenggang, dan perhitungan lembur untuk berbagai jenis shift.</p>
 </div>
 
 {{-- ── STAT CARDS ── --}}
@@ -26,7 +26,7 @@
             </svg>
         </div>
         <div>
-            <p style="font-size:12px;color:var(--text-3);margin-bottom:4px">Total Rules</p>
+            <p style="font-size:12px;color:var(--text-3);margin-bottom:4px">Total Aturan</p>
             <p style="font-size:30px;font-weight:800;color:var(--text-1);line-height:1">12</p>
         </div>
     </div>
@@ -40,7 +40,7 @@
             </svg>
         </div>
         <div>
-            <p style="font-size:12px;color:var(--text-3);margin-bottom:4px">Active Rules</p>
+            <p style="font-size:12px;color:var(--text-3);margin-bottom:4px">Aturan Aktif</p>
             <p style="font-size:30px;font-weight:800;color:var(--text-1);line-height:1">10</p>
         </div>
     </div>
@@ -54,7 +54,7 @@
             </svg>
         </div>
         <div>
-            <p style="font-size:12px;color:var(--text-3);margin-bottom:4px">Inactive Rules</p>
+            <p style="font-size:12px;color:var(--text-3);margin-bottom:4px">Aturan Nonaktif</p>
             <p style="font-size:30px;font-weight:800;color:var(--text-1);line-height:1">2</p>
         </div>
     </div>
@@ -70,12 +70,12 @@
             <table class="w-full" style="border-collapse:collapse;min-width:460px">
                 <thead>
                     <tr style="border-bottom:1px solid var(--border)">
-                        <th class="text-left px-5 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Rule<br>Name</th>
-                        <th class="text-left px-3 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Tolerances<br>(L/E)</th>
-                        <th class="text-left px-3 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">OT<br>Start</th>
-                        <th class="text-left px-3 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Work<br>Type</th>
+                        <th class="text-left px-5 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Nama<br>Aturan</th>
+                        <th class="text-left px-3 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Toleransi<br>(T/P)</th>
+                        <th class="text-left px-3 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Mulai<br>Lembur</th>
+                        <th class="text-left px-3 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Tipe<br>Kerja</th>
                         <th class="text-left px-3 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Status</th>
-                        <th class="text-right px-4 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Act</th>
+                        <th class="text-right px-4 py-3.5 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,8 +83,8 @@
                     {{-- Normal Weekday --}}
                     <tr class="rule-row" style="border-bottom:1px solid var(--border)">
                         <td class="px-5 py-4">
-                            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Normal Weekday</p>
-                            <p style="font-size:11px;color:var(--text-3);margin-top:2px">Standard office hours</p>
+                            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Hari Kerja Normal</p>
+                            <p style="font-size:11px;color:var(--text-3);margin-top:2px">Jam kantor standar</p>
                         </td>
                         <td class="px-3 py-4">
                             <div class="flex items-center gap-1.5">
@@ -93,11 +93,11 @@
                             </div>
                         </td>
                         <td class="px-3 py-4">
-                            <p style="font-size:12.5px;color:var(--text-3)">After</p>
-                            <p style="font-size:13px;font-weight:600;color:var(--text-2)">8.0h</p>
+                            <p style="font-size:12.5px;color:var(--text-3)">Setelah</p>
+                            <p style="font-size:13px;font-weight:600;color:var(--text-2)">8.0j</p>
                         </td>
                         <td class="px-3 py-4">
-                            <span class="px-2.5 py-1 rounded-lg font-semibold" style="font-size:11px;background:rgba(124,58,237,.2);color:#a78bfa">Working Day</span>
+                            <span class="px-2.5 py-1 rounded-lg font-semibold" style="font-size:11px;background:rgba(124,58,237,.2);color:#a78bfa">Hari Kerja</span>
                         </td>
                         <td class="px-3 py-4">
                             {{-- Toggle ON --}}
@@ -117,8 +117,8 @@
                     {{-- Weekend Overtime --}}
                     <tr class="rule-row" style="border-bottom:1px solid var(--border)">
                         <td class="px-5 py-4">
-                            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Weekend Overtime</p>
-                            <p style="font-size:11px;color:var(--text-3);margin-top:2px">Special rules for SAT/SUN</p>
+                            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Lembur Akhir Pekan</p>
+                            <p style="font-size:11px;color:var(--text-3);margin-top:2px">Aturan khusus untuk SAB/MIN</p>
                         </td>
                         <td class="px-3 py-4">
                             <div class="flex items-center gap-1.5">
@@ -127,11 +127,11 @@
                             </div>
                         </td>
                         <td class="px-3 py-4">
-                            <p style="font-size:12.5px;color:var(--text-3)">After</p>
-                            <p style="font-size:13px;font-weight:600;color:var(--text-2)">4.0h</p>
+                            <p style="font-size:12.5px;color:var(--text-3)">Setelah</p>
+                            <p style="font-size:13px;font-weight:600;color:var(--text-2)">4.0j</p>
                         </td>
                         <td class="px-3 py-4">
-                            <span class="px-2.5 py-1 rounded-lg font-semibold" style="font-size:11px;background:rgba(107,114,128,.2);color:var(--text-3)">Rest Day</span>
+                            <span class="px-2.5 py-1 rounded-lg font-semibold" style="font-size:11px;background:rgba(107,114,128,.2);color:var(--text-3)">Hari Libur</span>
                         </td>
                         <td class="px-3 py-4">
                             {{-- Toggle ON --}}
@@ -151,8 +151,8 @@
                     {{-- Holiday Rule --}}
                     <tr class="rule-row">
                         <td class="px-5 py-4">
-                            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Holiday Rule</p>
-                            <p style="font-size:11px;color:var(--text-3);margin-top:2px">Premium rate calculations</p>
+                            <p style="font-size:14px;font-weight:700;color:var(--text-1)">Aturan Hari Libur</p>
+                            <p style="font-size:11px;color:var(--text-3);margin-top:2px">Perhitungan tarif premium</p>
                         </td>
                         <td class="px-3 py-4">
                             <div class="flex items-center gap-1.5">
@@ -161,11 +161,11 @@
                             </div>
                         </td>
                         <td class="px-3 py-4">
-                            <p style="font-size:12.5px;color:var(--text-3)">After</p>
-                            <p style="font-size:13px;font-weight:600;color:var(--text-2)">0.0h</p>
+                            <p style="font-size:12.5px;color:var(--text-3)">Setelah</p>
+                            <p style="font-size:13px;font-weight:600;color:var(--text-2)">0.0j</p>
                         </td>
                         <td class="px-3 py-4">
-                            <span class="px-2.5 py-1 rounded-lg font-semibold" style="font-size:11px;background:rgba(107,114,128,.2);color:var(--text-3)">Rest Day</span>
+                            <span class="px-2.5 py-1 rounded-lg font-semibold" style="font-size:11px;background:rgba(107,114,128,.2);color:var(--text-3)">Hari Libur</span>
                         </td>
                         <td class="px-3 py-4">
                             {{-- Toggle OFF --}}
@@ -189,7 +189,7 @@
         {{-- Pagination --}}
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4"
              style="border-top:1px solid var(--border)">
-            <p style="font-size:13px;color:var(--text-3)">Showing 3 of 12 rules</p>
+            <p style="font-size:13px;color:var(--text-3)">Menampilkan 3 dari 12 aturan</p>
             <div class="flex items-center gap-1.5">
                 <button class="w-7 h-7 rounded-lg flex items-center justify-center ib-bg">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
@@ -207,7 +207,7 @@
 
         {{-- Panel Header --}}
         <div class="flex items-center justify-between px-5 py-4" style="border-bottom:1px solid var(--border)">
-            <h3 style="font-size:15px;font-weight:700;color:var(--text-1)">Create New Rule</h3>
+            <h3 style="font-size:15px;font-weight:700;color:var(--text-1)">Buat Aturan Baru</h3>
             <button class="mclose w-7 h-7 flex items-center justify-center rounded-lg"
                     style="background:var(--bg-ghost);border:none;cursor:pointer;color:var(--text-3)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -221,38 +221,38 @@
 
             {{-- Rule Name --}}
             <div>
-                <label class="mlabel">Rule Name</label>
-                <input type="text" placeholder="e.g. Night Shift Regular" class="minput">
+                <label class="mlabel">Nama Aturan</label>
+                <input type="text" placeholder="mis. Shift Malam Reguler" class="minput">
             </div>
 
             {{-- Late Grace + Early Out --}}
             <div class="grid grid-cols-2 gap-3">
                 <div>
-                    <label class="mlabel">Late Grace (Min)</label>
+                    <label class="mlabel">Toleransi Telat (Menit)</label>
                     <input type="number" value="15" class="minput" style="font-size:15px;font-weight:600">
                 </div>
                 <div>
-                    <label class="mlabel">Early Out (Min)</label>
+                    <label class="mlabel">Toleransi Pulang Cepat (Menit)</label>
                     <input type="number" value="5" class="minput" style="font-size:15px;font-weight:600">
                 </div>
             </div>
 
             {{-- Work Day Type --}}
             <div>
-                <label class="mlabel">Work Day Type</label>
+                <label class="mlabel">Tipe Hari Kerja</label>
                 <div class="flex rounded-xl overflow-hidden" style="border:1px solid var(--border);background:var(--bg-input)">
                     <button onclick="setWorkType('working',this)"
                             class="work-type-btn flex-1 py-2.5 font-semibold text-sm purbtn rounded-xl"
-                            data-type="working">Working</button>
+                            data-type="working">Kerja</button>
                     <button onclick="setWorkType('rest',this)"
                             class="work-type-btn flex-1 py-2.5 font-semibold text-sm ib-bg"
-                            data-type="rest" style="color:var(--text-2)">Rest Day</button>
+                            data-type="rest" style="color:var(--text-2)">Libur</button>
                 </div>
             </div>
 
             {{-- OT Threshold --}}
             <div>
-                <label class="mlabel">OT Threshold (Hours)</label>
+                <label class="mlabel">Ambang Batas Lembur (Jam)</label>
                 <input type="number" value="8.0" step="0.5" class="minput" style="font-size:15px;font-weight:600">
             </div>
 
@@ -262,8 +262,8 @@
                 {{-- Auto-Deduct Break --}}
                 <div class="flex items-center justify-between gap-3">
                     <div>
-                        <p style="font-size:13.5px;font-weight:600;color:var(--text-1)">Auto-Deduct Break</p>
-                        <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">Deduct break time automatically</p>
+                        <p style="font-size:13.5px;font-weight:600;color:var(--text-1)">Potong Istirahat Otomatis</p>
+                        <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">Potong waktu istirahat secara otomatis</p>
                     </div>
                     <button onclick="toggleSwitch(this)" class="feat-toggle on flex-shrink-0"
                             style="position:relative;width:44px;height:24px;border-radius:12px;background:#7c3aed;border:none;cursor:pointer;transition:background .3s">
@@ -274,8 +274,8 @@
                 {{-- Enforce Early Out --}}
                 <div class="flex items-center justify-between gap-3" style="padding-top:12px;border-top:1px solid var(--border)">
                     <div>
-                        <p style="font-size:13.5px;font-weight:600;color:var(--text-1)">Enforce Early Out</p>
-                        <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">Flag departures before shift end</p>
+                        <p style="font-size:13.5px;font-weight:600;color:var(--text-1)">Tegakkan Pulang Cepat</p>
+                        <p style="font-size:11.5px;color:var(--text-3);margin-top:2px">Tandai keberangkatan sebelum shift berakhir</p>
                     </div>
                     <button onclick="toggleSwitch(this)" class="feat-toggle off flex-shrink-0"
                             style="position:relative;width:44px;height:24px;border-radius:12px;background:#374151;border:none;cursor:pointer;transition:background .3s">
@@ -289,9 +289,9 @@
 
         {{-- Panel Footer --}}
         <div class="flex gap-3 px-5 pb-5">
-            <button class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">Save Rule</button>
+            <button class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">Simpan Aturan</button>
             <button class="flex-1 py-2.5 rounded-xl font-semibold"
-                    style="font-size:14px;background:var(--bg-ghost);border:1px solid var(--border);color:var(--text-2);cursor:pointer">Reset</button>
+                    style="font-size:14px;background:var(--bg-ghost);border:1px solid var(--border);color:var(--text-2);cursor:pointer">Atur Ulang</button>
         </div>
 
     </div>

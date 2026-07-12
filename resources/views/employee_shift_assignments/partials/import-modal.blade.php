@@ -1,9 +1,9 @@
-<x-ui.modal id="mImportAssignments" title="Import Assignments" maxWidth="480px">
+<x-ui.modal id="mImportAssignments" title="Impor Penugasan" maxWidth="480px">
     <form action="{{ route('employee_shift_assignments.import') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="space-y-4">
             <div>
-                <label class="mlabel">Select File</label>
+                <label class="mlabel">Pilih File</label>
                 <div class="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition"
                     style="border-color:var(--border-in);background:var(--bg-input);"
                     id="dropZoneAssign"
@@ -14,8 +14,8 @@
                         <polyline points="17 8 12 3 7 8" />
                         <line x1="12" y1="3" x2="12" y2="15" />
                     </svg>
-                    <p id="assignFileName" style="font-size:14px;color:var(--text-2);margin:0">Choose a file or drag it here</p>
-                    <p style="font-size:12px;color:var(--text-3);margin-top:4px">CSV, XLSX, or XLS</p>
+                    <p id="assignFileName" style="font-size:14px;color:var(--text-2);margin:0">Pilih file atau seret ke sini</p>
+                    <p style="font-size:12px;color:var(--text-3);margin-top:4px">CSV, XLSX, atau XLS</p>
                 </div>
                 @error('file')
                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -23,8 +23,8 @@
             </div>
 
             <div style="background:var(--bg-input);padding:12px;border-radius:8px;border-left:3px solid #7c3aed">
-                <p style="font-size:12px;color:var(--text-2);margin:0;line-height:1.5"><strong>Required columns:</strong></p>
-                <p style="font-size:11px;color:var(--text-3);margin:4px 0 0 0">nik, shift_code, effective_date, end_date (optional)</p>
+                <p style="font-size:12px;color:var(--text-2);margin:0;line-height:1.5"><strong>Kolom yang diperlukan:</strong></p>
+                <p style="font-size:11px;color:var(--text-3);margin:4px 0 0 0">nik, shift_code, effective_date, end_date (opsional)</p>
             </div>
         </div>
 
@@ -33,7 +33,7 @@
                     onclick="closeM('mImportAssignments')"
                     class="flex-1 py-2.5 rounded-xl font-medium"
                     style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">
-                Cancel
+                Batal
             </button>
 
             <button type="submit"

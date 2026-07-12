@@ -16,7 +16,7 @@
                 <line x1="8" y1="12" x2="16" y2="12"/>
                 <line x1="11" y1="18" x2="13" y2="18"/>
             </svg>
-            Filters
+            Filter
             {{-- Badge jumlah filter aktif --}}
             <span id="filterBadge"
                   class="hidden w-4 h-4 rounded-full text-white flex items-center justify-center"
@@ -24,7 +24,7 @@
         </button>
 
         <span style="font-size:13px;color:var(--text-3)">
-            Showing {{ $showing }} of {{ number_format($total) }} users
+            Menampilkan {{ $showing }} dari {{ number_format($total) }} pengguna
         </span>
 
     </div>
@@ -44,7 +44,7 @@
                 <div>
                     <label style="font-size:11px;font-weight:600;color:var(--text-3);
                                   letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px">
-                        Search
+                        Cari
                     </label>
                     <div class="flex items-center gap-2 px-3 py-2.5 rounded-xl"
                          style="background:var(--bg-input);border:1px solid var(--border-in)">
@@ -55,7 +55,7 @@
                                id="filterSearch"
                                name="search"
                                value="{{ request('search') }}"
-                               placeholder="Name or email..."
+                               placeholder="Nama atau email..."
                                style="background:transparent;border:none;outline:none;
                                       color:var(--text-2);font-size:13px;width:100%;font-family:inherit">
                         <button type="button"
@@ -74,7 +74,7 @@
                 <div>
                     <label style="font-size:11px;font-weight:600;color:var(--text-3);
                                   letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:6px">
-                        Role
+                        Peran
                     </label>
                     <div class="flex flex-wrap gap-2">
                         @foreach(['mis','manager','hr','employee'] as $role)
@@ -85,7 +85,7 @@
                                            background:var(--bg-ghost);color:var(--text-2);cursor:pointer"
                                     data-value="{{ $role }}"
                                     {{ in_array($role, request()->input('role', [])) ? 'data-active=true' : '' }}>
-                                {{ ucfirst($role) }}
+                                {{ $role === 'employee' ? 'Karyawan' : ($role === 'manager' ? 'Manajer' : strtoupper($role)) }}
                             </button>
                         @endforeach
                     </div>
@@ -105,7 +105,7 @@
                                        background:var(--bg-ghost);color:var(--text-2);cursor:pointer"
                                 data-value="active"
                                 {{ request('status') === 'active' ? 'data-active=true' : '' }}>
-                            Active
+                            Aktif
                         </button>
                         <button type="button"
                                 onclick="toggleChip(this, 'status', 'inactive')"
@@ -114,7 +114,7 @@
                                        background:var(--bg-ghost);color:var(--text-2);cursor:pointer"
                                 data-value="inactive"
                                 {{ request('status') === 'inactive' ? 'data-active=true' : '' }}>
-                            Inactive
+                            Nonaktif
                         </button>
                     </div>
                 </div>
@@ -129,12 +129,12 @@
                         class="px-4 py-2 rounded-lg font-medium"
                         style="font-size:13px;border:1px solid var(--border);
                                background:var(--bg-ghost);color:var(--text-3);cursor:pointer">
-                    Reset
+                    Setel Ulang
                 </button>
                 <button type="submit"
                         class="flex-1 py-2 rounded-lg font-semibold purbtn"
                         style="font-size:13px">
-                    Apply Filters
+                    Terapkan Filter
                 </button>
             </div>
 

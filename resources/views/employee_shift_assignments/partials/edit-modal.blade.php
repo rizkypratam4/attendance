@@ -1,7 +1,7 @@
 <div class="mbk" id="mEditAssignment" onclick="closeOut(event,'mEditAssignment')">
     <div class="mbox" style="max-width:520px">
         <div class="mhdr">
-            <span class="mtitle">Edit Assignment</span>
+            <span class="mtitle">Edit Penugasan</span>
             <button class="mclose" onclick="closeM('mEditAssignment')">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -17,7 +17,7 @@
 
                     {{-- Employee (readonly) --}}
                     <div>
-                        <label class="mlabel">Employee</label>
+                        <label class="mlabel">Karyawan</label>
                         <input type="text" id="editAssignName" class="minput" readonly style="opacity:.6;cursor:not-allowed">
                     </div>
 
@@ -58,10 +58,10 @@
                     <button type="button" onclick="closeM('mEditAssignment')"
                             class="flex-1 py-2.5 rounded-xl font-medium"
                             style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">
-                        Cancel
+                        Batal
                     </button>
                     <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">
-                        Save Changes
+                        Simpan Perubahan
                     </button>
                 </div>
             </form>

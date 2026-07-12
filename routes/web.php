@@ -32,6 +32,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendances/export-pdf', [AttendanceController::class, 'exportPdf'])->name('attendances.export-pdf');
     Route::patch('/attendances/{attendance}', [AttendanceController::class, 'update'])->name('attendances.update');
 
+    // Custom routes — harus sebelum Route::resources agar tidak ditangkap sebagai {id}
+    Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
+    Route::get('/employees/template', [EmployeeController::class, 'downloadTemplate'])->name('employees.template');
+
+    Route::post('/employee_shift_assignments/import', [EmployeeShiftAssignmentController::class, 'import'])
+        ->name('employee_shift_assignments.import');
+    Route::get('/employee_shift_assignments/template', [EmployeeShiftAssignmentController::class, 'downloadTemplate'])
+        ->name('employee_shift_assignments.template');
+    Route::post('/employee_shift_assignments/bulk-assign', [EmployeeShiftAssignmentController::class, 'bulkAssign'])
+        ->name('employee_shift_assignments.bulk_assign');
+
     Route::resources([
         'locations' => LocationController::class,
         'departments' => DepartmentController::class,
@@ -51,16 +62,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/process_attendances/reprocess', [ProcessAttendanceController::class, 'updateAttendance'])->name('process_attendances.reprocess');
 
     Route::resource('shift_codes', ShiftCodeController::class)->except(['show','edit']);
-
-    Route::post('/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
-
-    // assignment import
-    Route::post('/employee_shift_assignments/import', [EmployeeShiftAssignmentController::class, 'import'])
-        ->name('employee_shift_assignments.import');
-    
-    // bulk assign
-    Route::post('/employee_shift_assignments/bulk-assign', [EmployeeShiftAssignmentController::class, 'bulkAssign'])
-        ->name('employee_shift_assignments.bulk_assign');
 
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::patch('/password', [UserController::class, 'changePassword'])->name('password.change');

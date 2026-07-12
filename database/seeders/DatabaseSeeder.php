@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BranchSeeder::class);
         $this->call(DepartmentSeeder::class);
         $this->call(ShiftSeeder::class);
+        $this->call(UpdateShiftCodeTimesSeeder::class);
     }
 }

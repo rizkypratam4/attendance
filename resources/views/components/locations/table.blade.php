@@ -5,25 +5,25 @@
 <table class="w-full" style="border-collapse:collapse;min-width:580px">
     <thead>
         <tr style="background:rgba(124,58,237,.10);border-bottom:1px solid var(--border)">
-            <th class="text-left px-5 py-3.5 font-semibold"
+            <th class="text-left px-5 py-3.5 font-semibold whitespace-nowrap"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                Location Name
+                Nama Lokasi
             </th>
-            <th class="text-left px-4 py-3.5 font-semibold"
+            <th class="text-left px-4 py-3.5 font-semibold whitespace-nowrap"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                Address
+                Alamat
             </th>
-            <th class="text-left px-4 py-3.5 font-semibold"
+            <th class="text-left px-4 py-3.5 font-semibold whitespace-nowrap"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                Coordinates
+                Koordinat
             </th>
-            <th class="text-left px-4 py-3.5 font-semibold"
+            <th class="text-left px-4 py-3.5 font-semibold whitespace-nowrap"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
                 Status
             </th>
-            <th class="text-right px-5 py-3.5 font-semibold"
+            <th class="text-right px-5 py-3.5 font-semibold whitespace-nowrap"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                Actions
+                Aksi
             </th>
         </tr>
     </thead>
@@ -31,7 +31,7 @@
     <tbody>
         @forelse($locations as $location)
             <tr class="loc-row" style="border-bottom:1px solid var(--border)">
-                <td class="px-5 py-4">
+                <td class="px-5 py-4 whitespace-nowrap">
                     <p style="font-size:14px;font-weight:700;color:var(--text-1)">
                         {{ $location->name }}
                     </p>
@@ -40,11 +40,11 @@
                     </p>
                 </td>
 
-                <td class="px-4 py-4" style="font-size:13px;color:var(--text-2)">
+                <td class="px-4 py-4 whitespace-nowrap" style="font-size:13px;color:var(--text-2)">
                     {{ $location->address }}
                 </td>
 
-                <td class="px-4 py-4" style="font-size:12px;color:#a78bfa;font-weight:500">
+                <td class="px-4 py-4 whitespace-nowrap" style="font-size:12px;color:#a78bfa;font-weight:500">
                     {{ $location->latitude }}, {{ $location->longitude }}
                 </td>
 
@@ -52,12 +52,12 @@
                     @if ($location->is_active)
                         <span class="px-3 py-1 rounded-full font-semibold"
                             style="font-size:11px;background:rgba(34,197,94,.15);color:#22c55e;">
-                            ACTIVE
+                            AKTIF
                         </span>
                     @else
                         <span class="px-3 py-1 rounded-full font-semibold"
                             style="font-size:11px;background:rgba(255,255,255,.07);color:var(--text-3);">
-                            INACTIVE
+                            NONAKTIF
                         </span>
                     @endif
                 </td>
@@ -81,7 +81,7 @@
                                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                             </svg>
                         </button>
-                        
+
                         <form id="delete-form-location-{{ $location->id }}"
                             action="{{ route('locations.destroy', $location->id) }}" method="POST">
                             @csrf
@@ -105,7 +105,7 @@
         @empty
             <tr>
                 <td colspan="5" class="text-center py-6" style="color:var(--text-3)">
-                    No locations found.
+                    Tidak ada lokasi ditemukan.
                 </td>
             </tr>
         @endforelse

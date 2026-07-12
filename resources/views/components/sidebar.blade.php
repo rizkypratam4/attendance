@@ -1,18 +1,30 @@
 @props(['active' => 'dashboard'])
 
 <aside id="sidebar" class="flex flex-col">
-    <div class="flex items-center justify-center px-5"
-        style="border-bottom:1px solid var(--border); height:72px;">
-        <div class="flex items-center gap-2 min-w-0">
-            <div class="flex items-center gap-1.5 flex-shrink-0">
-                <img src="{{ asset('images/logo_cni.png') }}" alt="Logo CNI" class="w-10 h-10 object-contain">
-                <img src="{{ asset('images/logo_csi.png') }}" alt="Logo CSI" class="w-10 h-10 object-contain">
-            </div>
-        
-            <div class="logo-txt min-w-0">
-                <div style="font-size:15px;font-weight:700;color:var(--text-1);line-height:1.1">Attendance</div>
-            </div>
+    <div class="flex items-center px-5 border-b border-slate-700 h-[72px]">
+       <div class="flex items-center gap-2 min-w-0">
+    <div class="flex items-center gap-1.5 flex-shrink-0">
+        <div
+            style="width:36px;height:36px;background:#7c3aed;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <!-- Ikon absensi -->
+                <rect x="4" y="5" width="16" height="15" rx="2" stroke="white" stroke-width="2"/>
+                <path d="M8 3V7M16 3V7M4 10H20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <path d="M8 15L10 17L16 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         </div>
+    </div>
+
+    <div class="logo-txt min-w-0 flex flex-col gap-1">
+        <div style="font-size:15px;font-weight:700;color:var(--text-1);line-height:1.1">
+            Sistem Absensi
+        </div>
+        <div style="font-size:10px;color:#7c3aed;font-weight:500;letter-spacing:0.03em;line-height:1.2">
+            Manajemen Kehadiran
+        </div>
+    </div>
+</div>
 
         <button onclick="toggleDsk()" id="tBtn"
             class="hidden md:flex ib-bg w-8 h-8 rounded-lg items-center justify-center flex-shrink-0 ml-auto">
@@ -33,7 +45,7 @@
                 <rect x="3" y="14" width="7" height="7" rx="1" />
                 <rect x="14" y="14" width="7" height="7" rx="1" />
             </svg>
-            <span class="sl">Dashboard</span>
+            <span class="sl">Beranda</span>
         </a>
 
         <div class="menu-group">
@@ -60,30 +72,28 @@
                     overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
                 <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
                     <a href="{{ route('users.index') }}" class="sub-a {{ $active === 'users' ? 'sub-act' : '' }}">
-                        <span class="sl">User Accounts</span>
+                        <span class="sl">Akun Pengguna</span>
                     </a>
 
                     <a href="{{ route('locations.index') }}"
                         class="sub-a {{ $active === 'location' ? 'sub-act' : '' }}">
-                        <span class="sl">Location</span>
+                        <span class="sl">Lokasi</span>
                     </a>
 
                     <a href="{{ route('departments.index') }}"
                         class="sub-a {{ $active === 'department' ? 'sub-act' : '' }}">
-                        <span class="sl">Department</span>
+                        <span class="sl">Departemen</span>
                     </a>
 
-                    <a href="{{ route('branches.index') }}"
-                        class="sub-a {{ $active === 'branch' ? 'sub-act' : '' }}">
-                        <span class="sl">Branch</span>
+                    <a href="{{ route('branches.index') }}" class="sub-a {{ $active === 'branch' ? 'sub-act' : '' }}">
+                        <span class="sl">Perusahaan</span>
                     </a>
                 </div>
             </div>
         </div>
 
-           <div class="menu-group">
-            <button type="button" onclick="toggleSubmenu(this)"
-                class="nav-a w-full text-left">
+        <div class="menu-group">
+            <button type="button" onclick="toggleSubmenu(this)" class="nav-a w-full text-left">
                 <svg class="flex-shrink-0" width="19" height="19" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 
@@ -97,7 +107,7 @@
                     <path d="M12 16v1" />
                 </svg>
 
-                <span class="sl flex-1">Shift Management</span>
+                <span class="sl flex-1">Kelola Shift</span>
 
                 <span class="caret flex-shrink-0">
                     <svg class="caretIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -111,11 +121,13 @@
                 style="max-height:{{ in_array($active, ['shift-groups', 'shift-definition', 'shift-codes', 'shift-schedules', 'shift-rules']) ? '200px' : '0' }};
                     overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
                 <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
-                    <a href="{{ route('shift_groups.index') }}" class="sub-a {{ $active === 'shift-groups' ? 'sub-act' : '' }}">
+                    <a href="{{ route('shift_groups.index') }}"
+                        class="sub-a {{ $active === 'shift-groups' ? 'sub-act' : '' }}">
                         <span class="sl">Master Shift</span>
                     </a>
 
-                    <a href="{{ route('shift_codes.index') }}" class="sub-a {{ $active === 'shift-codes' ? 'sub-act' : '' }}">
+                    <a href="{{ route('shift_codes.index') }}"
+                        class="sub-a {{ $active === 'shift-codes' ? 'sub-act' : '' }}">
                         <span class="sl">Kode Shift</span>
                     </a>
                 </div>
@@ -123,8 +135,7 @@
         </div>
 
         <div class="menu-group">
-            <button type="button" onclick="toggleSubmenu(this)"
-                    class="nav-a w-full text-left">
+            <button type="button" onclick="toggleSubmenu(this)" class="nav-a w-full text-left">
                 <!-- Ikon Grup / Employee -->
                 <svg class="flex-shrink-0" width="19" height="19" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -138,7 +149,7 @@
                     <path d="M13 21v-2a4 4 0 0 1 6 0v2" />
                 </svg>
 
-                <span class="sl flex-1">Employee Management</span>
+                <span class="sl flex-1">Manajemen Karyawan</span>
 
                 <span class="caret flex-shrink-0">
                     <svg class="caretIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -152,18 +163,20 @@
                 style="max-height:{{ in_array($active, ['employees', 'employee-shift-assignments']) ? '200px' : '0' }};
                     overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
                 <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
-                    <a href="{{ route('employees.index') }}" class="sub-a {{ $active === 'employees' ? 'sub-act' : '' }}">
+                    <a href="{{ route('employees.index') }}"
+                        class="sub-a {{ $active === 'employees' ? 'sub-act' : '' }}">
                         <span class="sl">Data Karyawan</span>
                     </a>
 
-                    <a href="{{ route('employee_shift_assignments.index') }}" class="sub-a {{ $active === 'employee-shift-assignments' ? 'sub-act' : '' }}">
-                        <span class="sl">Assignment Shift</span>
+                    <a href="{{ route('employee_shift_assignments.index') }}"
+                        class="sub-a {{ $active === 'employee-shift-assignments' ? 'sub-act' : '' }}">
+                        <span class="sl">Penugasan Shift</span>
                     </a>
                 </div>
             </div>
         </div>
 
-     
+
 
         <div class="menu-group">
             <button type="button" onclick="toggleSubmenu(this)" class="nav-a w-full text-left">
@@ -173,7 +186,7 @@
                     <polyline points="12 6 12 12 16 14" />
                 </svg>
 
-                <span class="sl flex-1">Attendances</span>
+                <span class="sl flex-1">Absensi</span>
 
                 <span class="caret flex-shrink-0">
                     <svg class="caretIcon" width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -187,14 +200,17 @@
                 style="max-height:{{ in_array($active, ['fingerprint', 'process-attendance', 'attendance']) ? '200px' : '0' }};
                     overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)">
                 <div class="ml-4 mt-1 pb-1 pl-4 space-y-0.5" style="border-left:2px solid rgba(124,58,237,.3)">
-                    <a href="{{ route('fingerprint.index') }}" class="sub-a {{ $active === 'fingerprint' ? 'sub-act' : '' }}">
-                        <span class="sl">Fingerprint Logs</span>
+                    <a href="{{ route('fingerprint.index') }}"
+                        class="sub-a {{ $active === 'fingerprint' ? 'sub-act' : '' }}">
+                        <span class="sl">Log Fingerprint</span>
                     </a>
-                    <a href="{{ route('process_attendances.index') }}" class="sub-a {{ $active === 'process-attendance' ? 'sub-act' : '' }}">
-                        <span class="sl">Process Attendance</span>
+                    <a href="{{ route('process_attendances.index') }}"
+                        class="sub-a {{ $active === 'process-attendance' ? 'sub-act' : '' }}">
+                        <span class="sl">Proses Absensi</span>
                     </a>
-                    <a href="{{ route('attendances.index') }}" class="sub-a {{ $active === 'attendance' ? 'sub-act' : '' }}">
-                        <span class="sl">Attendance List</span>
+                    <a href="{{ route('attendances.index') }}"
+                        class="sub-a {{ $active === 'attendance' ? 'sub-act' : '' }}">
+                        <span class="sl">Daftar Absensi</span>
                     </a>
                 </div>
             </div>
@@ -257,7 +273,7 @@
                     <path
                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                <span class="sl">Sign Out</span>
+                <span class="sl">Keluar</span>
             </button>
         </form>
     </div>

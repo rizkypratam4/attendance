@@ -13,7 +13,7 @@
             @endif
         </div>
         <label for="profileImageInput" class="cursor-pointer">
-            <span style="font-size:13px;color:#a78bfa;font-weight:600;">Change Photo</span>
+            <span style="font-size:13px;color:#a78bfa;font-weight:600;">Ubah Foto</span>
             <input type="file" id="profileImageInput" name="image" accept="image/*" class="hidden">
         </label>
         @error('image')
@@ -24,7 +24,7 @@
     <div class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <label class="mlabel">First Name</label>
+                <label class="mlabel">Nama Depan</label>
                 <input type="text" name="first_name"
                        value="{{ auth()->user()->first_name ?? 'Alex' }}" class="minput">
                 @error('first_name')
@@ -32,7 +32,7 @@
                 @enderror
             </div>
             <div>
-                <label class="mlabel">Last Name</label>
+                <label class="mlabel">Nama Belakang</label>
                 <input type="text" name="last_name"
                        value="{{ auth()->user()->last_name ?? 'Thompson' }}" class="minput">
                 @error('last_name')
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div>
-            <label class="mlabel">Email Address</label>
+            <label class="mlabel">Alamat Email</label>
             <input type="email" name="email"
                    value="{{ auth()->user()->email ?? 'alex.thompson@company.com' }}" class="minput">
             @error('email')
@@ -49,7 +49,7 @@
             @enderror
         </div>
         <div>
-            <label class="mlabel">Role</label>
+            <label class="mlabel">Peran</label>
             <input type="text" value="{{ ucfirst(auth()->user()->role ?? 'Super Admin') }}"
                    class="minput" readonly style="opacity:.55;cursor:not-allowed">
         </div>
@@ -58,11 +58,11 @@
         <button type="button" onclick="closeM('mProfile')"
                 class="flex-1 py-2.5 rounded-xl font-medium"
                 style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2)">
-            Cancel
+            Batal
         </button>
         <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold"
                 style="font-size:14px">
-            Save Changes
+            Simpan Perubahan
         </button>
     </div>
 </form>

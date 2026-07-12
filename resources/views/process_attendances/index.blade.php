@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Process Attendance')
+@section('title', 'Proses Kehadiran')
 
 @php $active = 'process-attendance'; @endphp
 
 @section('content')
 
 <div class="mb-6">
-    <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Process Attendance</h1>
-    <p style="font-size:13px;color:var(--text-3);margin-top:5px">Transform raw fingerprint logs into verified attendance records. Hanya memproses karyawan yang memiliki jadwal shift di tanggal yang dipilih.</p>
+    <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Proses Kehadiran</h1>
+    <p style="font-size:13px;color:var(--text-3);margin-top:5px">Ubah log fingerprint mentah menjadi rekaman kehadiran terverifikasi. Hanya memproses karyawan yang memiliki jadwal shift di tanggal yang dipilih.</p>
 </div>
 
 {{-- ── RESULT FLASH ── --}}
@@ -75,7 +75,7 @@
 
         {{-- Start Date (shared) --}}
         <div>
-            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Start Date</label>
+            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Tanggal Mulai</label>
             <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl"
                  style="background:var(--bg-input);border:1px solid var(--border-in)">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
@@ -91,7 +91,7 @@
 
         {{-- End Date (shared) --}}
         <div>
-            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">End Date</label>
+            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:7px">Tanggal Selesai</label>
             <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl"
                  style="background:var(--bg-input);border:1px solid var(--border-in)">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" class="flex-shrink-0">
@@ -118,7 +118,7 @@
                     <svg id="processIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="5 3 19 12 5 21 5 3"/>
                     </svg>
-                    <span id="processLabel">Process</span>
+                    <span id="processLabel">Proses</span>
                 </button>
             </form>
 
@@ -136,7 +136,7 @@
                         <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
                         <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
                     </svg>
-                    <span id="updateLabel">Update</span>
+                    <span id="updateLabel">Perbarui</span>
                 </button>
             </form>
         </div>
@@ -155,14 +155,14 @@
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                 </svg>
-                <p style="font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.08em;text-transform:uppercase">Calculation Engine</p>
+                <p style="font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.08em;text-transform:uppercase">Mesin Kalkulasi</p>
             </div>
-            <span id="engineStatus" style="font-size:12.5px;font-weight:600;color:var(--text-3)">Idle</span>
+            <span id="engineStatus" style="font-size:12.5px;font-weight:600;color:var(--text-3)">Menunggu</span>
         </div>
 
         <div class="mb-4">
             <div class="flex items-center justify-between mb-2">
-                <p style="font-size:13px;color:var(--text-2)">Batch processing status</p>
+                <p style="font-size:13px;color:var(--text-2)">Status pemrosesan batch</p>
                 <p id="progressPct" style="font-size:13px;font-weight:700;color:#a78bfa">0%</p>
             </div>
             <div class="h-2.5 rounded-full overflow-hidden" style="background:var(--bg-ghost)">
@@ -172,7 +172,7 @@
         </div>
 
             <div>
-                <p style="font-size:11.5px;font-weight:600;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px">Action Log</p>
+                <p style="font-size:11.5px;font-weight:600;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px">Log Aktivitas</p>
                 <div class="space-y-3" id="actionLog">
                     @if(session('process_result'))
                         @php $res = session('process_result'); @endphp
@@ -255,7 +255,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4"
          style="border-bottom:1px solid var(--border)">
         <p style="font-size:12px;font-weight:700;color:var(--text-2);letter-spacing:.08em;text-transform:uppercase">
-            Results Preview
+            Pratinjau Hasil
             <span style="font-weight:400;color:var(--text-3)">(10 terbaru)</span>
         </p>
         <a href="{{ route('attendances.index') }}"
@@ -274,7 +274,7 @@
             <thead>
                 <tr style="border-bottom:1px solid var(--border)">
                     <th class="text-left px-5 py-3 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Karyawan</th>
-                    <th class="text-left px-4 py-3 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Department</th>
+                    <th class="text-left px-4 py-3 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Departemen</th>
                     <th class="text-left px-4 py-3 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Shift</th>
                     <th class="text-left px-4 py-3 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Tanggal</th>
                     <th class="text-left px-4 py-3 font-semibold" style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Clock In</th>

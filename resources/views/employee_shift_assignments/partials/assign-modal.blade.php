@@ -2,7 +2,7 @@
 <div id="mAssignShift" class="mbk" onclick="closeOut(event,'mAssignShift')">
     <div class="mbox" style="max-width:1100px;width:95%;max-height:90vh;display:flex;flex-direction:column">
         <div class="mhdr" style="padding:20px 24px;border-bottom:1px solid var(--border)">
-            <span class="mtitle" style="font-size:18px">Assign Shift Employee</span>
+            <span class="mtitle" style="font-size:18px">Tugaskan Shift Karyawan</span>
             <button onclick="closeM('mAssignShift')" class="mclose" style="width:32px;height:32px;font-size:20px">&times;</button>
         </div>
 
@@ -18,15 +18,15 @@
 
                         {{-- Tab Assign To --}}
                         <div style="margin-bottom:20px">
-                            <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:10px">Assign To</label>
+                            <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:10px">Tugaskan Ke</label>
                             <div style="display:flex;gap:8px">
                                 <button type="button" class="tab-btn active" data-tab="employee"
                                         style="flex:1;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;border:1.5px solid rgba(124,58,237,.4);background:rgba(124,58,237,.15);color:#a78bfa;cursor:pointer;transition:all .2s">
-                                    Employee
+                                    Karyawan
                                 </button>
                                 <button type="button" class="tab-btn" data-tab="department"
                                         style="flex:1;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer;transition:all .2s">
-                                    Department
+                                    Departemen
                                 </button>
                                 <button type="button" class="tab-btn" data-tab="operator"
                                         style="flex:1;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:transparent;color:var(--text-3);cursor:pointer;transition:all .2s">
@@ -109,12 +109,12 @@
                         {{-- Date Range --}}
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
                             <div>
-                                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:8px">Start Date</label>
+                                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:8px">Tanggal Mulai</label>
                                 <input type="date" name="start_date" id="startDate" required
                                        style="width:100%;padding:11px 14px;border-radius:10px;font-size:13px;border:1.5px solid var(--border);background:var(--in-bg);color:var(--text-1);outline:none">
                             </div>
                             <div>
-                                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:8px">End Date</label>
+                                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:8px">Tanggal Selesai</label>
                                 <input type="date" name="end_date" id="endDate" required
                                        style="width:100%;padding:11px 14px;border-radius:10px;font-size:13px;border:1.5px solid var(--border);background:var(--in-bg);color:var(--text-1);outline:none">
                             </div>
@@ -131,7 +131,7 @@
                         <div style="margin-bottom:12px;padding:12px;border-radius:10px;background:var(--bg-ghost);border:1px solid var(--border)">
                             <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
                                 <input type="checkbox" id="checkAll" style="width:18px;height:18px;cursor:pointer;accent-color:#7c3aed">
-                                <span style="font-size:13px;font-weight:600;color:var(--text-1)">Select All</span>
+                                <span style="font-size:13px;font-weight:600;color:var(--text-1)">Pilih Semua</span>
                             </label>
                         </div>
 
@@ -224,7 +224,7 @@
                 </button>
                 <button type="submit" id="assignSubmitBtn" class="purbtn"
                         style="padding:10px 24px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px">
-                    <span id="assignBtnText">Assign</span>
+                    <span id="assignBtnText">Tugaskan</span>
                     <span id="assignBtnLoading" style="display:none;align-items:center;gap:8px">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>
                         Menyimpan...

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Department;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DepartmentSeeder extends Seeder
@@ -32,9 +31,9 @@ class DepartmentSeeder extends Seeder
             ['name' => 'Sales', 'subtitle' => 'Sales & Marketing'],
             ['name' => 'Secretary', 'subtitle' => 'Executive Support & Administration'],
         ];
-        
-            foreach ($departments as $department) {
-                Department::create($department);
+
+        foreach ($departments as $department) {
+            Department::create($department);
         }
     }
 }

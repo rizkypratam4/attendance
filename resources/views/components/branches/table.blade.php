@@ -8,7 +8,7 @@
         <tr style="background:rgba(124,58,237,.10);border-bottom:1px solid var(--border)">
             <th class="text-left px-5 py-3.5 font-semibold"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                Branch Name
+                Nama Perusahaan
             </th>
             <th class="text-left px-4 py-3.5 font-semibold"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
@@ -16,7 +16,7 @@
             </th>
             <th class="text-right px-5 py-3.5 font-semibold"
                 style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                Actions
+                Aksi
             </th>
         </tr>
     </thead>
@@ -49,19 +49,19 @@
                     @if ($branch->is_active)
                         <span class="px-3 py-1 rounded-full font-semibold"
                             style="font-size:11px;color:#22c55e;border:1px solid rgba(34,197,94,.35);letter-spacing:.04em">
-                            Active
+                            Aktif
                         </span>
                     @else
                         <span class="px-3 py-1 rounded-full font-semibold"
                             style="font-size:11px;color:#ef4444;border:1px solid rgba(239,68,68,.35);letter-spacing:.04em">
-                            Inactive
+                            Nonaktif
                         </span>
                     @endif
                 </td>
 
                 <td class="px-5 py-4">
                     <div class="flex items-center justify-end gap-2">
-                        <button class="ib-bg w-8 h-8 rounded-lg flex items-center justify-center" title="Edit" 
+                        <button class="ib-bg w-8 h-8 rounded-lg flex items-center justify-center" title="Perbarui" 
                         onclick="openEditBranch({{ $branch->id }}, '{{ $branch->name }}', {{ $branch->is_active ? '1' : '0' }})">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
@@ -69,7 +69,7 @@
                             </svg>
                         </button>
                         <button type="button" class="w-8 h-8 rounded-lg flex items-center justify-center"
-                            style="background:rgba(239,68,68,.10);color:#f87171;" title="Delete" 
+                            style="background:rgba(239,68,68,.10);color:#f87171;" title="Hapus" 
                             onclick="openDeleteBranch('{{ $branch->name }}', {{ $branch->id }})">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> 
                                 <polyline points="3 6 5 6 21 6" /> 
@@ -88,7 +88,7 @@
         @empty
             <tr>
                 <td colspan="3" class="text-center py-6" style="color:var(--text-3);font-size:13px">
-                    No branches found.
+                    Tidak ada perusahaan ditemukan.
                 </td>
             </tr>
         @endforelse

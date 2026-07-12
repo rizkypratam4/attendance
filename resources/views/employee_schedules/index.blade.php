@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Employee Schedule')
+@section('title', 'Jadwal Karyawan')
 
 @php $active = 'schedule'; @endphp
 
@@ -9,14 +9,14 @@
 {{-- ── PAGE HEADER ── --}}
 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
     <div>
-        <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Employee Schedule</h1>
-        <p style="font-size:13px;color:var(--text-3);margin-top:5px">Monitor and manage shifts for Oct 23 - Oct 29, 2023</p>
+        <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Jadwal Karyawan</h1>
+        <p style="font-size:13px;color:var(--text-3);margin-top:5px">Pantau dan kelola shift untuk 23 Okt - 29 Okt 2023</p>
     </div>
     <div class="flex items-center gap-2 flex-shrink-0">
         <button class="ib-bg w-8 h-8 rounded-lg flex items-center justify-center">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <button class="purbtn px-4 py-2 rounded-lg font-semibold" style="font-size:13.5px">Today</button>
+        <button class="purbtn px-4 py-2 rounded-lg font-semibold" style="font-size:13.5px">Hari Ini</button>
         <button class="ib-bg w-8 h-8 rounded-lg flex items-center justify-center">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
         </button>
@@ -25,7 +25,7 @@
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            Export
+            Ekspor
         </button>
     </div>
 </div>
@@ -35,13 +35,13 @@
     <div class="flex flex-wrap items-center gap-3">
         {{-- Department --}}
         <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg" style="background:var(--bg-ghost);border:1px solid var(--border)">
-            <span style="font-size:12px;color:var(--text-3)">Department:</span>
-            <span style="font-size:13px;font-weight:600;color:var(--text-1)">All Departments</span>
+            <span style="font-size:12px;color:var(--text-3)">Departemen:</span>
+            <span style="font-size:13px;font-weight:600;color:var(--text-1)">Semua Departemen</span>
         </div>
         {{-- Position --}}
         <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg" style="background:var(--bg-ghost);border:1px solid var(--border);cursor:pointer">
-            <span style="font-size:12px;color:var(--text-3)">Position:</span>
-            <span style="font-size:13px;font-weight:600;color:var(--text-1)">All Positions</span>
+            <span style="font-size:12px;color:var(--text-3)">Posisi:</span>
+            <span style="font-size:13px;font-weight:600;color:var(--text-1)">Semua Posisi</span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
         </div>
         {{-- Date --}}
@@ -57,15 +57,15 @@
     <div class="flex items-center gap-4">
         <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#7c3aed"></span>
-            <span style="font-size:12.5px;color:var(--text-3)">Morning</span>
+            <span style="font-size:12.5px;color:var(--text-3)">Pagi</span>
         </div>
         <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#3b82f6"></span>
-            <span style="font-size:12.5px;color:var(--text-3)">Night</span>
+            <span style="font-size:12.5px;color:var(--text-3)">Malam</span>
         </div>
         <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:#f97316"></span>
-            <span style="font-size:12.5px;color:var(--text-3)">On-Call</span>
+            <span style="font-size:12.5px;color:var(--text-3)">Siaga</span>
         </div>
     </div>
 </div>
@@ -78,7 +78,7 @@
             {{-- Day Headers --}}
             <thead>
                 <tr style="background:rgba(124,58,237,.06);border-bottom:1px solid var(--border)">
-                    <th class="text-left px-5 py-3" style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;min-width:160px;width:160px">Employee</th>
+                    <th class="text-left px-5 py-3" style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;min-width:160px;width:160px">Karyawan</th>
                     <th class="text-center px-3 py-3" style="min-width:120px">
                         <p style="font-size:10.5px;font-weight:600;color:var(--text-3);letter-spacing:.08em">MON</p>
                         <p style="font-size:14px;font-weight:700;color:var(--text-2)">OCT 23</p>
@@ -235,7 +235,7 @@
                     <td class="px-2 py-3"></td>
                     <td class="px-2 py-3"></td>
                     <td class="px-2 py-3 text-center" style="background:rgba(124,58,237,.04)">
-                        <span style="font-size:12px;color:var(--text-3);font-style:italic">Click to assign shift.</span>
+                        <span style="font-size:12px;color:var(--text-3);font-style:italic">Klik untuk menugaskan shift.</span>
                     </td>
                     <td class="px-2 py-3"></td>
                     <td class="px-2 py-3"></td>
@@ -249,7 +249,7 @@
 
 {{-- ── PAGINATION ── --}}
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-    <p style="font-size:13px;color:var(--text-3)">Showing 1 to 4 of 24 employees</p>
+    <p style="font-size:13px;color:var(--text-3)">Menampilkan 1 hingga 4 dari 24 karyawan</p>
     <div class="flex items-center gap-1">
         <button class="w-8 h-8 rounded-lg flex items-center justify-center ib-bg">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17l-5-5 5-5M19 17l-5-5 5-5"/></svg>

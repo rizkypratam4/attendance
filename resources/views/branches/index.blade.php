@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Branch Management')
+@section('title', 'Manajemen Perusahaan')
 
 @php $active = 'branch'; @endphp
 
@@ -9,34 +9,37 @@
     {{-- ── PAGE HEADER ── --}}
     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
-            <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Branch Management</h1>
-            <p style="font-size:13px;color:var(--text-3);margin-top:5px">Configure and manage physical office locations
-                across your organization.</p>
+            <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">
+                Manajemen Perusahaan
+            </h1>
+
+            <p style="font-size:13px;color:var(--text-3);margin-top:5px">
+                Kelola dan atur data perusahaan/cabang di organisasi Anda.
+            </p>
         </div>
+
         <button onclick="openM('mAddBranch')"
-            class="purbtn flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold flex-shrink-0" style="font-size:14px">
+            class="purbtn inline-flex self-start items-center gap-2 px-5 py-2.5 rounded-xl font-semibold"
+            style="font-size:14px">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
                 <circle cx="12" cy="10" r="3" />
             </svg>
-            Add New Branch
+            Tambah Perusahaan Baru
         </button>
     </div>
 
     {{-- ── SEARCH + FILTER ── --}}
-    <x-search-filter 
-        searchId="branchSearch"
-        searchPlaceholder="Search branches by name, code, or address..."
-        :filters="[
-            [
-                'id' => 'status',
-                'label' => 'All Branch Status',
-                'options' => [
-                    '1' => 'Active',
-                    '0' => 'Inactive'
-                ]
-            ]
-        ]" />
+    <x-search-filter searchId="branchSearch" searchPlaceholder="Cari perusahaan berdasarkan nama" :filters="[
+        [
+            'id' => 'status',
+            'label' => 'Semua Status',
+            'options' => [
+                '1' => 'Aktif',
+                '0' => 'Nonaktif',
+            ],
+        ],
+    ]" />
 
     {{-- ── BRANCHES TABLE ── --}}
     <div class="card rounded-2xl mb-5" style="overflow:hidden">
@@ -129,7 +132,7 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M6 9l6 6 6-6"/>
             </svg>`;
-                document.getElementById('sortMenu').classList.add('hidden');
+            document.getElementById('sortMenu').classList.add('hidden');
         }
     </script>
 @endpush

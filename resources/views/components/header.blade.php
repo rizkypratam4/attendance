@@ -24,7 +24,7 @@
                 <path d="M21 21l-4.35-4.35" />
             </svg>
             <input type="text" id="globalSearchInput"
-                   placeholder="Search employees, reports, or logs..."
+                   placeholder="Cari karyawan, laporan, atau log..."
                    autocomplete="off"
                    style="background:transparent;border:none;outline:none;color:var(--text-2);font-size:13px;width:100%;font-family:inherit">
             {{-- Dropdown results --}}
@@ -125,7 +125,7 @@
                             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                             <circle cx="12" cy="7" r="4" />
                         </svg>
-                        Setting Profile
+                        Pengaturan Profil
                     </div>
                     <div class="ddi" onclick="openM('mPassword')">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
@@ -133,7 +133,7 @@
                             <rect x="3" y="11" width="18" height="11" rx="2" />
                             <path d="M7 11V7a5 5 0 0110 0v4" />
                         </svg>
-                        Change Password
+                        Ubah Kata Sandi
                     </div>
                     <div class="dd-sep"></div>
                     <form method="POST" action="{{ route('logout') }}">
@@ -143,7 +143,7 @@
                                  stroke="currentColor" stroke-width="2">
                                 <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
-                            Sign Out
+                            Keluar
                         </button>
                     </form>
                 </div>

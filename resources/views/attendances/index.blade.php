@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Attendance')
+@section('title', 'Kehadiran')
 
 @php $active = 'attendance'; @endphp
 
@@ -9,7 +9,7 @@
 {{-- ── PAGE HEADER ── --}}
 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
     <div>
-        <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Attendance List</h1>
+        <h1 style="font-size:24px;font-weight:800;color:var(--text-1);line-height:1.2">Daftar Kehadiran</h1>
         <p style="font-size:13px;color:var(--text-3);margin-top:5px">
             Monitoring kehadiran —
             <span style="color:var(--text-2);font-weight:600">
@@ -31,10 +31,9 @@
     </a>
 </div>
 
-{{-- ── FILTER BAR ── --}}
 <div class="card rounded-2xl p-4 mb-5">
     <form method="GET" action="{{ route('attendances.index') }}">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 items-end">
 
         {{-- Search Karyawan --}}
         <div>
@@ -76,12 +75,12 @@
                 <button type="button" class="custom-select-btn w-full px-4 py-2.5 rounded-xl flex items-center justify-between"
                         style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;cursor:pointer;font-family:inherit">
                     <span class="custom-select-label">
-                        {{ request('shift_code') ? $shiftCodes->firstWhere('id', request('shift_code'))?->code : 'All Shifts' }}
+                        {{ request('shift_code') ? $shiftCodes->firstWhere('id', request('shift_code'))?->code : 'Semua Shift' }}
                     </span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
                 <div class="custom-select-dropdown" style="display:none">
-                    <div class="custom-select-option" data-value="">All Shifts</div>
+                    <div class="custom-select-option" data-value="">Semua Shift</div>
                     @foreach($shiftCodes as $sc)
                         <div class="custom-select-option {{ request('shift_code') == $sc->id ? 'selected' : '' }}"
                             data-value="{{ $sc->id }}">
@@ -99,18 +98,18 @@
 
         {{-- Department --}}
         <div>
-            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:8px">Department</label>
+            <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:8px">Departemen</label>
             <div class="custom-select-wrapper" data-name="department">
                 <input type="hidden" name="department" value="{{ request('department') }}">
                 <button type="button" class="custom-select-btn w-full px-4 py-2.5 rounded-xl flex items-center justify-between"
                         style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;cursor:pointer;font-family:inherit">
                     <span class="custom-select-label">
-                        {{ request('department') ? $departments->firstWhere('id', request('department'))?->name : 'All Departments' }}
+                        {{ request('department') ? $departments->firstWhere('id', request('department'))?->name : 'Semua Departemen' }}
                     </span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
                 <div class="custom-select-dropdown" style="display:none">
-                    <div class="custom-select-option" data-value="">All Departments</div>
+                    <div class="custom-select-option" data-value="">Semua Departemen</div>
                     @foreach($departments as $dept)
                         <div class="custom-select-option {{ request('department') == $dept->id ? 'selected' : '' }}"
                             data-value="{{ $dept->id }}">
@@ -121,48 +120,48 @@
             </div>
         </div>
 
-        {{-- Status + Apply --}}
+        {{-- Status --}}
         <div>
             <label style="font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:8px">Status</label>
-            <div class="flex items-center gap-2">
-                <div class="custom-select-wrapper flex-1" data-name="status">
-                    <input type="hidden" name="status" value="{{ request('status') }}">
-                    <button type="button" class="custom-select-btn w-full px-4 py-2.5 rounded-xl flex items-center justify-between"
-                            style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;cursor:pointer;font-family:inherit">
-                        <span class="custom-select-label">
-                            {{ match(request('status')) {
-                                'present' => 'Hadir',
-                                'late'    => 'Terlambat',
-                                'absent'  => 'Tidak Hadir',
-                                'idt'     => 'IDT',
-                                default   => 'All Statuses'
-                            } }}
-                        </span>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-                    </button>
-                    <div class="custom-select-dropdown" style="display:none">
-                        <div class="custom-select-option" data-value="">All Statuses</div>
-                        <div class="custom-select-option {{ request('status') === 'present' ? 'selected' : '' }}" data-value="present">Hadir</div>
-                        <div class="custom-select-option {{ request('status') === 'late'    ? 'selected' : '' }}" data-value="late">Terlambat</div>
-                        <div class="custom-select-option {{ request('status') === 'absent'  ? 'selected' : '' }}" data-value="absent">Tidak Hadir</div>
-                        <div class="custom-select-option {{ request('status') === 'idt'     ? 'selected' : '' }}" data-value="idt">IDT</div>
-                    </div>
-                </div>
-                <button type="submit" class="purbtn px-4 py-2.5 rounded-xl font-semibold flex-shrink-0" style="font-size:13px">
-                    Filter
+            <div class="custom-select-wrapper" data-name="status">
+                <input type="hidden" name="status" value="{{ request('status') }}">
+                <button type="button" class="custom-select-btn w-full px-4 py-2.5 rounded-xl flex items-center justify-between"
+                        style="background:var(--bg-input);border:1px solid var(--border-in);color:var(--text-2);font-size:13px;cursor:pointer;font-family:inherit">
+                    <span class="custom-select-label">
+                        {{ match(request('status')) {
+                            'present' => 'Hadir',
+                            'late'    => 'Terlambat',
+                            'absent'  => 'Tidak Hadir',
+                            'idt'     => 'IDT',
+                            default   => 'Semua Status'
+                        } }}
+                    </span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
+                <div class="custom-select-dropdown" style="display:none">
+                    <div class="custom-select-option" data-value="">Semua Status</div>
+                    <div class="custom-select-option {{ request('status') === 'present' ? 'selected' : '' }}" data-value="present">Hadir</div>
+                    <div class="custom-select-option {{ request('status') === 'late'    ? 'selected' : '' }}" data-value="late">Terlambat</div>
+                    <div class="custom-select-option {{ request('status') === 'absent'  ? 'selected' : '' }}" data-value="absent">Tidak Hadir</div>
+                    <div class="custom-select-option {{ request('status') === 'idt'     ? 'selected' : '' }}" data-value="idt">IDT</div>
+                </div>
             </div>
         </div>
 
         </div>
 
-        @if(request()->hasAny(['shift_code', 'department', 'status', 'search']) || request('date') !== today()->toDateString())
-        <div class="mt-3">
-            <a href="{{ route('attendances.index') }}" style="font-size:12px;font-weight:600;color:#a78bfa;text-decoration:none">
-                ↺ Reset Filter
-            </a>
+        {{-- Filter button + Reset Filter, sejajar kiri --}}
+        <div class="mt-3 flex items-center gap-4">
+            <button type="submit" class="purbtn px-5 py-2.5 rounded-xl font-semibold flex-shrink-0" style="font-size:13px">
+                Filter
+            </button>
+
+            @if(request()->hasAny(['shift_code', 'department', 'status', 'search']) || request('date') !== today()->toDateString())
+                <a href="{{ route('attendances.index') }}" style="font-size:12px;font-weight:600;color:#a78bfa;text-decoration:none">
+                    ↺ Reset Filter
+                </a>
+            @endif
         </div>
-        @endif
     </form>
 </div>
 
@@ -289,7 +288,7 @@
                     <th class="text-left px-4 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Clock Out</th>
                     <th class="text-left px-4 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Status</th>
                     <th class="text-center px-4 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">IDT</th>
-                    <th class="text-right px-5 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Action</th>
+                    <th class="text-right px-5 py-3.5 font-semibold" style="font-size:11px;color:#7c3aed;letter-spacing:.08em;text-transform:uppercase">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -438,9 +437,9 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4"
          style="border-top:1px solid var(--border)">
         <p style="font-size:13px;color:var(--text-3)">
-            Showing
+            Menampilkan
             <strong style="color:var(--text-2)">{{ $attendances->firstItem() }}–{{ $attendances->lastItem() }}</strong>
-            of <strong style="color:var(--text-2)">{{ number_format($attendances->total()) }}</strong>
+            dari <strong style="color:var(--text-2)">{{ number_format($attendances->total()) }}</strong>
         </p>
         <div class="flex items-center gap-1">
             @if($attendances->onFirstPage())
@@ -476,7 +475,7 @@
 </div>
 
 {{-- ── EDIT ATTENDANCE MODAL ── --}}
-<x-ui.modal id="mEditAttendance" title="Edit Attendance">
+<x-ui.modal id="mEditAttendance" title="Edit Kehadiran">
     <form id="editAttendanceForm" method="POST">
         @csrf
         @method('PATCH')
@@ -509,11 +508,11 @@
             <button type="button" onclick="closeM('mEditAttendance')"
                     class="flex-1 py-2.5 rounded-xl font-medium"
                     style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2)">
-                Cancel
+                Batal
             </button>
             <button type="submit" class="flex-1 purbtn py-2.5 rounded-xl font-semibold"
                     style="font-size:14px">
-                Save
+                Simpan
             </button>
         </div>
     </form>

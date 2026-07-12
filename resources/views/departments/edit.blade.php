@@ -1,27 +1,27 @@
-<x-ui.modal id="mEditDepartment" title="Edit Department" maxWidth="480px">
+<x-ui.modal id="mEditDepartment" title="Perbarui Departemen" maxWidth="480px">
      <form id="editDepartmentForm" action="" method="POST">
         @csrf
         @method('PUT')
         <div class="space-y-4">
             <div>
-                <label class="mlabel">Department Name</label>
-                <input id="editDepartmentName" type="text" name="name" placeholder="e.g. Engineering" 
+                <label class="mlabel">Nama Departemen</label>
+                <input id="editDepartmentName" type="text" name="name" placeholder="mis. Teknik" 
                 class="minput @error('name') border-red-500 @enderror">
                 @error('name')
                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
             <div>
-                <label class="mlabel">Subtitle / Category</label>
-                <input id="editDepartmentSubtitle" type="text" name="subtitle" placeholder="e.g. Tech & Infrastructure" 
+                <label class="mlabel">Subjudul / Kategori</label>
+                <input id="editDepartmentSubtitle" type="text" name="subtitle" placeholder="mis. Teknologi & Infrastruktur" 
                 class="minput @error('subtitle') border-red-500 @enderror">
                 @error('subtitle')
                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
             <div>
-                <label class="mlabel">Head of Department</label>
-                <input id="editDepartmentHead" type="text" name="head_employee_id" placeholder="Full name" 
+                <label class="mlabel">Kepala Departemen</label>
+                <input id="editDepartmentHead" type="text" name="head_employee_id" placeholder="Nama lengkap" 
                 class="minput @error('head_employee_id') border-red-500 @enderror">
                 @error('head_employee_id')
                     <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
@@ -31,10 +31,10 @@
         <div class="flex gap-3 mt-6">
             <button onclick="closeM('mEditDepartment')" class="flex-1 py-2.5 rounded-xl font-medium"
                 style="font-size:14px;border:1px solid var(--border);background:var(--bg-ghost);color:var(--text-2);cursor:pointer">
-                Cancel
+                Batal
             </button>
             <button class="flex-1 purbtn py-2.5 rounded-xl font-semibold" style="font-size:14px">
-                Save Department
+                Simpan Departemen
             </button>
         </div>
         </div>

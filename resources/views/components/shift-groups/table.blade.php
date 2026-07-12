@@ -12,14 +12,14 @@
         <table class="w-full" style="border-collapse:collapse;min-width:580px">
             <thead>
                 <tr style="border-bottom:1px solid var(--border)">
-                    <th class="text-left px-5 py-3.5 font-semibold"
-                        style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Shift
-                        Group Name</th>
+                    <th class="text-left px-5 py-3.5 font-semibold whitespace-nowrap"
+                        style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Nama
+                        Grup Shift</th>
                     <th class="text-left px-4 py-3.5 font-semibold"
                         style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">
-                        Description</th>
+                        Deskripsi</th>
                     <th class="text-right px-5 py-3.5 font-semibold"
-                        style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Actions
+                        style="font-size:11px;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase">Aksi
                     </th>
                 </tr>
             </thead>
@@ -52,16 +52,16 @@
                         <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-2">
                                 <button type="button" class="ib-bg w-8 h-8 rounded-lg flex items-center justify-center"
-                                    data-name="{{ $shift['name'] }}"
-                                    data-description="{{ $shift['description'] }}"
-                                    data-id="{{ $shift['id'] }}" onclick="openEditShiftGroup(this.dataset.id, this.dataset.name, this.dataset.description)">
+                                    data-name="{{ $shift['name'] }}" data-description="{{ $shift['description'] }}"
+                                    data-id="{{ $shift['id'] }}"
+                                    onclick="openEditShiftGroup(this.dataset.id, this.dataset.name, this.dataset.description)">
                                     <svg width="13" height="14" viewBox="0 0 24 24" fill="none"
                                         stroke="currentColor" stroke-width="2">
                                         <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
                                         <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                                     </svg>
                                 </button>
-                                
+
                                 <form id="delete-form-shift-group-{{ $shift['id'] }}"
                                     action="{{ route('shift_groups.destroy', $shift['id']) }}" method="POST"
                                     class="inline">
@@ -89,16 +89,16 @@
     {{-- Pagination --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4"
         style="border-top:1px solid var(--border)">
-        <p style="font-size:13px;color:var(--text-3)">Showing {{ $from }} to {{ $to }} of
-            {{ $total }} groups</p>
+        <p style="font-size:13px;color:var(--text-3)">Menampilkan {{ $from }} hingga {{ $to }} dari
+            {{ $total }} grup</p>
         <div class="flex items-center gap-1">
             @if ($currentPage > 1)
                 <a href="{{ route('shift_groups.index', ['page' => $currentPage - 1]) }}"
                     class="px-3 h-8 rounded-lg ib-bg font-medium"
-                    style="font-size:13px;color:var(--text-3);text-decoration:none;display:inline-flex;align-items:center">Previous</a>
+                    style="font-size:13px;color:var(--text-3);text-decoration:none;display:inline-flex;align-items:center">Sebelumnya</a>
             @else
                 <button class="px-3 h-8 rounded-lg ib-bg font-medium" disabled
-                    style="font-size:13px;color:var(--text-3);opacity:0.5;cursor:not-allowed">Previous</button>
+                    style="font-size:13px;color:var(--text-3);opacity:0.5;cursor:not-allowed">Sebelumnya</button>
             @endif
 
             @for ($i = 1; $i <= $totalPages; $i++)
@@ -117,10 +117,10 @@
             @if ($currentPage < $totalPages)
                 <a href="{{ route('shift_groups.index', ['page' => $currentPage + 1]) }}"
                     class="px-3 h-8 rounded-lg ib-bg font-medium"
-                    style="font-size:13px;color:var(--text-2);text-decoration:none;display:inline-flex;align-items:center">Next</a>
+                    style="font-size:13px;color:var(--text-2);text-decoration:none;display:inline-flex;align-items:center">Selanjutnya</a>
             @else
                 <button class="px-3 h-8 rounded-lg ib-bg font-medium" disabled
-                    style="font-size:13px;color:var(--text-2);opacity:0.5;cursor:not-allowed">Next</button>
+                    style="font-size:13px;color:var(--text-2);opacity:0.5;cursor:not-allowed">Selanjutnya</button>
             @endif
         </div>
     </div>
